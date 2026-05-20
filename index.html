@@ -159,7 +159,28 @@
       padding: 16px 0;
       overflow-x: hidden;
       overflow-y: auto;
+      scrollbar-color: rgba(201, 161, 74, 0.42) rgba(8, 13, 21, 0.4);
+      scrollbar-width: thin;
       z-index: 5;
+    }
+
+    .sidebar::-webkit-scrollbar,
+    .chapter-rail::-webkit-scrollbar,
+    .reader-page::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .sidebar::-webkit-scrollbar-track,
+    .chapter-rail::-webkit-scrollbar-track,
+    .reader-page::-webkit-scrollbar-track {
+      background: rgba(8, 13, 21, 0.4);
+    }
+
+    .sidebar::-webkit-scrollbar-thumb,
+    .chapter-rail::-webkit-scrollbar-thumb,
+    .reader-page::-webkit-scrollbar-thumb {
+      background: rgba(201, 161, 74, 0.42);
+      border: 2px solid rgba(8, 13, 21, 0.8);
     }
 
     .sidebar-toggle {
@@ -187,6 +208,7 @@
     }
 
     .side-item {
+      position: relative;
       width: 100%;
       display: flex;
       align-items: center;
@@ -209,15 +231,17 @@
     }
 
     .side-icon {
-      width: 24px;
-      height: 24px;
+      width: 30px;
+      height: 30px;
       display: grid;
       place-items: center;
       border: 1px solid rgba(201, 161, 74, 0.28);
       color: var(--gold);
-      font-family: var(--mono);
-      font-size: 10px;
+      font-size: 15px;
       flex: 0 0 auto;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(201, 161, 74, 0.1), transparent 64%),
+        rgba(0, 0, 0, 0.18);
     }
 
     .side-text {
@@ -265,6 +289,26 @@
 
     .codex-shell.is-sidebar-collapsed .side-item.is-active {
       box-shadow: inset 3px 0 0 var(--gold);
+    }
+
+    .codex-shell.is-sidebar-collapsed .side-item:hover::after {
+      content: attr(data-tip);
+      position: absolute;
+      left: calc(100% + 10px);
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 25;
+      width: max-content;
+      max-width: 190px;
+      border: 1px solid rgba(201, 161, 74, 0.36);
+      background: rgba(7, 10, 16, 0.96);
+      color: var(--gold-2);
+      padding: 8px 10px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.42);
     }
 
     .workspace {
@@ -977,6 +1021,202 @@
       line-height: 1.45;
     }
 
+    .deep-block {
+      margin-top: 18px;
+    }
+
+    .chapter-bars {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .reader-shell {
+      display: grid;
+      grid-template-columns: 270px minmax(0, 1fr);
+      gap: 18px;
+      min-height: 620px;
+      height: calc(100vh - 170px);
+    }
+
+    .chapter-rail,
+    .reader-book {
+      border: 1px solid rgba(201, 161, 74, 0.22);
+      background: rgba(5, 8, 14, 0.42);
+      min-height: 0;
+    }
+
+    .chapter-rail {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      overflow-y: auto;
+      padding: 14px;
+    }
+
+    .chapter-button {
+      width: 100%;
+      border: 1px solid rgba(201, 161, 74, 0.28);
+      background: rgba(0, 0, 0, 0.16);
+      color: rgba(238, 226, 200, 0.74);
+      padding: 11px 12px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .chapter-button:hover,
+    .chapter-button.is-active {
+      border-color: var(--gold-2);
+      color: var(--gold-2);
+      background: rgba(201, 161, 74, 0.08);
+    }
+
+    .chapter-button b,
+    .chapter-button span {
+      display: block;
+    }
+
+    .chapter-button b {
+      font-family: var(--serif);
+      font-size: 21px;
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    .chapter-button span {
+      margin-top: 6px;
+      color: var(--ash);
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+
+    .reader-book {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      overflow: hidden;
+    }
+
+    .reader-toolbar,
+    .reader-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(201, 161, 74, 0.16);
+    }
+
+    .reader-footer {
+      border-top: 1px solid rgba(201, 161, 74, 0.16);
+      border-bottom: 0;
+      color: var(--ash);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .reader-page {
+      overflow-y: auto;
+      padding: 34px 42px 46px;
+      background:
+        linear-gradient(90deg, rgba(201, 161, 74, 0.06), transparent 14%, transparent 86%, rgba(201, 161, 74, 0.04)),
+        rgba(238, 226, 200, 0.035);
+    }
+
+    .reader-title {
+      margin: 0 0 20px;
+      color: var(--paper);
+      font-family: var(--serif);
+      font-size: clamp(38px, 4vw, 58px);
+      line-height: 0.94;
+    }
+
+    .reader-meta {
+      margin: 0 0 12px;
+      color: var(--gold);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .reader-prose {
+      max-width: 840px;
+      margin: 0 auto;
+      color: rgba(238, 226, 200, 0.9);
+      font-family: var(--serif);
+      font-size: 21px;
+      line-height: 1.72;
+    }
+
+    .reader-prose p {
+      margin: 0 0 1.05em;
+    }
+
+    .reader-prose p:first-of-type {
+      color: var(--gold-2);
+      font-style: italic;
+    }
+
+    .reader-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .reader-progress {
+      flex: 1;
+      height: 3px;
+      min-width: 140px;
+      background: rgba(201, 161, 74, 0.16);
+      overflow: hidden;
+    }
+
+    .reader-progress span {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--gold), var(--teal));
+    }
+
+    body.reader-mode-active::after {
+      inset: 0;
+      border-color: rgba(241, 217, 149, 0.36);
+      z-index: 60;
+    }
+
+    .reader-shell.reader-mode {
+      position: fixed;
+      inset: 12px;
+      z-index: 55;
+      height: auto;
+      min-height: 0;
+      grid-template-columns: minmax(0, 1fr);
+      padding: 26px;
+      background:
+        radial-gradient(circle at 50% 12%, rgba(104, 76, 154, 0.2), transparent 36rem),
+        linear-gradient(180deg, rgba(7, 10, 16, 0.98), rgba(5, 8, 14, 0.99));
+    }
+
+    .reader-shell.reader-mode .chapter-rail {
+      display: none;
+    }
+
+    .reader-shell.reader-mode .reader-book {
+      width: min(980px, 100%);
+      height: 100%;
+      margin: 0 auto;
+    }
+
+    .reader-shell.reader-mode .reader-page {
+      padding: 42px clamp(26px, 6vw, 84px);
+    }
+
     .status-teal { color: var(--teal); }
     .status-red { color: #ef7d73; }
     .status-violet { color: #bca3ff; }
@@ -1021,6 +1261,7 @@
       }
 
       .panel-layout,
+      .reader-shell,
       .map-grid,
       .map-grid.two,
       .leaf-grid {
@@ -1160,6 +1401,8 @@
 
       .panel-head,
       .panel-layout,
+      .reader-shell,
+      .chapter-bars,
       .map-grid,
       .map-grid.two,
       .leaf-grid,
@@ -1173,6 +1416,34 @@
       .section-code {
         text-align: left;
         white-space: normal;
+      }
+
+      .reader-shell {
+        height: 680px;
+        min-height: 0;
+        grid-template-rows: minmax(0, 1fr);
+      }
+
+      .reader-page {
+        padding: 24px 18px 32px;
+      }
+
+      .chapter-rail {
+        display: none;
+      }
+
+      .chapter-bars {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .reader-prose {
+        font-size: 19px;
+      }
+
+      .reader-toolbar,
+      .reader-footer {
+        align-items: flex-start;
+        flex-direction: column;
       }
 
       .map-card.feature {
@@ -1204,7 +1475,7 @@
   </style>
 </head>
 <body>
-  <div class="codex-shell" id="shell">
+  <div class="codex-shell is-sidebar-collapsed" id="shell">
     <header class="topbar">
       <div class="brand">
         <span class="brand-mark">BP</span>
@@ -1212,6 +1483,7 @@
       </div>
       <div class="top-center">Memory is woven, not stored</div>
       <nav class="top-actions" aria-label="Top panels">
+        <button class="navlink" data-panel-trigger="read">Read</button>
         <button class="navlink" data-panel-trigger="magic">Magic</button>
         <button class="navlink" data-panel-trigger="league">League</button>
         <button class="navlink" data-panel-trigger="academy">Academy</button>
@@ -1223,23 +1495,24 @@
       <button class="sidebar-toggle" id="sidebarToggle" type="button" title="Collapse sidebar">‹</button>
 
       <div class="side-label">Archive</div>
-      <button class="side-item is-active" data-panel-trigger="altar"><span class="side-icon">00</span><span class="side-text"><span class="side-title">Altar</span><span class="side-sub">Landing</span></span></button>
-      <button class="side-item" data-panel-trigger="core"><span class="side-icon">01</span><span class="side-text"><span class="side-title">Core Stack</span><span class="side-sub">Canon model</span></span></button>
-      <button class="side-item" data-panel-trigger="magic"><span class="side-icon">02</span><span class="side-text"><span class="side-title">Magic</span><span class="side-sub">Affinity engine</span></span></button>
-      <button class="side-item" data-panel-trigger="dominion"><span class="side-icon">03</span><span class="side-text"><span class="side-title">Dominion</span><span class="side-sub">Inner worlds</span></span></button>
+      <button class="side-item is-active" data-panel-trigger="altar" data-tip="Altar"><span class="side-icon">✦</span><span class="side-text"><span class="side-title">Altar</span><span class="side-sub">Landing</span></span></button>
+      <button class="side-item" data-panel-trigger="core" data-tip="Core Stack"><span class="side-icon">◎</span><span class="side-text"><span class="side-title">Core Stack</span><span class="side-sub">Canon model</span></span></button>
+      <button class="side-item" data-panel-trigger="magic" data-tip="Magic"><span class="side-icon">✧</span><span class="side-text"><span class="side-title">Magic</span><span class="side-sub">Affinity engine</span></span></button>
+      <button class="side-item" data-panel-trigger="dominion" data-tip="Dominion"><span class="side-icon">◇</span><span class="side-text"><span class="side-title">Dominion</span><span class="side-sub">Inner worlds</span></span></button>
 
       <div class="side-label">Institution</div>
-      <button class="side-item" data-panel-trigger="academy"><span class="side-icon">04</span><span class="side-text"><span class="side-title">Academy</span><span class="side-sub">Blaque Prep</span></span></button>
-      <button class="side-item" data-panel-trigger="league"><span class="side-icon">05</span><span class="side-text"><span class="side-title">Battle League</span><span class="side-sub">BPCL</span></span></button>
-      <button class="side-item" data-panel-trigger="adventuring"><span class="side-icon">06</span><span class="side-text"><span class="side-title">Adventuring</span><span class="side-sub">Guild / Trials</span></span></button>
-      <button class="side-item" data-panel-trigger="mythos"><span class="side-icon">07</span><span class="side-text"><span class="side-title">MythOS</span><span class="side-sub">Interface layer</span></span></button>
+      <button class="side-item" data-panel-trigger="academy" data-tip="Academy"><span class="side-icon">⌂</span><span class="side-text"><span class="side-title">Academy</span><span class="side-sub">Blaque Prep</span></span></button>
+      <button class="side-item" data-panel-trigger="league" data-tip="Battle League"><span class="side-icon">⚔</span><span class="side-text"><span class="side-title">Battle League</span><span class="side-sub">BPCL</span></span></button>
+      <button class="side-item" data-panel-trigger="adventuring" data-tip="Adventuring"><span class="side-icon">⚑</span><span class="side-text"><span class="side-title">Adventuring</span><span class="side-sub">Guild / Trials</span></span></button>
+      <button class="side-item" data-panel-trigger="mythos" data-tip="MythOS"><span class="side-icon">⟁</span><span class="side-text"><span class="side-title">MythOS</span><span class="side-sub">Interface layer</span></span></button>
 
       <div class="side-label">Story</div>
-      <button class="side-item" data-panel-trigger="characters"><span class="side-icon">08</span><span class="side-text"><span class="side-title">Cast Powers</span><span class="side-sub">Crew index</span></span></button>
-      <button class="side-item" data-panel-trigger="plot"><span class="side-icon">09</span><span class="side-text"><span class="side-title">Plot</span><span class="side-sub">Pressure map</span></span></button>
-      <button class="side-item" data-panel-trigger="conflicts"><span class="side-icon">10</span><span class="side-text"><span class="side-title">Conflicts</span><span class="side-sub">Canon ledger</span></span></button>
-      <button class="side-item" data-panel-trigger="next"><span class="side-icon">11</span><span class="side-text"><span class="side-title">Next Pass</span><span class="side-sub">Flesh queue</span></span></button>
-      <button class="side-item" data-panel-trigger="sources"><span class="side-icon">12</span><span class="side-text"><span class="side-title">Sources</span><span class="side-sub">Input files</span></span></button>
+      <button class="side-item" data-panel-trigger="read" data-tip="Read"><span class="side-icon">▤</span><span class="side-text"><span class="side-title">Read</span><span class="side-sub">Awakening Arc</span></span></button>
+      <button class="side-item" data-panel-trigger="characters" data-tip="Cast Powers"><span class="side-icon">♙</span><span class="side-text"><span class="side-title">Cast Powers</span><span class="side-sub">Crew index</span></span></button>
+      <button class="side-item" data-panel-trigger="plot" data-tip="Plot"><span class="side-icon">⌁</span><span class="side-text"><span class="side-title">Plot</span><span class="side-sub">Pressure map</span></span></button>
+      <button class="side-item" data-panel-trigger="conflicts" data-tip="Conflicts"><span class="side-icon">!</span><span class="side-text"><span class="side-title">Conflicts</span><span class="side-sub">Canon ledger</span></span></button>
+      <button class="side-item" data-panel-trigger="next" data-tip="Next Pass"><span class="side-icon">↗</span><span class="side-text"><span class="side-title">Next Pass</span><span class="side-sub">Flesh queue</span></span></button>
+      <button class="side-item" data-panel-trigger="sources" data-tip="Sources"><span class="side-icon">§</span><span class="side-text"><span class="side-title">Sources</span><span class="side-sub">Input files</span></span></button>
 
       <div class="side-footer">
         Status: <span class="status-teal">Live</span><br>
@@ -1285,6 +1558,7 @@
                   <button class="chip" data-panel-trigger="league">BPCL</button>
                   <button class="chip" data-panel-trigger="adventuring">Guild</button>
                   <button class="chip" data-panel-trigger="mythos">MythOS</button>
+                  <button class="chip" data-panel-trigger="read">Read</button>
                   <button class="chip" data-panel-trigger="characters">Cast</button>
                   <button class="chip" data-panel-trigger="plot">Plot</button>
                 </nav>
@@ -1334,6 +1608,21 @@
             <div class="stack-card"><span>Combat Rank</span><b>BPCL / CP</b><p>Tracks competitive standing, titles, and elite matches.</p></div>
             <div class="stack-card"><span>Field Rank</span><b>Guild Rank</b><p>Determines quest access, expedition clearance, and field authority.</p></div>
           </div>
+          <div class="matrix deep-block">
+            <h3>Root Flow</h3>
+            <table><thead><tr><th>Stage</th><th>Engine</th><th>Output</th><th>Pressure Point</th></tr></thead><tbody>
+              <tr><td>Outside World</td><td>Johannesburg, home, missing children, ordinary institutions</td><td>Real-world stakes before the academy frame</td><td>Zola can prove the cost of magic without entering Blaque Prep yet.</td></tr>
+              <tr><td>The Slip</td><td>Transition and memory stripping protocol</td><td>Student arrival, selective forgetting, emotional rupture</td><td>It is designed, not natural, and it is failing.</td></tr>
+              <tr><td>Awakening</td><td>Affinity Trial, kimono, runestone, MythOS calibration</td><td>Student identity becomes readable, rankable, and governable</td><td>Kai's Rift Shadow breaks the clean onboarding model.</td></tr>
+              <tr><td>Institution</td><td>Curriculum, BPCL, Guild, mentors, sealed systems</td><td>Training, containment, status, access</td><td>The academy teaches students while harvesting anomaly data.</td></tr>
+              <tr><td>Return Pressure</td><td>Riftborn Echoes, Silent Weavers, Riftwardens, Zola cases</td><td>Memory instability and hidden war signals</td><td>Forgetting stops being background logic and becomes the central crime.</td></tr>
+            </tbody></table>
+          </div>
+          <div class="map-grid deep-block">
+            <div class="map-card"><h3>Canon Priority</h3><ul><li>Project map and system mindmaps steer the current build.</li><li>Master Codex remains the deepest lore source.</li><li>Awakening Arc is the current manuscript base.</li><li>Character Codex owns power, heritage, and relationship detail.</li><li>Orientation packets hold in-world student-facing terminology.</li></ul></div>
+            <div class="map-card"><h3>Stable Locks</h3><ul><li>Apartment and Sade opening is current canon.</li><li>Sarah Venter is Zola's first external case.</li><li>Magic Rank, Memory Rank, CP, and Guild Rank stay separate.</li><li>BPCL baseline assessment is mandatory, ranked ladder optional.</li><li>MR2 unlocks low-risk first-year field quests.</li></ul></div>
+            <div class="map-card"><h3>System Thesis</h3><ul><li>Memory is the power source.</li><li>Forgetting is institutional control.</li><li>Identity becomes clothing, territory, tools, beasts, stats, and law.</li><li>The Rift exposes what the academy tries to classify.</li><li>Zola makes the hidden cost legible outside the school.</li></ul></div>
+          </div>
         </div>
       </section>
 
@@ -1366,6 +1655,25 @@
               <tr><td>Ascended</td><td>20+</td><td>No formal limits</td><td>Battlefield becomes Dominion</td><td>Mythic ceiling, war arc, system-breaking power</td></tr>
             </tbody></table>
           </div>
+          <div class="matrix deep-block">
+            <h3>Affinity Evolution And Rift Risk</h3>
+            <table><thead><tr><th>Base Family</th><th>Starter Forms</th><th>Advanced Forms</th><th>Rift Failure</th></tr></thead><tbody>
+              <tr><td>Fire</td><td>Fireball, Ember Dash, Scorching Arc</td><td>Sunfire, plasma, magma</td><td>Void Flame erases instead of burns.</td></tr>
+              <tr><td>Water</td><td>Water Jet, Healing Tide, Torrent Surge</td><td>Ice, blood, mist, healing flow</td><td>Abyss Tide dissolves matter and reforms it wrongly.</td></tr>
+              <tr><td>Earth</td><td>Stone Fist, Rooted Stance, Terra Shield</td><td>Metal, seismic, crystal, gravity</td><td>Cracked Stone alters weight and density unpredictably.</td></tr>
+              <tr><td>Wind</td><td>Air Slash, Wind Step, Vortex Kick</td><td>Sound, storm, gravity distortion</td><td>Void Winds cut breath or distort space.</td></tr>
+              <tr><td>Lightning</td><td>Shock Bolt, Volt Dash, Static Field</td><td>Plasma, storm armor, electromagnetic control</td><td>Living static delays, stalks, or repeats strikes.</td></tr>
+              <tr><td>Nature</td><td>Vine Lash, Root Wall, Seed Bomb</td><td>Living terrain, guardian summons, ecosystem control</td><td>Overgrowth becomes sentient or predatory.</td></tr>
+              <tr><td>Illusion / Mind</td><td>Mirage, dream, perception shifts</td><td>Memory manipulation, sensory overload</td><td>False Reflections make reality itself uncertain.</td></tr>
+              <tr><td>Light / Shadow</td><td>Purification, phasing, invisibility</td><td>Eclipse, construct light, living shadows</td><td>Shadow can gain independent will.</td></tr>
+              <tr><td>Time / Space</td><td>Dilation, folding, teleportation</td><td>Temporal currents, fate manipulation</td><td>Fractured Time loops, skips, or deletes events.</td></tr>
+            </tbody></table>
+          </div>
+          <div class="map-grid deep-block">
+            <div class="map-card"><h3>Spell Customization</h3><ul><li>Spell Molding changes shape, delivery, duration, or reach.</li><li>Spell Refinement improves control, cost, and side effects.</li><li>Signature Techniques merge Affinity, Dominion, and emotional truth.</li><li>Mentors stabilize risky growth but can also hide institutional motives.</li></ul></div>
+            <div class="map-card"><h3>Unawakened Paths</h3><ul><li>Runes.</li><li>Alchemy.</li><li>Technomagic.</li><li>Constructs.</li><li>Tactics.</li><li>Support cells and proxy systems inside League and Guild structures.</li></ul></div>
+            <div class="map-card"><h3>Rift Magic Function</h3><ul><li>Anti-magic pressure.</li><li>Mutation force.</li><li>Forbidden progression shortcut.</li><li>Horror layer for identity erosion.</li><li>Kai's central risk because fire becomes erasure.</li></ul></div>
+          </div>
         </div>
       </section>
 
@@ -1379,6 +1687,16 @@
             <div class="map-card"><h3>Beast Types</h3><ul><li>Loyal Guardian: traditional protector.</li><li>Forsaken Beast: abandoned, redeemable, volatile.</li><li>Unbound Beast: new legacy with no inherited script.</li><li>Riftborn Beast: rewritten guardian hunting former memory.</li></ul></div>
             <div class="map-card"><h3>Manifested Tools</h3><ul><li>Object form of soul pressure.</li><li>Weapon, artifact, interface, instrument, or utility form.</li><li>Can remember what the wielder forgets.</li><li>Should evolve visibly with Dominion and character arc.</li></ul></div>
             <div class="map-card"><h3>Canon Rule</h3><ul><li>Rank 10: controlled Dominion projection.</li><li>Rank 15: full Dominion infusion.</li><li>Rank 20: battlefield-as-Dominion.</li><li>First-year guardian visions are allowed; formal pact comes later.</li></ul></div>
+          </div>
+          <div class="matrix deep-block">
+            <h3>Dominion Stage Matrix</h3>
+            <table><thead><tr><th>Stage</th><th>Access</th><th>Behavior</th><th>Risk</th></tr></thead><tbody>
+              <tr><td>Resonance</td><td>Early awakening, visions, dreams, emotional spikes</td><td>The inner world answers before the student understands it.</td><td>Misread symbols can push the wrong training path.</td></tr>
+              <tr><td>Entry</td><td>Initiate training and mentor-guided meditation</td><td>Student can enter but not reliably shape the realm.</td><td>Panic, memory loops, guardian refusal.</td></tr>
+              <tr><td>Construction</td><td>Adept practice and repeated emotional clarity</td><td>Terrain stabilizes and constructs become possible.</td><td>Overbuilding the self-image creates brittle magic.</td></tr>
+              <tr><td>Projection</td><td>Rank 10+ and special League events</td><td>Dominion traits leak into duels and controlled tests.</td><td>Public exposure of private trauma, ancestral secrets, or Rift traces.</td></tr>
+              <tr><td>Infusion</td><td>Rank 15+ and high-risk missions</td><td>Body, tool, guardian, and realm operate as one system.</td><td>Rift erosion or Hollowed state if identity fractures.</td></tr>
+            </tbody></table>
           </div>
         </div>
       </section>
@@ -1395,6 +1713,22 @@
               <div class="map-card"><h3>Four Divisions</h3><ul><li>Magic Studies.</li><li>Combat and BPCL.</li><li>Theory and Research.</li><li>Rift Studies: unofficial, forbidden, containment-facing.</li></ul></div>
             </div>
           </div>
+          <div class="matrix deep-block">
+            <h3>Curriculum And Memory Rank Gates</h3>
+            <table><thead><tr><th>Gate</th><th>Student State</th><th>Unlocks</th><th>Story Use</th></tr></thead><tbody>
+              <tr><td>MR1</td><td>Newly awakened</td><td>Basic courses, first kimono, first MythOS profile</td><td>Shock, wonder, loss, and first institutional rules.</td></tr>
+              <tr><td>MR2</td><td>Core foundations</td><td>Discovery studies, low-risk field quests, basic Guild access</td><td>Choice enters the system, but only inside controlled rails.</td></tr>
+              <tr><td>MR3</td><td>Year 1 equivalency</td><td>Intermediate casting, stronger team placement</td><td>Friendship becomes functional team architecture.</td></tr>
+              <tr><td>MR4</td><td>Year 2 equivalency</td><td>Battle League eligibility, artifact handling</td><td>Status, rivalry, and public performance pressure.</td></tr>
+              <tr><td>MR5</td><td>Year 3 equivalency</td><td>Riftwatcher Apprentice path</td><td>Forbidden systems become career-shaped temptation.</td></tr>
+              <tr><td>MR6+</td><td>Senior level</td><td>Custom spells, faculty shadowing, Obsidian-tier access</td><td>Student agency starts colliding with academy secrecy.</td></tr>
+            </tbody></table>
+          </div>
+          <div class="map-grid deep-block">
+            <div class="map-card"><h3>Required Core Studies</h3><ul><li>Foundations of Magical Theory.</li><li>Spellweaving and Affinity Practice.</li><li>Alchemy and Potioncraft.</li><li>Dominion Discovery.</li><li>Rift History and Anomaly Studies.</li><li>Magical Balance, restoration, meditation, and identity work.</li></ul></div>
+            <div class="map-card"><h3>Discovery Studies</h3><ul><li>Dreamwalking.</li><li>Sound Magic.</li><li>Mythic Beasts.</li><li>Mirror Magic.</li><li>Technomagic.</li><li>Advanced Combat.</li><li>Plant Lore, Lightwork, Timeflow, Astral Cartography.</li></ul></div>
+            <div class="map-card"><h3>Faculty Control</h3><ul><li>Headmaster controls knowledge flow.</li><li>Silent Weavers smooth memory and obedience.</li><li>Riftwardens retrieve, suppress, and classify anomalies.</li><li>Mentors train students and monitor clearance thresholds.</li><li>Combat Masters convert survival into League-ready discipline.</li></ul></div>
+          </div>
         </div>
       </section>
 
@@ -1410,6 +1744,7 @@
             <div class="map-card"><h3>Rewards</h3><ul><li>CP and Memory Rank boosts.</li><li>Titles and secret classes.</li><li>Gear and mentor access.</li><li>Elite missions and inter-academy entry.</li></ul></div>
           </div>
           <div class="matrix" style="margin-top:18px"><h3>BPCL Canon Specification</h3><table><thead><tr><th>Layer</th><th>Recommended Canon</th></tr></thead><tbody><tr><td>Participation</td><td>Required basic combat evaluation for all; optional competitive ladder for high ambition.</td></tr><tr><td>Standard team match</td><td>3v3 with two substitutes.</td></tr><tr><td>Special squad match</td><td>5v5 or objective-based events.</td></tr><tr><td>Dominion Clash</td><td>Rank 10+ / Expert-level special event, not full Ascended Dominion control.</td></tr><tr><td>Loadout rule</td><td>MythOS display maps Core / Utility / Affinity / Wildcard into combat regulation slots.</td></tr><tr><td>Unawakened integration</td><td>Separate Unawakened League plus tactical support cells, proxy pilots, and exhibition access.</td></tr></tbody></table></div>
+          <div class="matrix deep-block"><h3>Divisions And Events</h3><table><thead><tr><th>Layer</th><th>Scope</th><th>Canon Use</th></tr></thead><tbody><tr><td>Youth Cup</td><td>Years 1-3, fundamentals, 3v3, no full Dominion manifestation</td><td>Best home for early rivalry, controlled team growth, and Rising Star Tournament.</td></tr><tr><td>Senior Cup</td><td>Years 4-6, hybrid Affinities, Dominion mastery</td><td>Shows what the main crew could become and where the academy hides dangerous talent.</td></tr><tr><td>Challenger Gauntlet</td><td>Solo climb, public ranking, endurance ladder</td><td>Good pressure valve for Mei, Kai, and status-hungry students.</td></tr><tr><td>House War</td><td>Large objective format tied to academy factions</td><td>Do not use until the House system is defined.</td></tr><tr><td>Convergence Cup</td><td>Cross-system event with League, Guild, and Research hooks</td><td>Strong mid-arc structure once all three school engines are active.</td></tr><tr><td>Redacted Matches</td><td>Faculty Challenge, Legacy Duel, Rift Gauntlet</td><td>Restricted spectacle for Riftborn, Riftwarden, and Obsidian-tier secrets.</td></tr></tbody></table></div>
         </div>
       </section>
 
@@ -1424,6 +1759,7 @@
             <div class="map-card"><h3>Guild Ranks</h3><ul><li>Initiate: basic quests.</li><li>Adept: medium quests.</li><li>Advanced: high-risk teams.</li><li>Elite: Rift expeditions.</li><li>Master Adventurer: years 4-6, classified missions.</li></ul></div>
             <div class="map-card"><h3>Forbidden Quests</h3><ul><li>Path of the Unslipped.</li><li>Tower of Unfinished Spells.</li><li>Duel That Never Ends.</li><li>Riftborn Bargain.</li></ul></div>
           </div>
+          <div class="matrix deep-block"><h3>Adventuring Canon Specification</h3><table><thead><tr><th>Layer</th><th>Canon Lock</th><th>Story Function</th></tr></thead><tbody><tr><td>Adventuring Academy</td><td>Curriculum-facing term for field education.</td><td>Lets faculty present danger as structured learning.</td></tr><tr><td>Adventuring Guild</td><td>Student-facing organization that handles quests and ranks.</td><td>Gives students status, teams, paperwork, and temptation.</td></tr><tr><td>Trials Guild</td><td>Elite sanctioned wing for dangerous missions and Rift work.</td><td>Separates normal field work from classified narrative escalation.</td></tr><tr><td>Field Quest Access</td><td>MR2 starter access for first-years in groups of 3 plus clearance.</td><td>Allows early adventure without breaking Rift safety rules.</td></tr><tr><td>Registered Team</td><td>5 members minimum for full guild ranking.</td><td>Encourages stable crew formation.</td></tr><tr><td>Rift Access</td><td>Years 4-6 by default; younger students require exceptional clearance.</td><td>Keeps Kai's early Rift pressure dangerous instead of normal.</td></tr><tr><td>Required Paperwork</td><td>Quest Intent, Field Report, Magic Application Log, Reflection Note.</td><td>Turns field action into archive data.</td></tr><tr><td>Secret Function</td><td>The Guild trains heroes while harvesting data and containment solutions.</td><td>Connects adventure fantasy to institutional suspicion.</td></tr></tbody></table></div>
         </div>
       </section>
 
@@ -1440,6 +1776,46 @@
             </div>
           </div>
           <div class="matrix" style="margin-top:18px"><h3>MythOS Stats And Tabs</h3><table><thead><tr><th>Layer</th><th>Established Elements</th><th>Next Spec Needed</th></tr></thead><tbody><tr><td>Stats</td><td>Vitality, Endurance, Arcana, Strength, Speed, Focus, Memory Resonance.</td><td>Define formulas, growth triggers, and what each stat unlocks.</td></tr><tr><td>Tabs</td><td>Affinities, Skill Trees, Gear, Assignments, Manifested Tool.</td><td>Add sample Kai / Nia / Kabelo profiles.</td></tr><tr><td>Warnings</td><td>Pending Review, unstable shadow behavior, faculty locks.</td><td>Define color states and Rift-corruption UI rules.</td></tr><tr><td>League</td><td>Loadout registration, tier tracking, CP, events.</td><td>Map combat regulations to MythOS slots.</td></tr></tbody></table></div>
+          <div class="matrix deep-block"><h3>Prototype Student Readouts</h3><table><thead><tr><th>Student</th><th>Dominant Signal</th><th>Warning State</th><th>Likely MythOS Lock</th></tr></thead><tbody><tr><td>Kai Adams</td><td>Fire plus Rift Shadow, unstable runestone response</td><td>Pending Review, shadow behavior not classifiable</td><td>Rift Studies, Manifested Tool, and full Affinity Tree locked by mentor review.</td></tr><tr><td>Kabelo Moloi</td><td>Earth, Metal, possible Gravity pressure</td><td>Over-anchoring, defensive rigidity</td><td>Guardian resonance and advanced Guild tank protocols.</td></tr><tr><td>Mei Takahashi</td><td>Wind and Lightning velocity spike</td><td>Impulse strain and tactical overextension</td><td>League loadout caps until discipline rating stabilizes.</td></tr><tr><td>Arjun Raj</td><td>Illusion with Rift-touched perception</td><td>Reality uncertainty and trust risk</td><td>Mind and memory manipulation coursework restricted.</td></tr><tr><td>Nia</td><td>Spirit, Nature, Harmonic Resonance</td><td>Empathic overload and self-erasure pattern</td><td>Healing, support, and spirit-contact work gated by restoration training.</td></tr><tr><td>Rishi</td><td>Unawakened technomagic and calibration skill</td><td>System access without Affinity clearance</td><td>Prototype, proxy, and support-cell tools require faculty sponsorship.</td></tr></tbody></table></div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="read">
+        <div class="panel-scroll">
+          <div class="panel-head">
+            <div>
+              <p class="label">Story Reader</p>
+              <h2>Awakening Arc</h2>
+              <p class="small">Chapter-by-chapter digital book view generated from the current Awakening Arc manuscript source.</p>
+            </div>
+            <div class="section-code" id="reader-source">Source: Awakening Arc DOCX</div>
+          </div>
+          <div class="chapter-bars" id="chapter-bars" aria-label="Chapter bars"></div>
+          <div class="reader-shell" id="reader-shell">
+            <aside class="chapter-rail" id="chapter-rail" aria-label="Awakening Arc chapters"></aside>
+            <article class="reader-book" aria-live="polite">
+              <header class="reader-toolbar">
+                <div>
+                  <p class="reader-meta" id="reader-meta">Loading manuscript</p>
+                  <h3 class="reader-title" id="reader-title">Awakening Arc</h3>
+                </div>
+                <div class="reader-actions">
+                  <button class="ghost-button" id="reader-prev" type="button">Previous</button>
+                  <button class="ghost-button" id="reader-mode" type="button">Reader Mode</button>
+                  <button class="ghost-button" id="reader-next" type="button">Next</button>
+                </div>
+              </header>
+              <div class="reader-page" id="reader-page">
+                <div class="reader-prose" id="reader-prose">
+                  <p>Loading Awakening Arc...</p>
+                </div>
+              </div>
+              <footer class="reader-footer">
+                <div class="reader-progress"><span id="reader-progress-bar"></span></div>
+                <span id="reader-count">0 chapters</span>
+              </footer>
+            </article>
+          </div>
         </div>
       </section>
 
@@ -1457,6 +1833,11 @@
             <tr><td>Rishi</td><td>Unawakened technomagic</td><td>System builder</td><td>None established</td><td>MythOS calibration tools</td><td>Tech support is part comic relief, part system witness.</td></tr>
             <tr><td>Zola Ndlovu</td><td>Mundane investigator with memory resistance potential</td><td>None established</td><td>None established</td><td>Physical notes and case files</td><td>Refuses to forget in a world editing itself.</td></tr>
           </tbody></table></div>
+          <div class="map-grid deep-block">
+            <div class="map-card"><h3>Kai Core</h3><ul><li>Wants belonging but enters through rupture.</li><li>Fire should create warmth, protection, and spectacle.</li><li>Rift Shadow adds erasure, whispering, and rule failure.</li><li>Elias is stabilizer, monitor, and possible withheld-truth vector.</li></ul></div>
+            <div class="map-card"><h3>Crew Function</h3><ul><li>Kabelo anchors the team physically and morally.</li><li>Mei accelerates pressure, rivalry, and battle tempo.</li><li>Arjun bends perception and forces trust questions.</li><li>Nia keeps the group from becoming pure combat machinery.</li></ul></div>
+            <div class="map-card"><h3>External Witness</h3><ul><li>Zola has no academy interface, which makes her evidence harder to overwrite.</li><li>Physical notes and art preserve what digital records lose.</li><li>Her cases can prove the Slip has civilian consequences.</li><li>Sarah first, Sade and Kai later, keeps mystery escalation clean.</li></ul></div>
+          </div>
         </div>
       </section>
 
@@ -1471,6 +1852,8 @@
             <div class="map-card"><h3>Core Character Pressure</h3><ul><li>Kai wants belonging but carries erasure risk.</li><li>Nia wants peace and purpose but absorbs too much.</li><li>Mei wants proof and outruns strategy.</li><li>Kabelo wants control and responsibility.</li><li>Arjun wants certainty while weaponizing uncertainty.</li></ul></div>
             <div class="map-card"><h3>Outside World Pressure</h3><ul><li>Missing children.</li><li>Schools forget.</li><li>Records disappear.</li><li>City rewrites itself.</li><li>Remembering becomes rebellion.</li></ul></div>
           </div>
+          <div class="matrix deep-block"><h3>Awakening Arc Chapter Bars</h3><table><thead><tr><th>Chapter</th><th>Core Event</th><th>System Introduced</th><th>Pressure Added</th></tr></thead><tbody><tr><td>1</td><td>Apartment, Sade warning, intruder, Slip rupture</td><td>Outside-world instability and transition threat</td><td>Kai is taken before he can choose.</td></tr><tr><td>2</td><td>Arrival, panic, memory collapse</td><td>The Slip and student disorientation</td><td>Forgetting becomes institutional entry cost.</td></tr><tr><td>3</td><td>Academy reveal, Baobab scale, new room logic</td><td>Blaque Prep as living architecture</td><td>Wonder softens fear without resolving it.</td></tr><tr><td>4</td><td>Platform ceremony and first awakenings</td><td>Affinity, kimono response, public classification</td><td>Students become ranked symbols.</td></tr><tr><td>5</td><td>Kai isolation and fire-shadow rupture</td><td>Rift-touched Affinity exception</td><td>The system cannot cleanly name him.</td></tr><tr><td>6</td><td>Elias mentor, Great Hall, dorm/home shift</td><td>Mentorship, team housing, broader school engine</td><td>Safety appears, but surveillance remains.</td></tr><tr><td>Zola</td><td>Sarah Venter case and erased records</td><td>Outside-world evidence chain</td><td>The academy mystery gains civilian cost.</td></tr></tbody></table></div>
+          <div class="callout deep-block"><h3>Reader Link</h3><p>The Read panel now loads the current Awakening Arc manuscript as a chapter-by-chapter digital book.</p><button class="ghost-button" data-panel-trigger="read" type="button">Open Reader</button></div>
         </div>
       </section>
 
@@ -1512,12 +1895,15 @@
             <div class="source">Field Quest Orientation.pdf - field quests, dungeons, quest paperwork, restrictions.</div>
             <div class="source">Blaque Prep Curriculum.pdf - Free-Weave curriculum, MR gates, course paths.</div>
             <div class="source">Kimonos And Heritage.pdf - robe ceremony, memory cloth, Loom logic.</div>
+            <div class="source">Blaque Prep/The Riftborn Echoes Awakening Arc.docx - reader source, chapters 1-6 plus Zola case file.</div>
+            <div class="source">awakening-reader-data.js - extracted manuscript payload for the Read panel.</div>
           </div>
         </div>
       </section>
     </main>
   </div>
 
+  <script src="awakening-reader-data.js"></script>
   <script>
     const systems = {
       academy: {
@@ -1584,6 +1970,107 @@
       branchesEl.innerHTML = system.branches.map((item) => `<li>${item}</li>`).join("");
     }
 
+    const readerState = {
+      index: 0,
+      ready: false
+    };
+    const awakeningArc = window.RIFTBORN_AWAKENING_ARC || { chapters: [] };
+
+    function normalizeReaderText(text) {
+      return String(text || "");
+    }
+
+    function appendParagraphWithBreaks(parent, text) {
+      const paragraph = document.createElement("p");
+      normalizeReaderText(text).split("\n").forEach((line, index, lines) => {
+        paragraph.appendChild(document.createTextNode(line));
+        if (index < lines.length - 1) paragraph.appendChild(document.createElement("br"));
+      });
+      parent.appendChild(paragraph);
+    }
+
+    function renderReaderNavigation() {
+      const rail = document.getElementById("chapter-rail");
+      const bars = document.getElementById("chapter-bars");
+      const chapters = awakeningArc.chapters || [];
+      if (!rail || !bars || !chapters.length) return;
+      rail.replaceChildren();
+      bars.replaceChildren();
+      chapters.forEach((chapter, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "chapter-button";
+        button.dataset.chapterIndex = String(index);
+        const title = document.createElement("b");
+        title.textContent = chapter.nav || chapter.title || `Chapter ${index + 1}`;
+        const meta = document.createElement("span");
+        meta.textContent = `${chapter.wordCount || 0} words`;
+        button.append(title, meta);
+        button.addEventListener("click", () => renderReaderChapter(index));
+        rail.appendChild(button);
+
+        const bar = document.createElement("button");
+        bar.type = "button";
+        bar.className = "chapter-button";
+        bar.dataset.chapterIndex = String(index);
+        const barTitle = document.createElement("b");
+        barTitle.textContent = chapter.nav || `Chapter ${index + 1}`;
+        const barMeta = document.createElement("span");
+        barMeta.textContent = index === chapters.length - 1 ? "Case file" : "Chapter bar";
+        bar.append(barTitle, barMeta);
+        bar.addEventListener("click", () => renderReaderChapter(index));
+        bars.appendChild(bar);
+      });
+    }
+
+    function renderReaderChapter(index) {
+      const chapters = awakeningArc.chapters || [];
+      if (!chapters.length) return;
+      const clamped = Math.max(0, Math.min(index, chapters.length - 1));
+      const chapter = chapters[clamped];
+      readerState.index = clamped;
+
+      const title = document.getElementById("reader-title");
+      const meta = document.getElementById("reader-meta");
+      const prose = document.getElementById("reader-prose");
+      const count = document.getElementById("reader-count");
+      const progress = document.getElementById("reader-progress-bar");
+      const source = document.getElementById("reader-source");
+      const page = document.getElementById("reader-page");
+
+      if (title) title.textContent = chapter.title || chapter.nav || `Chapter ${clamped + 1}`;
+      if (meta) meta.textContent = `${chapter.nav || "Chapter"} / ${chapter.wordCount || 0} words`;
+      if (count) count.textContent = `${clamped + 1} of ${chapters.length} chapters`;
+      if (source) source.textContent = awakeningArc.source || "Awakening Arc source";
+      if (progress) progress.style.width = `${((clamped + 1) / chapters.length) * 100}%`;
+      if (prose) {
+        prose.replaceChildren();
+        (chapter.paragraphs || []).forEach((paragraph) => appendParagraphWithBreaks(prose, paragraph));
+      }
+      if (page) page.scrollTop = 0;
+
+      document.querySelectorAll("[data-chapter-index]").forEach((button) => {
+        button.classList.toggle("is-active", button.dataset.chapterIndex === String(clamped));
+      });
+    }
+
+    function renderReaderOnce() {
+      if (readerState.ready) return;
+      renderReaderNavigation();
+      renderReaderChapter(0);
+      readerState.ready = true;
+    }
+
+    function toggleReaderMode() {
+      const shell = document.getElementById("reader-shell");
+      const button = document.getElementById("reader-mode");
+      if (!shell) return;
+      const enabled = !shell.classList.contains("reader-mode");
+      shell.classList.toggle("reader-mode", enabled);
+      document.body.classList.toggle("reader-mode-active", enabled);
+      if (button) button.textContent = enabled ? "Exit Reader" : "Reader Mode";
+    }
+
     function setPanel(panelName) {
       const target = document.querySelector(`.panel[data-panel="${panelName}"]`);
       if (!target) return;
@@ -1595,6 +2082,14 @@
       });
       const scroll = target.querySelector(".panel-scroll");
       if (scroll) scroll.scrollTop = 0;
+      if (panelName === "read") renderReaderOnce();
+      if (panelName !== "read") {
+        const readerShell = document.getElementById("reader-shell");
+        const readerMode = document.getElementById("reader-mode");
+        if (readerShell) readerShell.classList.remove("reader-mode");
+        document.body.classList.remove("reader-mode-active");
+        if (readerMode) readerMode.textContent = "Reader Mode";
+      }
       try { history.replaceState(null, "", "#" + panelName); } catch (error) {}
     }
 
@@ -1607,9 +2102,29 @@
       portal.addEventListener("mouseenter", () => setSystem(portal.dataset.system));
     });
 
-    document.getElementById("sidebarToggle").addEventListener("click", () => {
-      document.getElementById("shell").classList.toggle("is-sidebar-collapsed");
+    const shellEl = document.getElementById("shell");
+    const sidebarToggle = document.getElementById("sidebarToggle");
+
+    function syncSidebarToggle() {
+      const collapsed = shellEl.classList.contains("is-sidebar-collapsed");
+      sidebarToggle.textContent = collapsed ? "›" : "‹";
+      sidebarToggle.title = collapsed ? "Expand sidebar" : "Collapse sidebar";
+    }
+
+    sidebarToggle.addEventListener("click", () => {
+      shellEl.classList.toggle("is-sidebar-collapsed");
+      syncSidebarToggle();
     });
+
+    document.getElementById("reader-prev").addEventListener("click", () => {
+      renderReaderChapter(readerState.index - 1);
+    });
+
+    document.getElementById("reader-next").addEventListener("click", () => {
+      renderReaderChapter(readerState.index + 1);
+    });
+
+    document.getElementById("reader-mode").addEventListener("click", toggleReaderMode);
 
     const conflictSearch = document.getElementById("conflict-search");
     const conflictCards = Array.from(document.querySelectorAll(".conflict-card li"));
@@ -1629,6 +2144,7 @@
       document.querySelectorAll("details").forEach((detail) => detail.open = false);
     });
 
+    syncSidebarToggle();
     setSystem("academy");
 
     const initialPanel = location.hash.replace("#", "");
