@@ -1,528 +1,1638 @@
-<!doctype html>
-<html lang="en" data-theme="lunar">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>theguide.club | Systems. Stories. Signal.</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blaque Prep Codex Altar</title>
   <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
---font-display:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;--font-mono:'DM Mono',monospace;
---void:#030307;--deep:#08080f;--surface:#0e0e18;--glass:rgba(14,14,24,0.6);--glass-bright:rgba(255,255,255,0.04);
---chrome:#c8d0e0;--chrome-dim:rgba(200,208,224,0.4);--chrome-ghost:rgba(200,208,224,0.08);
---signal:#00d4ff;--signal-dim:rgba(0,212,255,0.3);--signal-ghost:rgba(0,212,255,0.06);--signal-glow:0 0 40px rgba(0,212,255,0.25);
---mirror:#7df9e8;--mirror-dim:rgba(125,249,232,0.25);
---text-primary:#eef0f5;--text-secondary:#8892a4;--text-muted:#454d5e;
---border:rgba(200,208,224,0.08);--border-bright:rgba(0,212,255,0.3);
---ease-spring:cubic-bezier(0.34,1.56,0.64,1);--ease-out:cubic-bezier(0.16,1,0.3,1);
---mf-accent:#00d4ff;--mf-glow:rgba(0,212,255,0.2);
---sync-accent:#7AB4FF;--sync-glow:rgba(122,180,255,0.2);
---exc-accent:#FBBF24;--exc-glow:rgba(251,191,36,0.15);
---rift-accent:#b98bff;--rift-glow:rgba(185,139,255,0.2);
-}
-[data-theme="sol"]{--void:#f5f5f7;--deep:#ebebef;--surface:#fff;--glass:rgba(255,255,255,0.7);--glass-bright:rgba(0,0,0,0.03);--chrome:#1a1a2e;--chrome-dim:rgba(26,26,46,0.5);--chrome-ghost:rgba(26,26,46,0.06);--text-primary:#0f0f1a;--text-secondary:#5a6275;--text-muted:#a0a8b8;--border:rgba(26,26,46,0.1);--border-bright:rgba(0,212,255,0.4)}
-html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--signal) var(--deep)}
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--deep)}::-webkit-scrollbar-thumb{background:var(--signal);border-radius:2px}
-body{font-family:var(--font-body);background:var(--void);color:var(--text-primary);line-height:1.6;overflow-x:hidden;cursor:none}
-#cursor-dot{position:fixed;width:6px;height:6px;background:var(--signal);border-radius:50%;pointer-events:none;z-index:9999;transition:transform .1s,background .2s;transform:translate(-50%,-50%);mix-blend-mode:screen}
-#cursor-ring{position:fixed;width:36px;height:36px;border:1px solid var(--signal-dim);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .15s var(--ease-out),width .3s var(--ease-spring),height .3s var(--ease-spring),border-color .2s,opacity .2s}
-body:has(a:hover,button:hover,[role="button"]:hover) #cursor-ring{width:56px;height:56px;border-color:var(--signal);opacity:.7}
-body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.35;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:128px}
-.mesh-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.mesh-blob{position:absolute;border-radius:50%;filter:blur(100px);opacity:.25;animation:meshDrift 20s ease-in-out infinite alternate}
-.mesh-blob:nth-child(1){width:600px;height:600px;background:var(--signal);top:-20%;left:-10%}
-.mesh-blob:nth-child(2){width:500px;height:500px;background:var(--mirror);bottom:-15%;right:-5%;animation-delay:-7s;animation-duration:25s}
-.mesh-blob:nth-child(3){width:400px;height:400px;background:#8b5cf6;top:40%;left:50%;animation-delay:-14s;animation-duration:22s}
-@keyframes meshDrift{0%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-20px) scale(1.05)}66%{transform:translate(-20px,15px) scale(.95)}100%{transform:translate(15px,25px) scale(1.02)}}
-[data-theme="sol"] .mesh-blob{opacity:.12}
+    :root {
+      --ink: #080d15;
+      --ink-2: #0d1320;
+      --ink-3: #111a29;
+      --panel: rgba(12, 18, 29, 0.9);
+      --panel-2: rgba(16, 24, 38, 0.78);
+      --gold: #c9a14a;
+      --gold-2: #f1d995;
+      --gold-dim: rgba(201, 161, 74, 0.34);
+      --ember: #e08a25;
+      --ash: #8c8f97;
+      --paper: #eee2c8;
+      --teal: #2ab8b0;
+      --violet: #684c9a;
+      --red: #781f27;
+      --line: rgba(201, 161, 74, 0.3);
+      --line-strong: rgba(241, 217, 149, 0.58);
+      --serif: "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+      --sans: "DM Sans", "Segoe UI", Arial, sans-serif;
+      --mono: "DM Mono", "Cascadia Mono", Consolas, monospace;
+    }
 
-/* NAV */
-.nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;backdrop-filter:blur(16px) saturate(120%);background:rgba(3,3,7,0.5);border-bottom:1px solid var(--border);transition:background .3s}
-[data-theme="sol"] .nav{background:rgba(245,245,247,0.7)}
-.nav-logo{font-family:var(--font-display);font-size:1.1rem;font-weight:700;letter-spacing:-.02em;text-decoration:none;color:var(--text-primary)}
-.logo-the,.logo-club{opacity:.5}.logo-dot{color:var(--signal)}
-.nav-right{display:flex;align-items:center;gap:.5rem}
-.nav-btn{background:none;border:1px solid var(--border);color:var(--text-secondary);width:38px;height:38px;border-radius:10px;display:grid;place-items:center;transition:all .2s;cursor:none}
-.nav-btn:hover{border-color:var(--signal-dim);color:var(--signal);background:var(--signal-ghost)}
-.nav-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2}
-.nav-hamburger{background:none;border:1px solid var(--border);width:38px;height:38px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:none;transition:all .2s}
-.nav-hamburger:hover{border-color:var(--signal-dim)}
-.ham-line{display:block;width:16px;height:1.5px;background:var(--text-secondary);border-radius:2px;transition:all .3s var(--ease-out)}
-.nav-hamburger.open .ham-line:nth-child(1){transform:translateY(5.5px) rotate(45deg)}
-.nav-hamburger.open .ham-line:nth-child(2){opacity:0}
-.nav-hamburger.open .ham-line:nth-child(3){transform:translateY(-5.5px) rotate(-45deg)}
+    * { box-sizing: border-box; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 54% 18%, rgba(104, 76, 154, 0.2), transparent 34rem),
+        linear-gradient(180deg, rgba(6, 10, 17, 0.96), rgba(7, 10, 15, 0.98)),
+        var(--ink);
+      color: var(--paper);
+      font-family: var(--sans);
+    }
 
-/* SLIDE MENU */
-.menu-backdrop{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .3s}
-.menu-backdrop.visible{opacity:1;pointer-events:all}
-.slide-menu{position:fixed;top:0;right:0;width:min(380px,85vw);height:100vh;z-index:95;background:var(--surface);border-left:1px solid var(--border);padding:5rem 2rem 2rem;transform:translateX(100%);transition:transform .4s var(--ease-out);overflow-y:auto}
-.slide-menu.open{transform:translateX(0)}
-.menu-section-label{font-family:var(--font-mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.15em;color:var(--text-muted);margin-bottom:1rem}
-.menu-nav-links{display:flex;flex-direction:column;gap:.25rem;margin-bottom:2.5rem}
-.menu-link{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;border-radius:10px;font-family:var(--font-display);font-size:1.05rem;font-weight:600;text-decoration:none;color:var(--text-primary);transition:all .2s}
-.menu-link:hover{background:var(--signal-ghost);color:var(--signal)}
-.menu-link-arrow{opacity:0;transform:translateX(-4px);transition:all .2s;color:var(--signal)}
-.menu-link:hover .menu-link-arrow{opacity:1;transform:translateX(0)}
-.menu-connect{margin-top:2rem}
-.menu-connect-row{display:flex;gap:.5rem;margin-top:.75rem}
-.menu-connect-btn{padding:.5rem 1rem;border:1px solid var(--border);border-radius:8px;font-size:.8rem;color:var(--text-secondary);text-decoration:none;transition:all .2s}
-.menu-connect-btn:hover{border-color:var(--signal-dim);color:var(--signal)}
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -2;
+      background-image:
+        radial-gradient(circle, rgba(241, 217, 149, 0.28) 0 1px, transparent 1.5px),
+        linear-gradient(rgba(201, 161, 74, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201, 161, 74, 0.035) 1px, transparent 1px);
+      background-size: 76px 76px, 44px 44px, 44px 44px;
+      mask-image: linear-gradient(to bottom, black, rgba(0, 0, 0, 0.55), transparent 96%);
+    }
 
-/* HERO */
-.hero{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;padding:7rem 2rem 4rem}
-.hero-inner{max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
-.hero-eyebrow{font-family:var(--font-mono);font-size:.72rem;color:var(--text-muted);letter-spacing:.08em;margin-bottom:1.5rem}
-.hero-headline{font-family:var(--font-display);font-size:clamp(2.6rem,5vw,4rem);font-weight:800;line-height:1.05;letter-spacing:-.03em;margin-bottom:1.5rem}
-.hero-headline .line{display:block;overflow:hidden}
-.hero-headline .word{display:inline-block;animation:wordReveal .8s var(--ease-out) both}
-.hero-headline .line:nth-child(2) .word{animation-delay:.1s}
-.hero-headline .line:nth-child(3) .word{animation-delay:.2s}
-.hero-headline .accent{color:var(--signal)}
-.hero-headline .dim{color:var(--text-secondary)}
-@keyframes wordReveal{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
-.hero-body{font-size:1.05rem;color:var(--text-secondary);line-height:1.7;max-width:480px;margin-bottom:2rem}
-.hero-cta-row{display:flex;align-items:center;gap:1rem}
-.btn-primary{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;background:var(--signal);color:var(--void);font-family:var(--font-display);font-weight:700;font-size:.85rem;border-radius:10px;text-decoration:none;border:none;cursor:none;transition:all .2s}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:var(--signal-glow)}
-.btn-primary svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2}
-.btn-ghost{display:inline-flex;align-items:center;padding:.75rem 1.5rem;border:1px solid var(--border);color:var(--text-secondary);font-family:var(--font-display);font-weight:600;font-size:.85rem;border-radius:10px;text-decoration:none;cursor:none;transition:all .2s;background:none}
-.btn-ghost:hover{border-color:var(--signal-dim);color:var(--signal);transform:translateY(-2px)}
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 12px;
+      border: 1px solid rgba(201, 161, 74, 0.42);
+      pointer-events: none;
+      z-index: 30;
+      box-shadow: inset 0 0 0 1px rgba(201, 161, 74, 0.08);
+    }
 
-/* HERO PORTAL CARDS */
-.hero-right{display:flex;flex-direction:column;gap:.75rem}
-.hero-project-card{position:relative;overflow:hidden;padding:1.25rem 1.5rem;border:1px solid var(--border);border-radius:16px;background:var(--glass-bright);backdrop-filter:blur(12px);cursor:none;transition:all .35s var(--ease-out);text-decoration:none;color:inherit;display:block}
-.hero-project-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .4s;pointer-events:none}
-.hero-project-card:hover{transform:translateY(-3px) scale(1.01);border-color:var(--_pa,var(--signal-dim));box-shadow:0 12px 40px var(--_pg,var(--mf-glow))}
-.hero-project-card:hover::before{opacity:1}
-.hero-project-card[data-world="mirrorflow"]{--_pa:var(--mf-accent);--_pg:var(--mf-glow)}
-.hero-project-card[data-world="mirrorflow"]::before{background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(0,212,255,.08),transparent 60%)}
-.hero-project-card[data-world="excelsior"]{--_pa:var(--exc-accent);--_pg:var(--exc-glow)}
-.hero-project-card[data-world="excelsior"]::before{background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(251,191,36,.08),transparent 60%)}
-.hero-project-card[data-world="riftborn"]{--_pa:var(--rift-accent);--_pg:var(--rift-glow)}
-.hero-project-card[data-world="riftborn"]::before{background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(185,139,255,.08),transparent 60%)}
-.hpc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem}
-.hpc-icon{width:32px;height:32px;display:grid;place-items:center;color:var(--signal)}.hpc-icon svg{width:22px;height:22px}
-.hpc-status{font-family:var(--font-mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;padding:.2rem .6rem;border-radius:20px;border:1px solid var(--border)}
-.hpc-status.active{color:#34d399;border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.06)}
-.hpc-status.building{color:#fbbf24;border-color:rgba(251,191,36,.3);background:rgba(251,191,36,.06)}
-.hpc-status.soon{color:#8b5cf6;border-color:rgba(139,92,246,.3);background:rgba(139,92,246,.06)}
-.hpc-title{font-family:var(--font-display);font-size:1.15rem;font-weight:700;letter-spacing:-.01em}
-.hpc-desc{font-size:.82rem;color:var(--text-secondary);line-height:1.5;margin-top:.25rem}
-.hpc-launch{display:inline-flex;align-items:center;gap:.35rem;font-family:var(--font-mono);font-size:.65rem;color:var(--text-muted);margin-top:.75rem;text-transform:uppercase;letter-spacing:.08em;transition:color .2s}
-.hero-project-card:hover .hpc-launch{color:var(--_pa,var(--signal))}
-.hpc-launch svg{width:12px;height:12px}
-.hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;cursor:none}
-.hero-scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,var(--signal),transparent);animation:scrollPulse 2s ease-in-out infinite}
-@keyframes scrollPulse{0%,100%{opacity:.3;transform:scaleY(.6)}50%{opacity:1;transform:scaleY(1)}}
+    button, input { font: inherit; }
 
-/* BENTO GRID */
-.grid-section{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:6rem 2rem}
-.section-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:2.5rem}
-.section-eyebrow{font-family:var(--font-mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.15em;color:var(--signal);margin-bottom:.5rem}
-.section-title{font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2rem);font-weight:700;letter-spacing:-.02em}
-.section-count{font-family:var(--font-mono);font-size:.7rem;color:var(--text-muted)}
-.bento{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:minmax(160px,auto);gap:.75rem}
-.bcard{position:relative;overflow:hidden;border:1px solid var(--border);border-radius:16px;background:var(--glass-bright);backdrop-filter:blur(8px);padding:1.5rem;cursor:none;transition:all .35s var(--ease-out);transform-style:preserve-3d}
-.bcard::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.05),transparent 60%);opacity:0;transition:opacity .3s;pointer-events:none}
-.bcard:hover::after{opacity:1}
+    .codex-shell {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 248px minmax(0, 1fr);
+      grid-template-rows: 58px minmax(0, 1fr);
+      transition: grid-template-columns 180ms ease;
+    }
 
-/* PORTAL CARDS */
-.bcard-portal{display:flex;flex-direction:column;justify-content:space-between;cursor:none;text-decoration:none;color:inherit}
-.bcard-portal .portal-glow{position:absolute;inset:0;opacity:0;transition:opacity .5s;pointer-events:none;z-index:0}
-.bcard-portal:hover .portal-glow{opacity:1}
-.bcard-portal .portal-content{position:relative;z-index:1}
-.portal-enter{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-top:auto;padding-top:1rem;transition:all .25s;position:relative;z-index:1}
-.portal-enter svg{width:14px;height:14px;transition:transform .25s}
-.bcard-portal:hover .portal-enter{color:var(--_accent)}
-.bcard-portal:hover .portal-enter svg{transform:translateX(3px)}
+    .codex-shell.is-sidebar-collapsed {
+      grid-template-columns: 68px minmax(0, 1fr);
+    }
 
-.bcard-mirrorflow{grid-column:span 2;grid-row:span 2;--_accent:var(--mf-accent)}
-.bcard-mirrorflow .portal-glow{background:radial-gradient(ellipse at 20% 20%,rgba(0,212,255,.12),transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(125,249,232,.08),transparent 50%)}
-.bcard-mirrorflow:hover{border-color:rgba(0,212,255,.25);box-shadow:0 20px 60px rgba(0,212,255,.1),inset 0 1px 0 rgba(0,212,255,.1)}
-.bcard-excelsior{--_accent:var(--exc-accent)}
-.bcard-excelsior .portal-glow{background:radial-gradient(ellipse at 30% 30%,rgba(251,191,36,.1),transparent 55%)}
-.bcard-excelsior:hover{border-color:rgba(251,191,36,.25);box-shadow:0 12px 40px rgba(251,191,36,.08)}
-.bcard-riftborn{--_accent:var(--rift-accent)}
-.bcard-riftborn .portal-glow{background:radial-gradient(ellipse at 70% 30%,rgba(185,139,255,.1),transparent 55%)}
-.bcard-riftborn:hover{border-color:rgba(185,139,255,.25);box-shadow:0 12px 40px rgba(185,139,255,.08)}
-.bcard-scheduler{--_accent:var(--sync-accent)}
-.bcard-scheduler .portal-glow{background:radial-gradient(ellipse at 50% 50%,rgba(122,180,255,.1),transparent 55%)}
-.bcard-scheduler:hover{border-color:rgba(122,180,255,.25);box-shadow:0 12px 40px rgba(122,180,255,.08)}
+    .topbar {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: minmax(200px, 1fr) auto minmax(320px, 1fr);
+      align-items: center;
+      gap: 18px;
+      padding: 0 24px;
+      background: linear-gradient(180deg, rgba(8, 13, 21, 0.96), rgba(8, 13, 21, 0.8));
+      border-bottom: 1px solid rgba(201, 161, 74, 0.22);
+      color: var(--gold-2);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      z-index: 10;
+    }
 
-.proj-icon-wrap{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;margin-bottom:1rem;background:var(--glass-bright);border:1px solid var(--border);color:var(--_accent,var(--signal));transition:all .3s}
-.bcard-portal:hover .proj-icon-wrap{border-color:var(--_accent);box-shadow:0 0 20px color-mix(in srgb,var(--_accent) 20%,transparent)}
-.proj-icon-wrap svg{width:20px;height:20px}
-.proj-title{font-family:var(--font-display);font-size:1.2rem;font-weight:700;letter-spacing:-.01em;margin-bottom:.35rem}
-.proj-desc{font-size:.82rem;color:var(--text-secondary);line-height:1.55}
-.proj-status{display:inline-block;font-family:var(--font-mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;padding:.2rem .6rem;border-radius:20px;border:1px solid var(--border);margin-top:.75rem}
-.proj-status.active{color:#34d399;border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.06)}
-.proj-status.building{color:#fbbf24;border-color:rgba(251,191,36,.3);background:rgba(251,191,36,.06)}
-.proj-status.soon{color:#b98bff;border-color:rgba(185,139,255,.3);background:rgba(185,139,255,.06)}
-.mf-chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:1rem}
-.mf-chip{font-family:var(--font-mono);font-size:.6rem;padding:.2rem .55rem;border-radius:6px;background:rgba(0,212,255,.06);color:rgba(0,212,255,.7);border:1px solid rgba(0,212,255,.12)}
+    .brand,
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
 
-/* GAME CARDS */
-.bcard-game{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;cursor:none}
-.bcard-game:hover{border-color:var(--signal-dim);background:var(--signal-ghost)}
-.game-label{font-family:var(--font-display);font-size:.75rem;font-weight:700;color:var(--text-secondary)}
-.fidget-hint{display:flex;gap:3px}
-.fidget-pip{width:5px;height:5px;border-radius:50%;background:var(--chrome-ghost);transition:background .3s,box-shadow .3s}
-.fidget-pip.lit{background:var(--signal);box-shadow:0 0 6px var(--signal-dim)}
+    .brand-mark,
+    .mini-sigil {
+      display: inline-grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      color: var(--gold-2);
+      box-shadow: 0 0 22px rgba(201, 161, 74, 0.18);
+      flex: 0 0 auto;
+    }
 
-/* FIDGETS */
-.bcard-fidget{display:flex;align-items:center;justify-content:center;min-height:140px;cursor:none}
-.bcard-fidget:hover{border-color:var(--signal-dim)}
-.pulse-wrap{position:relative;width:60px;height:60px}
-.pulse-ring{position:absolute;inset:0;border:1px solid var(--signal);border-radius:50%;opacity:0}
-.pulse-ring.go{animation:pRing 1s var(--ease-out) forwards}
-@keyframes pRing{from{transform:scale(.3);opacity:.8}to{transform:scale(1.8);opacity:0}}
-.morph-shape{width:48px;height:48px;background:var(--signal);animation:morphLoop 6s ease-in-out infinite}
-@keyframes morphLoop{0%,100%{border-radius:50%}25%{border-radius:30% 70% 70% 30%}50%{border-radius:50% 30% 50% 70%}75%{border-radius:70% 50% 30% 50%}}
-.orbit-wrap{position:relative;width:60px;height:60px}
-.orbit-center{position:absolute;top:50%;left:50%;width:8px;height:8px;background:var(--signal);border-radius:50%;transform:translate(-50%,-50%)}
-.orbit-dot{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--mirror);top:50%;left:50%;animation:orbitSpin 3s linear infinite}
-.orbit-dot:nth-child(2){animation-delay:-1s}.orbit-dot:nth-child(3){animation-delay:-2s}
-@keyframes orbitSpin{from{transform:rotate(0deg) translateX(24px) scale(.8)}to{transform:rotate(360deg) translateX(24px) scale(.8)}}
-.wave-bars{display:flex;gap:3px;align-items:center;height:40px}
-.wave-bar{width:4px;background:var(--signal);border-radius:2px;animation:waveAnim 1.2s ease-in-out infinite}
-@keyframes waveAnim{0%,100%{height:10px}50%{height:36px}}
-.shimmer-box{width:60px;height:60px;border:1px solid var(--signal-dim);border-radius:12px;position:relative;overflow:hidden}
-.shimmer-box::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent 30%,var(--signal-dim) 50%,transparent 70%);animation:shimmerAnim 2.5s ease-in-out infinite}
-@keyframes shimmerAnim{from{transform:translateX(-30%) translateY(-30%)}to{transform:translateX(30%) translateY(30%)}}
-.spiral-wrap{width:50px;height:50px;animation:spiralSpin 8s linear infinite;position:relative}
-.spiral-wrap div{position:absolute;border:1px solid var(--signal-dim);border-radius:50%}
-@keyframes spiralSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.bounce-dot{width:12px;height:12px;background:var(--signal);border-radius:50%;animation:bounceDot .8s var(--ease-spring) infinite alternate}
-@keyframes bounceDot{from{transform:translateY(0)}to{transform:translateY(-20px)}}
-.hexa-grid{display:grid;grid-template-columns:repeat(3,16px);gap:3px}
-.hexa-cell{width:16px;height:16px;background:var(--signal-ghost);border-radius:3px;animation:hexaPop 2s ease-in-out infinite}
-.hexa-cell:nth-child(2){animation-delay:.2s}.hexa-cell:nth-child(3){animation-delay:.4s}.hexa-cell:nth-child(4){animation-delay:.6s}.hexa-cell:nth-child(5){animation-delay:.8s}.hexa-cell:nth-child(6){animation-delay:1s}.hexa-cell:nth-child(7){animation-delay:1.2s}.hexa-cell:nth-child(8){animation-delay:1.4s}.hexa-cell:nth-child(9){animation-delay:1.6s}
-@keyframes hexaPop{0%,100%{background:var(--signal-ghost)}50%{background:var(--signal-dim)}}
-.star-shape{font-size:2rem;color:var(--signal);animation:starTwist 4s ease-in-out infinite}
-@keyframes starTwist{0%,100%{transform:rotate(0deg) scale(1)}50%{transform:rotate(180deg) scale(1.2)}}
-.cube-wrap{width:40px;height:40px;perspective:200px}
-.cube-face{width:100%;height:100%;border:1px solid var(--signal-dim);border-radius:4px;animation:cubeSpin 6s linear infinite}
-@keyframes cubeSpin{from{transform:rotateY(0deg) rotateX(15deg)}to{transform:rotateY(360deg) rotateX(15deg)}}
-.orbit2-wrap{position:relative;width:50px;height:50px}
-.orbit2-ring{position:absolute;inset:0;border:1px solid var(--signal-dim);border-radius:50%;animation:orbit2Ring 3s linear infinite}
-.orbit2-ring:nth-child(2){inset:8px;animation-direction:reverse;animation-duration:2s}
-@keyframes orbit2Ring{from{transform:rotateX(60deg) rotateZ(0deg)}to{transform:rotateX(60deg) rotateZ(360deg)}}
-.morph2-shape{width:48px;height:48px;border:2px solid var(--signal);animation:morph2Loop 5s ease-in-out infinite}
-@keyframes morph2Loop{0%,100%{border-radius:50%;transform:rotate(0deg)}25%{border-radius:30% 70% 70% 30%;transform:rotate(90deg)}50%{border-radius:50% 30% 50% 70%;transform:rotate(180deg)}75%{border-radius:70% 50% 30% 50%;transform:rotate(270deg)}}
+    .top-center {
+      text-align: center;
+      color: var(--gold);
+      white-space: nowrap;
+    }
 
-/* GAME MODALS */
-.game-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:none}
-.game-overlay.active{display:block}
-.game-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:210;width:min(400px,90vw);padding:1.5rem;background:var(--surface);border:1px solid var(--border-bright);border-radius:20px;display:none}
-.game-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
-.game-title{font-family:var(--font-display);font-size:1.1rem;font-weight:700}
-.game-score-wrap{text-align:center}.game-score-label{font-size:.55rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em}.game-score-val{font-family:var(--font-mono);font-size:.9rem;font-weight:600;color:var(--signal)}
-.game-close{background:none;border:1px solid var(--border);width:32px;height:32px;border-radius:8px;color:var(--text-secondary);cursor:none;display:grid;place-items:center}.game-close:hover{border-color:#f43f5e;color:#f43f5e}
-.game-board{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:1rem}
-.game-tile{aspect-ratio:1;border-radius:8px;display:grid;place-items:center;font-family:var(--font-display);font-weight:700;font-size:1.1rem;background:var(--glass-bright);border:1px solid var(--border);transition:all .15s}
-.game-btns{display:flex;gap:.5rem}
-.game-btn{flex:1;padding:.5rem;border:1px solid var(--border);border-radius:8px;background:var(--glass-bright);color:var(--text-secondary);font-size:.75rem;font-weight:600;cursor:none}.game-btn:hover{border-color:var(--signal-dim);color:var(--signal)}
-.game-status{text-align:center;margin-top:.75rem;font-size:.8rem}.game-status.win{color:#34d399}.game-status.lose{color:#f43f5e}
-.game-hint{text-align:center;font-size:.6rem;color:var(--text-muted);margin-top:.5rem}
-.sudoku-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:1px;margin-bottom:1rem}
+    .top-actions {
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
 
-/* ABOUT */
-.about-section{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:6rem 2rem}
-.about-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
-.about-quote{font-family:var(--font-display);font-size:clamp(1.4rem,2.5vw,1.8rem);font-weight:700;line-height:1.3;letter-spacing:-.02em;margin-bottom:1.5rem}
-.about-quote span{color:var(--signal)}
-.about-text{font-size:.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:1rem}
-.about-right{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-.about-pillar{padding:1.25rem;border:1px solid var(--border);border-radius:14px;background:var(--glass-bright);transition:all .25s}
-.about-pillar:hover{border-color:var(--signal-dim);transform:translateY(-2px)}
-.about-pillar-icon{font-size:1.2rem;margin-bottom:.5rem;display:block}
-.about-pillar-title{font-family:var(--font-display);font-size:.85rem;font-weight:700;margin-bottom:.35rem}
-.about-pillar-text{font-size:.78rem;color:var(--text-secondary);line-height:1.5}
+    .navlink,
+    .ghost-button,
+    .chip {
+      border: 1px solid rgba(201, 161, 74, 0.34);
+      background: rgba(9, 15, 24, 0.72);
+      color: var(--gold-2);
+      min-height: 30px;
+      padding: 7px 12px;
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-decoration: none;
+      cursor: pointer;
+    }
 
-/* CONTACT */
-.contact-section{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:6rem 2rem;text-align:center}
-.contact-title{font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2rem);font-weight:700;margin-bottom:1rem}
-.contact-text{color:var(--text-secondary);font-size:.95rem;max-width:500px;margin:0 auto 2rem;line-height:1.7}
-.contact-links{display:flex;gap:1rem;justify-content:center}
-.contact-link{padding:.75rem 1.5rem;border:1px solid var(--border);border-radius:10px;font-family:var(--font-display);font-weight:600;font-size:.85rem;color:var(--text-secondary);text-decoration:none;transition:all .2s}
-.contact-link:hover{border-color:var(--signal-dim);color:var(--signal);transform:translateY(-2px)}
+    .navlink:hover,
+    .navlink.is-active,
+    .ghost-button:hover,
+    .chip:hover {
+      border-color: var(--gold-2);
+      color: #fff4cf;
+      background: rgba(201, 161, 74, 0.11);
+    }
 
-/* FOOTER */
-.footer{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;padding:2rem;border-top:1px solid var(--border);font-size:.75rem;color:var(--text-muted)}
-.footer-left{font-family:var(--font-display);font-weight:700}.footer-left .accent{color:var(--signal)}
-.footer-glyphs{display:flex;gap:1rem}
-.footer-glyph{cursor:none;transition:color .2s,transform .2s;font-size:.9rem}
-.footer-glyph:hover{color:var(--signal);transform:scale(1.3)}
+    .sidebar {
+      position: relative;
+      grid-row: 2;
+      background: linear-gradient(180deg, rgba(10, 15, 24, 0.96), rgba(7, 11, 18, 0.9));
+      border-right: 1px solid rgba(201, 161, 74, 0.22);
+      padding: 16px 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      z-index: 5;
+    }
 
-/* TOAST */
-.toast-container{position:fixed;top:5rem;right:2rem;z-index:9000;display:flex;flex-direction:column;gap:.5rem}
-.toast{padding:.75rem 1.25rem;background:var(--surface);border:1px solid var(--border-bright);border-radius:10px;font-size:.82rem;color:var(--text-primary);animation:toastIn .3s var(--ease-spring);backdrop-filter:blur(12px)}
-.toast.hostile{border-color:rgba(244,63,94,.4);color:#f43f5e}
-.toast.exit{animation:toastOut .3s ease forwards}
-@keyframes toastIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
-@keyframes toastOut{from{opacity:1}to{opacity:0;transform:translateY(-10px)}}
+    .sidebar-toggle {
+      position: absolute;
+      top: 12px;
+      right: 10px;
+      width: 26px;
+      height: 26px;
+      border: 1px solid rgba(201, 161, 74, 0.44);
+      border-radius: 50%;
+      background: var(--ink-2);
+      color: var(--gold-2);
+      cursor: pointer;
+      z-index: 20;
+    }
 
-/* MODALS */
-.modal-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.6);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
-.modal-overlay.open{opacity:1;pointer-events:all}
-.modal-box{position:relative;width:min(520px,90vw);max-height:85vh;overflow-y:auto;padding:2.5rem;background:var(--surface);border:1px solid var(--border);border-radius:20px;transform:translateY(20px);transition:transform .3s var(--ease-out)}
-.modal-overlay.open .modal-box{transform:translateY(0)}
-.modal-close{position:absolute;top:1.25rem;right:1.25rem;background:none;border:1px solid var(--border);width:32px;height:32px;border-radius:8px;color:var(--text-secondary);display:grid;place-items:center;cursor:none}
-.modal-close:hover{border-color:#f43f5e;color:#f43f5e}
-.modal-close svg{width:16px;height:16px}
-.modal-tag{font-family:var(--font-mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.15em;color:var(--signal);margin-bottom:.5rem}
-.modal-title{font-family:var(--font-display);font-size:1.5rem;font-weight:700;margin-bottom:1.5rem}
-.modal-items{display:flex;flex-direction:column;gap:1.25rem}
-.modal-item-title{font-family:var(--font-display);font-size:.85rem;font-weight:700;margin-bottom:.35rem}
-.modal-item-text{font-size:.82rem;color:var(--text-secondary);line-height:1.65}
-.modal-cta{margin-top:1.5rem}
+    .side-label {
+      margin: 14px 22px 8px;
+      color: var(--gold);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      opacity: 0.82;
+    }
 
-/* RESPONSIVE */
-@media(max-width:1024px){.hero-inner{grid-template-columns:1fr}.hero-right{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}.bento{grid-template-columns:repeat(3,1fr)}.bcard-mirrorflow{grid-column:span 2;grid-row:span 1}.about-inner{grid-template-columns:1fr}}
-@media(max-width:768px){.nav{padding:.75rem 1.25rem}.hero{padding:6rem 1.25rem 3rem}.hero-headline{font-size:2.2rem}.hero-right{grid-template-columns:1fr}.grid-section{padding:4rem 1.25rem}.bento{grid-template-columns:repeat(2,1fr)}.bcard-mirrorflow{grid-column:span 2}.about-section,.contact-section{padding:5rem 1.25rem}.about-right{grid-template-columns:1fr}}
-@media(max-width:480px){.bento{grid-template-columns:1fr}.bcard-mirrorflow{grid-column:span 1}.hero-cta-row{flex-direction:column;align-items:stretch}}
-@media(hover:none){body,.nav-btn,.nav-hamburger,.btn-primary,.btn-ghost,.bcard,.bcard-game,.bcard-fidget,.game-close,.game-btn,.contact-link,.bcard-portal,.menu-connect-btn,.hero-scroll{cursor:auto}#cursor-dot,#cursor-ring{display:none}}
+    .side-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      border: 0;
+      border-left: 3px solid transparent;
+      background: transparent;
+      color: rgba(238, 226, 200, 0.66);
+      padding: 10px 22px 10px 19px;
+      text-align: left;
+      cursor: pointer;
+      transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+    }
+
+    .side-item:hover,
+    .side-item.is-active {
+      color: var(--gold-2);
+      background: rgba(201, 161, 74, 0.075);
+      border-left-color: var(--gold);
+    }
+
+    .side-icon {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(201, 161, 74, 0.28);
+      color: var(--gold);
+      font-family: var(--mono);
+      font-size: 10px;
+      flex: 0 0 auto;
+    }
+
+    .side-text {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .side-title {
+      font-size: 13px;
+      line-height: 1.05;
+    }
+
+    .side-sub {
+      color: var(--ash);
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .side-footer {
+      margin: 18px 18px 0;
+      padding: 12px;
+      border: 1px solid rgba(201, 161, 74, 0.2);
+      color: rgba(238, 226, 200, 0.72);
+      font-family: var(--mono);
+      font-size: 10px;
+      line-height: 1.55;
+      text-transform: uppercase;
+      letter-spacing: 1.6px;
+    }
+
+    .codex-shell.is-sidebar-collapsed .side-label,
+    .codex-shell.is-sidebar-collapsed .side-text,
+    .codex-shell.is-sidebar-collapsed .side-footer {
+      display: none;
+    }
+
+    .codex-shell.is-sidebar-collapsed .side-item {
+      justify-content: center;
+      padding: 10px 0;
+      border-left-width: 0;
+    }
+
+    .codex-shell.is-sidebar-collapsed .side-item.is-active {
+      box-shadow: inset 3px 0 0 var(--gold);
+    }
+
+    .workspace {
+      grid-row: 2;
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+      padding: 18px;
+    }
+
+    .panel {
+      display: none;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+      border: 1px solid rgba(201, 161, 74, 0.28);
+      background: linear-gradient(180deg, rgba(10, 15, 24, 0.72), rgba(7, 10, 16, 0.9));
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
+    }
+
+    .panel.is-active {
+      display: block;
+    }
+
+    .panel-scroll {
+      height: 100%;
+      overflow-y: auto;
+      padding: 24px;
+      scrollbar-color: rgba(201, 161, 74, 0.45) rgba(8, 13, 21, 0.8);
+    }
+
+    .panel-scroll.compact {
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    .panel-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: end;
+      padding-bottom: 16px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid rgba(201, 161, 74, 0.18);
+    }
+
+    .label {
+      margin: 0 0 10px;
+      color: var(--gold);
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: var(--serif);
+      font-weight: 500;
+    }
+
+    .panel h2 {
+      margin: 0;
+      font-size: 44px;
+      line-height: 1;
+    }
+
+    .small {
+      max-width: 760px;
+      margin: 9px 0 0;
+      color: rgba(238, 226, 200, 0.74);
+      line-height: 1.55;
+    }
+
+    .section-code {
+      color: var(--gold);
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .altar-grid {
+      height: 100%;
+      display: grid;
+      grid-template-columns: minmax(200px, 260px) minmax(280px, 1fr) minmax(260px, 320px);
+      grid-template-rows: minmax(0, 1fr) 142px;
+      gap: 18px;
+      position: relative;
+    }
+
+    .altar-grid::before,
+    .altar-grid::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+      background: linear-gradient(transparent, rgba(201, 161, 74, 0.38), transparent);
+      opacity: 0.72;
+    }
+
+    .altar-grid::before {
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 1px;
+    }
+
+    .altar-grid::after {
+      left: 10%;
+      right: 10%;
+      top: 50%;
+      height: 1px;
+    }
+
+    .portal-stack {
+      display: grid;
+      gap: 12px;
+      min-height: 0;
+      z-index: 1;
+    }
+
+    .portal-band {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      z-index: 1;
+    }
+
+    .portal {
+      position: relative;
+      min-height: 0;
+      padding: 15px 14px 12px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(15, 22, 34, 0.88), rgba(5, 8, 14, 0.84));
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.26);
+    }
+
+    .portal::before {
+      content: "";
+      position: absolute;
+      inset: 9px 14px auto;
+      height: 66px;
+      border: 1px solid rgba(201, 161, 74, 0.32);
+      border-bottom: 0;
+      border-radius: 110px 110px 0 0;
+      pointer-events: none;
+    }
+
+    .portal::after {
+      content: attr(data-index);
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(201, 161, 74, 0.6);
+      border-radius: 50%;
+      color: var(--gold-2);
+      background: #070b12;
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+
+    .portal:hover,
+    .portal[data-active="true"] {
+      border-color: var(--gold-2);
+      box-shadow: 0 22px 62px rgba(201, 161, 74, 0.15);
+    }
+
+    .portal-media {
+      position: absolute;
+      inset: 0;
+      opacity: 0.2;
+      background-size: cover;
+      background-position: center;
+      filter: saturate(0.72) contrast(1.05);
+      transition: transform 400ms ease, opacity 400ms ease;
+    }
+
+    .portal:hover .portal-media,
+    .portal[data-active="true"] .portal-media {
+      transform: scale(1.04);
+      opacity: 0.34;
+    }
+
+    .portal-content {
+      position: relative;
+      min-height: 124px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 7px;
+      text-align: center;
+    }
+
+    .portal-band .portal-content {
+      min-height: 102px;
+    }
+
+    .portal h3 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1;
+      color: var(--paper);
+      text-shadow: 0 1px 12px rgba(0, 0, 0, 0.58);
+    }
+
+    .portal p {
+      margin: 0;
+      color: var(--gold-2);
+      font-family: var(--serif);
+      font-size: 15px;
+      font-style: italic;
+    }
+
+    .portal .tag {
+      align-self: center;
+      border: 1px solid rgba(42, 184, 176, 0.48);
+      color: var(--teal);
+      padding: 4px 10px;
+      background: rgba(42, 184, 176, 0.08);
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .altar-center {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 0;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .orrery {
+      position: absolute;
+      width: min(440px, 40vw);
+      height: min(440px, 40vw);
+      border-radius: 50%;
+      border: 1px solid rgba(201, 161, 74, 0.24);
+      background:
+        repeating-radial-gradient(circle, transparent 0 42px, rgba(201, 161, 74, 0.18) 43px 44px, transparent 45px 78px),
+        conic-gradient(from 20deg, transparent, rgba(201, 161, 74, 0.15), transparent, rgba(104, 76, 154, 0.14), transparent);
+      box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.62), 0 0 90px rgba(104, 76, 154, 0.12);
+      opacity: 0.92;
+      animation: drift 36s linear infinite;
+    }
+
+    .orrery::before,
+    .orrery::after {
+      content: "";
+      position: absolute;
+      inset: 56px;
+      border-radius: 50%;
+      border: 1px dashed rgba(201, 161, 74, 0.34);
+    }
+
+    .orrery::after {
+      inset: 126px;
+      border-style: solid;
+      border-color: rgba(42, 184, 176, 0.24);
+      transform: rotate(22deg);
+    }
+
+    @keyframes drift { to { transform: rotate(360deg); } }
+
+    .planet {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid var(--gold-2);
+      background: var(--gold);
+      box-shadow: 0 0 20px rgba(201, 161, 74, 0.65);
+    }
+
+    .planet.one { top: 17%; left: 49%; }
+    .planet.two { top: 41%; left: 12%; background: var(--teal); }
+    .planet.three { top: 33%; right: 14%; background: var(--ember); }
+    .planet.four { bottom: 18%; left: 32%; background: var(--violet); }
+    .planet.five { bottom: 25%; right: 26%; background: var(--ash); }
+
+    .title-lockup {
+      position: relative;
+      z-index: 2;
+      width: min(390px, 100%);
+      display: grid;
+      justify-items: center;
+      gap: 14px;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 7px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(40px, 4.2vw, 56px);
+      line-height: 0.92;
+      color: var(--paper);
+      text-shadow: 0 12px 50px rgba(0, 0, 0, 0.74);
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--gold-2);
+      font-family: var(--serif);
+      font-size: 27px;
+      font-style: italic;
+    }
+
+    .motto {
+      max-width: 360px;
+      margin: 0;
+      color: rgba(238, 226, 200, 0.8);
+      font-family: var(--serif);
+      font-size: 18px;
+      line-height: 1.45;
+    }
+
+    .coordinate-strip,
+    .system-nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .system-nav {
+      max-width: 480px;
+    }
+
+    .inspector {
+      position: relative;
+      z-index: 1;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(15, 22, 34, 0.9), rgba(8, 13, 21, 0.88));
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.34);
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .inspector::before {
+      content: "";
+      position: absolute;
+      inset: 9px;
+      border: 1px solid rgba(201, 161, 74, 0.12);
+      pointer-events: none;
+    }
+
+    .inspector h2 {
+      margin: 0 0 8px;
+      font-size: 40px;
+      line-height: 1;
+    }
+
+    .inspector .latin {
+      margin: 0 0 18px;
+      color: var(--gold-2);
+      font-family: var(--serif);
+      font-size: 18px;
+      font-style: italic;
+    }
+
+    .inspector p {
+      margin: 0;
+      color: rgba(238, 226, 200, 0.78);
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin: 18px 0;
+    }
+
+    .metric {
+      border: 1px solid rgba(201, 161, 74, 0.2);
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.18);
+    }
+
+    .metric b,
+    .metric span { display: block; }
+
+    .metric b {
+      color: var(--gold-2);
+      font-family: var(--serif);
+      font-size: 24px;
+      line-height: 1;
+      font-weight: 500;
+    }
+
+    .metric span {
+      margin-top: 5px;
+      color: var(--ash);
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .branch-list {
+      display: grid;
+      gap: 7px;
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .branch-list li {
+      border-left: 1px solid rgba(201, 161, 74, 0.45);
+      padding: 7px 0 7px 11px;
+      color: rgba(238, 226, 200, 0.84);
+      font-size: 13px;
+    }
+
+    .panel-layout {
+      display: grid;
+      grid-template-columns: 300px minmax(0, 1fr);
+      gap: 18px;
+    }
+
+    .context-panel,
+    .map-card,
+    .matrix,
+    .callout,
+    .source {
+      border: 1px solid rgba(201, 161, 74, 0.22);
+      background: rgba(5, 8, 14, 0.34);
+      padding: 16px;
+    }
+
+    .context-panel {
+      position: sticky;
+      top: 0;
+      align-self: start;
+    }
+
+    .context-panel h3,
+    .map-card h3,
+    .matrix h3,
+    .callout h3 {
+      margin: 0 0 10px;
+      color: var(--gold-2);
+      font-size: 25px;
+      line-height: 1.05;
+    }
+
+    .context-panel p,
+    .map-card p,
+    .callout p {
+      margin: 0 0 12px;
+      color: rgba(238, 226, 200, 0.75);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .context-panel ul,
+    .map-card ul,
+    .callout ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 7px;
+    }
+
+    .context-panel li,
+    .map-card li,
+    .callout li {
+      position: relative;
+      padding-left: 16px;
+      color: rgba(238, 226, 200, 0.82);
+      font-size: 13px;
+      line-height: 1.42;
+    }
+
+    .context-panel li::before,
+    .map-card li::before,
+    .callout li::before {
+      content: "";
+      position: absolute;
+      top: 0.7em;
+      left: 0;
+      width: 5px;
+      height: 5px;
+      border: 1px solid var(--gold);
+      transform: rotate(45deg);
+    }
+
+    .map-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .map-grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .map-card.feature {
+      grid-column: span 2;
+    }
+
+    .image-panel {
+      min-height: 280px;
+      border: 1px solid rgba(201, 161, 74, 0.28);
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .image-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(8, 13, 21, 0.08), rgba(8, 13, 21, 0.78)),
+        radial-gradient(circle at 50% 20%, transparent, rgba(8, 13, 21, 0.62));
+    }
+
+    .image-caption {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 16px;
+      z-index: 1;
+      border-top: 1px solid rgba(201, 161, 74, 0.28);
+      padding-top: 12px;
+      color: var(--paper);
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+    }
+
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stack-card {
+      min-height: 132px;
+      border: 1px solid rgba(201, 161, 74, 0.24);
+      padding: 14px;
+      background:
+        linear-gradient(135deg, rgba(201, 161, 74, 0.08), transparent 45%),
+        rgba(0, 0, 0, 0.18);
+    }
+
+    .stack-card span {
+      display: block;
+      color: var(--gold);
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .stack-card b {
+      display: block;
+      color: var(--paper);
+      font-family: var(--serif);
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stack-card p {
+      margin: 0;
+      color: rgba(238, 226, 200, 0.72);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    details {
+      border: 1px solid rgba(201, 161, 74, 0.22);
+      background: rgba(0, 0, 0, 0.16);
+    }
+
+    summary {
+      cursor: pointer;
+      padding: 14px 16px;
+      color: var(--gold-2);
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+    }
+
+    details[open] summary {
+      border-bottom: 1px solid rgba(201, 161, 74, 0.16);
+    }
+
+    .detail-body {
+      padding: 14px 16px 16px;
+    }
+
+    .leaf-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .leaf {
+      border-left: 1px solid rgba(201, 161, 74, 0.46);
+      padding: 9px 11px;
+      background: rgba(201, 161, 74, 0.045);
+      color: rgba(238, 226, 200, 0.84);
+      font-size: 13px;
+      line-height: 1.42;
+    }
+
+    .leaf b {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--paper);
+      font-family: var(--serif);
+      font-size: 19px;
+      font-weight: 500;
+    }
+
+    .matrix {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 680px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid rgba(201, 161, 74, 0.17);
+      padding: 11px 10px;
+      vertical-align: top;
+      text-align: left;
+      color: rgba(238, 226, 200, 0.82);
+      font-size: 13px;
+      line-height: 1.38;
+    }
+
+    th {
+      color: var(--gold);
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      white-space: nowrap;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 0 0 16px;
+    }
+
+    .search {
+      flex: 1 1 280px;
+      min-height: 40px;
+      border: 1px solid rgba(201, 161, 74, 0.3);
+      background: rgba(0, 0, 0, 0.28);
+      color: var(--paper);
+      padding: 10px 12px;
+      outline: none;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    .search:focus { border-color: var(--gold-2); }
+    .hidden-by-search { display: none; }
+
+    .source-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .source {
+      color: rgba(238, 226, 200, 0.76);
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .status-teal { color: var(--teal); }
+    .status-red { color: #ef7d73; }
+    .status-violet { color: #bca3ff; }
+
+    @media (max-width: 1180px) {
+      .codex-shell {
+        grid-template-columns: 76px minmax(0, 1fr);
+      }
+
+      .side-label,
+      .side-text,
+      .side-footer {
+        display: none;
+      }
+
+      .side-item {
+        justify-content: center;
+        padding: 10px 0;
+      }
+
+      .altar-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto;
+        overflow-y: auto;
+      }
+
+      .portal-stack,
+      .portal-band {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .portal-band {
+        grid-column: auto;
+      }
+
+      .inspector {
+        min-height: 360px;
+      }
+
+      .panel-scroll.compact {
+        overflow-y: auto;
+      }
+
+      .panel-layout,
+      .map-grid,
+      .map-grid.two,
+      .leaf-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .context-panel {
+        position: static;
+      }
+
+      .stack-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1500px) {
+      .altar-grid {
+        grid-template-columns: minmax(220px, 304px) minmax(380px, 1fr) minmax(280px, 350px);
+      }
+
+      .orrery {
+        width: min(540px, 42vw);
+        height: min(540px, 42vw);
+      }
+
+      .title-lockup {
+        width: min(560px, 100%);
+      }
+
+      h1 {
+        font-size: clamp(56px, 4.8vw, 72px);
+      }
+
+      .motto {
+        max-width: 480px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      body::after { inset: 7px; }
+
+      .codex-shell,
+      .codex-shell.is-sidebar-collapsed {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto minmax(0, 1fr);
+      }
+
+      .topbar {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        padding: 12px 18px;
+        gap: 10px;
+        letter-spacing: 2px;
+      }
+
+      .top-actions,
+      .brand {
+        justify-content: center;
+      }
+
+      .sidebar {
+        grid-row: 2;
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        border-right: 0;
+        border-bottom: 1px solid rgba(201, 161, 74, 0.22);
+        padding: 10px 12px;
+        scrollbar-width: none;
+      }
+
+      .sidebar::-webkit-scrollbar {
+        display: none;
+      }
+
+      .sidebar-toggle,
+      .side-label,
+      .side-footer {
+        display: none;
+      }
+
+      .side-item,
+      .codex-shell.is-sidebar-collapsed .side-item {
+        width: auto;
+        min-width: 46px;
+        border: 1px solid rgba(201, 161, 74, 0.22);
+        padding: 8px 10px;
+      }
+
+      .side-icon {
+        width: 24px;
+        height: 24px;
+      }
+
+      .workspace {
+        grid-row: 3;
+        padding: 10px;
+      }
+
+      .panel-scroll {
+        padding: 16px;
+      }
+
+      .panel-scroll.compact {
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      .altar-grid {
+        height: auto;
+        min-height: 100%;
+        overflow: visible;
+      }
+
+      .altar-grid::before,
+      .altar-grid::after {
+        display: none;
+      }
+
+      .altar-center {
+        order: -3;
+        min-height: 500px;
+      }
+
+      .portal-stack {
+        order: -2;
+      }
+
+      .inspector {
+        order: -1;
+      }
+
+      .portal-band {
+        order: 0;
+      }
+
+      .panel-head,
+      .panel-layout,
+      .map-grid,
+      .map-grid.two,
+      .leaf-grid,
+      .stack-grid,
+      .source-grid,
+      .portal-stack,
+      .portal-band {
+        grid-template-columns: 1fr;
+      }
+
+      .section-code {
+        text-align: left;
+        white-space: normal;
+      }
+
+      .map-card.feature {
+        grid-column: auto;
+      }
+
+      .portal-content,
+      .portal-band .portal-content {
+        min-height: 112px;
+      }
+
+      .title-lockup {
+        width: min(330px, 100%);
+      }
+
+      .orrery {
+        width: min(360px, 88vw);
+        height: min(360px, 88vw);
+      }
+
+      h1 {
+        font-size: 44px;
+      }
+
+      .motto {
+        font-size: 17px;
+      }
+    }
   </style>
 </head>
 <body>
-<div id="cursor-dot"></div>
-<div id="cursor-ring"></div>
-<div class="mesh-bg" aria-hidden="true"><div class="mesh-blob"></div><div class="mesh-blob"></div><div class="mesh-blob"></div></div>
-
-<header class="nav">
-  <a href="javascript:void(0)" class="nav-logo" aria-label="theguide.club home" onclick="window.scrollTo({top:0,behavior:'smooth'})"><span class="logo-the">the</span><span class="logo-guide">guide</span><span class="logo-dot">.</span><span class="logo-club">club</span></a>
-  <div class="nav-right">
-    <button class="nav-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle Sol/Lunar"><svg id="themeIcon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
-    <button class="nav-btn" id="paletteToggle" aria-label="Cycle palette" title="Change color"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a7 7 0 0 0 0 14 3.5 3.5 0 0 1 0 7 10 10 0 1 0 0-20z"/></svg></button>
-    <button class="nav-hamburger" id="menuToggle" aria-label="Menu" aria-expanded="false"><span class="ham-line"></span><span class="ham-line"></span><span class="ham-line"></span></button>
-  </div>
-</header>
-
-<div class="menu-backdrop" id="menuBackdrop" aria-hidden="true"></div>
-<nav class="slide-menu" id="slideMenu" aria-hidden="true">
-  <p class="menu-section-label">Navigation</p>
-  <div class="menu-nav-links">
-    <a href="javascript:void(0)" class="menu-link" data-scroll data-target="about">About <span class="menu-link-arrow">→</span></a>
-    <a href="https://mirrorflow.theguide.club" class="menu-link">MirrorFlow <span class="menu-link-arrow">→</span></a>
-    <a href="https://sel.theguide.club/sync" class="menu-link">MirrorFlow Sync <span class="menu-link-arrow">→</span></a>
-    <a href="https://sel.theguide.club/excelsior" class="menu-link">Excelsior <span class="menu-link-arrow">→</span></a>
-    <a href="javascript:void(0)" class="menu-link" id="menuRiftborn">Riftborn <span class="menu-link-arrow">→</span></a>
-  </div>
-  <div class="menu-connect"><p class="menu-section-label">Connect</p><div class="menu-connect-row"><a href="mailto:sel@theguide.club" class="menu-connect-btn">Email</a><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="menu-connect-btn">LinkedIn</a></div></div>
-</nav>
-
-<section class="hero" id="hero">
-  <div class="hero-inner">
-    <div class="hero-left">
-      <p class="hero-eyebrow">theguide.club — 2026</p>
-      <h1 class="hero-headline">
-        <span class="line"><span class="word">Systems.</span></span>
-        <span class="line"><span class="word accent">Stories.</span></span>
-        <span class="line"><span class="word dim">Signal.</span></span>
-      </h1>
-      <p class="hero-body">A hub for building intelligent systems, crafting meaningful narratives, and sharing signal across multiple worlds.</p>
-      <div class="hero-cta-row">
-        <button onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})" class="btn-primary"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg> Explore Worlds</button>
-        <a href="mailto:sel@theguide.club" class="btn-ghost">Connect →</a>
+  <div class="codex-shell" id="shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">BP</span>
+        <span>Blaque Prep Archive</span>
       </div>
-    </div>
-    <div class="hero-right">
-      <a href="https://mirrorflow.theguide.club" class="hero-project-card" data-world="mirrorflow">
-        <div class="hpc-top"><div class="hpc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v18"/><path d="M3 12a9 9 0 0 0 9 9"/><path d="M21 12a9 9 0 0 1-9 9"/><circle cx="12" cy="12" r="3"/></svg></div><span class="hpc-status active">Active</span></div>
-        <p class="hpc-title">MirrorFlow</p>
-        <p class="hpc-desc">Intelligent coaching framework for reflection and growth in digital communication.</p>
-        <span class="hpc-launch">Enter world <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></span>
-      </a>
-      <a href="https://sel.theguide.club/excelsior" class="hero-project-card" data-world="excelsior">
-        <div class="hpc-top"><div class="hpc-icon" style="color:var(--exc-accent)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg></div><span class="hpc-status building">Building</span></div>
-        <p class="hpc-title">Excelsior</p>
-        <p class="hpc-desc">Personal excellence system spanning career, health, and continuous improvement.</p>
-        <span class="hpc-launch">Ever upward <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></span>
-      </a>
-      <a href="javascript:void(0)" class="hero-project-card" data-world="riftborn" id="heroRiftborn">
-        <div class="hpc-top"><div class="hpc-icon" style="color:var(--rift-accent)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2"/><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2"/><path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9"/><path d="M12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9"/></svg></div><span class="hpc-status soon">Coming Soon</span></div>
-        <p class="hpc-title">Riftborn Echoes</p>
-        <p class="hpc-desc">A narrative universe weaving interactive fiction and world-building.</p>
-        <span class="hpc-launch">Slip into the rift <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></span>
-      </a>
-    </div>
+      <div class="top-center">Memory is woven, not stored</div>
+      <nav class="top-actions" aria-label="Top panels">
+        <button class="navlink" data-panel-trigger="magic">Magic</button>
+        <button class="navlink" data-panel-trigger="league">League</button>
+        <button class="navlink" data-panel-trigger="academy">Academy</button>
+        <button class="navlink" data-panel-trigger="conflicts">Conflicts</button>
+      </nav>
+    </header>
+
+    <aside class="sidebar" aria-label="Archive panels">
+      <button class="sidebar-toggle" id="sidebarToggle" type="button" title="Collapse sidebar">‹</button>
+
+      <div class="side-label">Archive</div>
+      <button class="side-item is-active" data-panel-trigger="altar"><span class="side-icon">00</span><span class="side-text"><span class="side-title">Altar</span><span class="side-sub">Landing</span></span></button>
+      <button class="side-item" data-panel-trigger="core"><span class="side-icon">01</span><span class="side-text"><span class="side-title">Core Stack</span><span class="side-sub">Canon model</span></span></button>
+      <button class="side-item" data-panel-trigger="magic"><span class="side-icon">02</span><span class="side-text"><span class="side-title">Magic</span><span class="side-sub">Affinity engine</span></span></button>
+      <button class="side-item" data-panel-trigger="dominion"><span class="side-icon">03</span><span class="side-text"><span class="side-title">Dominion</span><span class="side-sub">Inner worlds</span></span></button>
+
+      <div class="side-label">Institution</div>
+      <button class="side-item" data-panel-trigger="academy"><span class="side-icon">04</span><span class="side-text"><span class="side-title">Academy</span><span class="side-sub">Blaque Prep</span></span></button>
+      <button class="side-item" data-panel-trigger="league"><span class="side-icon">05</span><span class="side-text"><span class="side-title">Battle League</span><span class="side-sub">BPCL</span></span></button>
+      <button class="side-item" data-panel-trigger="adventuring"><span class="side-icon">06</span><span class="side-text"><span class="side-title">Adventuring</span><span class="side-sub">Guild / Trials</span></span></button>
+      <button class="side-item" data-panel-trigger="mythos"><span class="side-icon">07</span><span class="side-text"><span class="side-title">MythOS</span><span class="side-sub">Interface layer</span></span></button>
+
+      <div class="side-label">Story</div>
+      <button class="side-item" data-panel-trigger="characters"><span class="side-icon">08</span><span class="side-text"><span class="side-title">Cast Powers</span><span class="side-sub">Crew index</span></span></button>
+      <button class="side-item" data-panel-trigger="plot"><span class="side-icon">09</span><span class="side-text"><span class="side-title">Plot</span><span class="side-sub">Pressure map</span></span></button>
+      <button class="side-item" data-panel-trigger="conflicts"><span class="side-icon">10</span><span class="side-text"><span class="side-title">Conflicts</span><span class="side-sub">Canon ledger</span></span></button>
+      <button class="side-item" data-panel-trigger="next"><span class="side-icon">11</span><span class="side-text"><span class="side-title">Next Pass</span><span class="side-sub">Flesh queue</span></span></button>
+      <button class="side-item" data-panel-trigger="sources"><span class="side-icon">12</span><span class="side-text"><span class="side-title">Sources</span><span class="side-sub">Input files</span></span></button>
+
+      <div class="side-footer">
+        Status: <span class="status-teal">Live</span><br>
+        Mode: Panel console<br>
+        Scroll: local only
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <section class="panel is-active" data-panel="altar">
+        <div class="panel-scroll compact">
+          <div class="altar-grid">
+            <div class="portal-stack">
+              <article class="portal" data-system="academy" data-index="1" data-active="true">
+                <div class="portal-media" style="background-image:linear-gradient(rgba(8,13,21,.25),rgba(8,13,21,.76)),url('Blaque Prep/20250416_2334_Blaque Prep Academy Envisioned_simple_compose_01js08b2gger5bqcawvcb0d5gy.png')"></div>
+                <div class="portal-content"><h3>Blaque Prep</h3><p>The living academy</p><span class="tag">Open</span></div>
+              </article>
+              <article class="portal" data-system="codex" data-index="2">
+                <div class="portal-media" style="background-image:linear-gradient(rgba(8,13,21,.2),rgba(8,13,21,.78)),url('Blaque Prep/20250405_0050_Rift Energy Meditation_simple_compose_01jr1fymk7et9ss0bppxdkd52c.png')"></div>
+                <div class="portal-content"><h3>The Codex</h3><p>Lore, law, memory</p><span class="tag">Indexed</span></div>
+              </article>
+              <article class="portal" data-system="weavery" data-index="3">
+                <div class="portal-media" style="background-image:linear-gradient(rgba(8,13,21,.18),rgba(8,13,21,.76)),url('Blaque Prep/20250405_0042_Rift-Infused Fabric Selection_simple_compose_01jr1fh40dektr4h47ckwr2p7e.png')"></div>
+                <div class="portal-content"><h3>Weavery</h3><p>Fabric remembers</p><span class="tag">Recovered</span></div>
+              </article>
+            </div>
+
+            <div class="altar-center">
+              <div class="orrery" aria-hidden="true">
+                <span class="planet one"></span><span class="planet two"></span><span class="planet three"></span><span class="planet four"></span><span class="planet five"></span>
+              </div>
+              <div class="title-lockup">
+                <div class="eyebrow">The Riftborn Echoes</div>
+                <h1>Blaque Prep<br>Codex Altar</h1>
+                <p class="subtitle">The Living Archive</p>
+                <p class="motto">An atlas of threads, magic systems, student rites, combat law, field guilds, lost records, and canon pressure points.</p>
+                <div class="coordinate-strip"><span class="chip">Epoch 07</span><span class="chip">Archive Brain</span><span class="chip">Rift Season</span></div>
+                <nav class="system-nav" aria-label="System shortcuts">
+                  <button class="chip" data-panel-trigger="core">Core</button>
+                  <button class="chip" data-panel-trigger="magic">Magic</button>
+                  <button class="chip" data-panel-trigger="dominion">Dominion</button>
+                  <button class="chip" data-panel-trigger="academy">Academy</button>
+                  <button class="chip" data-panel-trigger="league">BPCL</button>
+                  <button class="chip" data-panel-trigger="adventuring">Guild</button>
+                  <button class="chip" data-panel-trigger="mythos">MythOS</button>
+                  <button class="chip" data-panel-trigger="characters">Cast</button>
+                  <button class="chip" data-panel-trigger="plot">Plot</button>
+                </nav>
+              </div>
+            </div>
+
+            <aside class="inspector" id="inspector" aria-live="polite">
+              <p class="label">Archive Focus</p>
+              <h2 id="inspector-title">Blaque Prep</h2>
+              <p class="latin" id="inspector-latin">Academia Viva</p>
+              <p id="inspector-copy">School, fortress, research institution, Rift containment structure, living magical city, sanctuary, and cage.</p>
+              <div class="metric-grid" id="inspector-metrics"></div>
+              <ul class="branch-list" id="inspector-branches"></ul>
+            </aside>
+
+            <div class="portal-band">
+              <article class="portal" data-system="league" data-index="4">
+                <div class="portal-media" style="background-image:linear-gradient(rgba(8,13,21,.2),rgba(8,13,21,.78)),url('Blaque Prep/20250405_0056_Preparing for the Trial_simple_compose_01jr1gagk4ee7s20wsz6qw2547.png')"></div>
+                <div class="portal-content"><h3>Battle League</h3><p>Matches, teams, ranks</p><span class="tag">Broadcast</span></div>
+              </article>
+              <article class="portal" data-system="riftwardens" data-index="5">
+                <div class="portal-media" style="background-image:linear-gradient(rgba(8,13,21,.2),rgba(8,13,21,.78)),url('Blaque Prep/20250405_0109_Mystical Castle Exploration_simple_compose_01jr1h1843en487vg6sq2m45bz.png')"></div>
+                <div class="portal-content"><h3>Riftwardens</h3><p>Containment records</p><span class="tag status-red">Restricted</span></div>
+              </article>
+              <article class="portal" data-system="mythos" data-index="6">
+                <div class="portal-media" style="background-image:linear-gradient(rgba(8,13,21,.2),rgba(8,13,21,.78)),url('Blaque Prep/20250416_2341_Cultural Fusion Architecture_simple_compose_01js08q15eehgrhet3p41z2639.png')"></div>
+                <div class="portal-content"><h3>MythOS</h3><p>Growth and affinity</p><span class="tag status-violet">Unstable</span></div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="core">
+        <div class="panel-scroll">
+          <div class="panel-head">
+            <div><p class="label">Root Brain</p><h2>Master System Map</h2><p class="small">Blaque Prep is the visible school layer of a larger memory, containment, combat, and identity engine.</p></div>
+            <div class="section-code">Root: Riftborn Brain</div>
+          </div>
+          <div class="stack-grid">
+            <div class="stack-card"><span>Metaphysics</span><b>Rift / Slip / Echoes</b><p>Drives memory, magic, erasure, horror, and return pressure.</p></div>
+            <div class="stack-card"><span>Institution</span><b>Blaque Prep</b><p>Public school, hidden containment fortress, and proving ground.</p></div>
+            <div class="stack-card"><span>Student OS</span><b>MythOS</b><p>Tracks growth, locks content, syncs runestones, displays instability.</p></div>
+            <div class="stack-card"><span>Identity Fabric</span><b>Kimono -> Weavery</b><p>Assigned stabilizer evolves into self-authored magical garment.</p></div>
+            <div class="stack-card"><span>Power Rank</span><b>Magic Rank</b><p>Determines slots, Dominion pressure, and ability complexity.</p></div>
+            <div class="stack-card"><span>Learning Rank</span><b>Memory Rank</b><p>Gates courses, quests, research, and MythOS access.</p></div>
+            <div class="stack-card"><span>Combat Rank</span><b>BPCL / CP</b><p>Tracks competitive standing, titles, and elite matches.</p></div>
+            <div class="stack-card"><span>Field Rank</span><b>Guild Rank</b><p>Determines quest access, expedition clearance, and field authority.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="magic">
+        <div class="panel-scroll">
+          <div class="panel-head">
+            <div><p class="label">Primary System</p><h2>Magic System Mindmap</h2><p class="small">Magic is remembered self. Affinity is its first visible language. Dominion is the private world underneath it.</p></div>
+            <div class="section-code">Core Canon / Needs Spec Sheets</div>
+          </div>
+          <div class="panel-layout">
+            <aside class="context-panel">
+              <div class="image-panel" style="background-image:url('Blaque Prep/20250405_0050_Rift Energy Meditation_simple_compose_01jr1fymk7et9ss0bppxdkd52c.png')"><div class="image-caption">Memory as magic / ritual order / Rift fracture</div></div>
+              <h3>Magic Thesis</h3>
+              <ul><li>Magic is remembered.</li><li>Magic is personal.</li><li>Magic is living.</li><li>Magic is limited by control.</li><li>Rift Magic is the system failure state.</li></ul>
+            </aside>
+            <div class="map-grid two">
+              <div class="map-card"><h3>Primary Pillars</h3><ul><li>Affinity: natural, conceptual, hybrid, or Rift-touched alignment.</li><li>Dominion: inner landscape and private source.</li><li>Manifested Tool: soulbound object or weapon.</li><li>Guardian Spirit: partner, judge, stabilizer, or threat.</li><li>Kimono: first living conduit.</li><li>MythOS: stats, tabs, locks, warnings.</li></ul></div>
+              <div class="map-card"><h3>Affinity Families</h3><ul><li>Elemental: fire, water, earth, wind, nature.</li><li>Energy: lightning, gravity, kinetic, plasma.</li><li>Conceptual: light, shadow, mind, illusion, memory.</li><li>Dimensional: time, space, Rift.</li><li>Construct: summoning, runes, golems, binding.</li><li>Rift-Corrupted: Void Flame, Abyss Tide, False Reflections.</li></ul></div>
+              <div class="map-card"><h3>Casting Methods</h3><ul><li>Conduits: wands, staves, rings, relics.</li><li>Gesture casting: combat casting, flow weaving, dance magic.</li><li>Incantation and runes: verbal spells, sigils, arrays.</li><li>Freeflow: instinct, emotion, Void shaping.</li><li>Hybrid casting: personal style, risk, innovation.</li></ul></div>
+              <div class="map-card"><h3>Forbidden Magic</h3><ul><li>Consumes caster: blood magic, fleshcrafting, bone sigils, echocasting.</li><li>Warps soul: soul leeching, shadebinding, mindwalking.</li><li>Defies reality: temporal rewriting, Rift summoning, name weaving, unmaking ritual.</li></ul></div>
+            </div>
+          </div>
+          <div class="matrix" style="margin-top:18px">
+            <h3>Magic Rank Progression</h3>
+            <table><thead><tr><th>Rank Band</th><th>Range</th><th>Ability Slots</th><th>Dominion Pressure</th><th>Story Function</th></tr></thead><tbody>
+              <tr><td>Initiate</td><td>1-4</td><td>3 active / 1 passive</td><td>Raw, unstable, mostly internal</td><td>Discovery, panic, first rules</td></tr>
+              <tr><td>Adept</td><td>5-9</td><td>5 active / 2 passive</td><td>Partial Dominion energy</td><td>Team roles, refined style, controlled risk</td></tr>
+              <tr><td>Expert</td><td>10-14</td><td>7 active / 3 passive</td><td>Small reality shaping, Dominion Clash access</td><td>Advanced League, dangerous trials</td></tr>
+              <tr><td>Master</td><td>15-19</td><td>9 active / 4 passive</td><td>Full Dominion infusion</td><td>Faculty-level danger, field command</td></tr>
+              <tr><td>Ascended</td><td>20+</td><td>No formal limits</td><td>Battlefield becomes Dominion</td><td>Mythic ceiling, war arc, system-breaking power</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="dominion">
+        <div class="panel-scroll">
+          <div class="panel-head"><div><p class="label">Inner World Systems</p><h2>Dominion, Guardians, Tools</h2><p class="small">Dominion explains why the same Affinity behaves differently across characters.</p></div><div class="section-code">Identity -> Terrain -> Pact -> Weapon</div></div>
+          <div class="map-grid">
+            <div class="map-card feature"><h3>Dominion</h3><p>Personal pocket dimension, soul landscape, Affinity amplifier, memory vault, and emotional mirror.</p><ul><li>Power source: increases endurance and spell scale.</li><li>Personal battlefield: alters terrain, physics, and entry conditions.</li><li>Higher understanding: reveals ancestral secrets or forbidden Affinity.</li><li>Risk: collapse, overextension, Rift erosion, Hollowed state, or Dominion theft.</li></ul></div>
+            <div class="map-card"><h3>Dominion Paths</h3><ul><li>Bloodline Dominion: inherited realm and ancestral pressure.</li><li>Self-Forged Dominion: will-built, flexible, unstable.</li><li>Rift-Tainted Dominion: powerful, corrupted, identity-eroding.</li></ul></div>
+            <div class="map-card"><h3>Guardian Pact</h3><ul><li>Agreement, not ownership.</li><li>Trust determines strength.</li><li>Origins: inherited, Dominion-bound, trial-formed.</li><li>Stages: vision, resonance, pact, manifestation.</li></ul></div>
+            <div class="map-card"><h3>Beast Types</h3><ul><li>Loyal Guardian: traditional protector.</li><li>Forsaken Beast: abandoned, redeemable, volatile.</li><li>Unbound Beast: new legacy with no inherited script.</li><li>Riftborn Beast: rewritten guardian hunting former memory.</li></ul></div>
+            <div class="map-card"><h3>Manifested Tools</h3><ul><li>Object form of soul pressure.</li><li>Weapon, artifact, interface, instrument, or utility form.</li><li>Can remember what the wielder forgets.</li><li>Should evolve visibly with Dominion and character arc.</li></ul></div>
+            <div class="map-card"><h3>Canon Rule</h3><ul><li>Rank 10: controlled Dominion projection.</li><li>Rank 15: full Dominion infusion.</li><li>Rank 20: battlefield-as-Dominion.</li><li>First-year guardian visions are allowed; formal pact comes later.</li></ul></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="academy">
+        <div class="panel-scroll">
+          <div class="panel-head"><div><p class="label">Institution Map</p><h2>Blaque Prep Academy</h2><p class="small">A school that behaves like a city, fortress, archive, containment machine, and ritual engine.</p></div><div class="section-code">Public Face: Academy / Hidden Face: Containment</div></div>
+          <div class="panel-layout">
+            <aside class="context-panel"><div class="image-panel" style="background-image:url('Blaque Prep/20250416_2334_Blaque Prep Academy Envisioned_simple_compose_01js08b2gger5bqcawvcb0d5gy.png')"><div class="image-caption">Living academy / Baobab anchor / hidden city</div></div><h3>Institution Thesis</h3><ul><li>School.</li><li>Fortress.</li><li>Research institution.</li><li>Rift containment structure.</li><li>Sanctuary and cage.</li></ul></aside>
+            <div class="map-grid two">
+              <div class="map-card"><h3>Location Logic</h3><ul><li>Not on normal maps.</li><li>Rift convergence point.</li><li>Pocket dimension.</li><li>Larger inside than outside.</li><li>Entry through Slip or Rift-tethered portal.</li></ul></div>
+              <div class="map-card"><h3>Heart Structures</h3><ul><li>Celestial Baobab: anchor, stabilizer, possible feeder.</li><li>Nexus Courtyard: arrival, Riftmirror, path shifts per student.</li><li>Grand Hall: assemblies, Affinity Trial, duels.</li><li>Library of Echoes: books rewrite themselves.</li><li>Combat Coliseum: League and shifting terrain.</li></ul></div>
+              <div class="map-card"><h3>Sealed Systems</h3><ul><li>Forgotten Wing.</li><li>Hall of Echoes.</li><li>Rift Vaults.</li><li>Vanishing Wing.</li><li>Tower That Cannot Be Reached.</li><li>Chamber of the Riftborn.</li></ul></div>
+              <div class="map-card"><h3>Four Divisions</h3><ul><li>Magic Studies.</li><li>Combat and BPCL.</li><li>Theory and Research.</li><li>Rift Studies: unofficial, forbidden, containment-facing.</li></ul></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="league">
+        <div class="panel-scroll">
+          <div class="panel-head"><div><p class="label">Combat Engine</p><h2>Battle League / BPCL</h2><p class="small">Controlled pressure system for combat growth, tactical trust, Affinity refinement, and public student legend-making.</p></div><div class="section-code">Canon: Blaque Prep Combat League</div></div>
+          <div class="map-grid">
+            <div class="map-card"><h3>Purpose</h3><ul><li>Controlled pressure.</li><li>Combat mastery.</li><li>Tactical growth.</li><li>Affinity refinement.</li><li>Team trust.</li><li>Safe high-risk testing.</li></ul></div>
+            <div class="map-card"><h3>Ranking</h3><ul><li>Combat Points.</li><li>Win/loss record.</li><li>Strategic Execution Score.</li><li>Magical Discipline Rating.</li><li>MythOS Sync Events.</li></ul></div>
+            <div class="map-card"><h3>MythOS Tiers</h3><ul><li>Iron: MR1-MR2.</li><li>Bronze: MR3.</li><li>Silver: MR4.</li><li>Gold: MR5.</li><li>Obsidian: MR6+, invitation only.</li></ul></div>
+            <div class="map-card"><h3>Formats</h3><ul><li>Solo duels.</li><li>Doubles.</li><li>3v3 standard squad matches.</li><li>5v5 special squad matches.</li><li>Capture the Flag, Memory Scramble, Rift Domination.</li></ul></div>
+            <div class="map-card"><h3>Rules</h3><ul><li>No lethal force.</li><li>Pre-registered loadouts.</li><li>No external assistance.</li><li>No uncontrolled Rift anomalies.</li><li>Mana caps, dampeners, HP system, target zones.</li></ul></div>
+            <div class="map-card"><h3>Rewards</h3><ul><li>CP and Memory Rank boosts.</li><li>Titles and secret classes.</li><li>Gear and mentor access.</li><li>Elite missions and inter-academy entry.</li></ul></div>
+          </div>
+          <div class="matrix" style="margin-top:18px"><h3>BPCL Canon Specification</h3><table><thead><tr><th>Layer</th><th>Recommended Canon</th></tr></thead><tbody><tr><td>Participation</td><td>Required basic combat evaluation for all; optional competitive ladder for high ambition.</td></tr><tr><td>Standard team match</td><td>3v3 with two substitutes.</td></tr><tr><td>Special squad match</td><td>5v5 or objective-based events.</td></tr><tr><td>Dominion Clash</td><td>Rank 10+ / Expert-level special event, not full Ascended Dominion control.</td></tr><tr><td>Loadout rule</td><td>MythOS display maps Core / Utility / Affinity / Wildcard into combat regulation slots.</td></tr><tr><td>Unawakened integration</td><td>Separate Unawakened League plus tactical support cells, proxy pilots, and exhibition access.</td></tr></tbody></table></div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="adventuring">
+        <div class="panel-scroll">
+          <div class="panel-head"><div><p class="label">Field Engine</p><h2>Adventuring Academy / Guild</h2><p class="small">Field education turns classroom magic into real-world problem solving, dungeon work, anomaly response, and hidden academy data collection.</p></div><div class="section-code">Curriculum -> Guild -> Trials Guild</div></div>
+          <div class="map-grid">
+            <div class="map-card"><h3>Purpose</h3><ul><li>Real-world magic application.</li><li>Quest-based growth.</li><li>Problem solving.</li><li>Rift preparation.</li><li>Heroic identity.</li><li>Hidden academy objectives.</li></ul></div>
+            <div class="map-card"><h3>Quest Types</h3><ul><li>Affinity Mastery.</li><li>Dominion Trials.</li><li>Guardian Spirit Quests.</li><li>Artifact Recovery.</li><li>Magical Research.</li><li>Rift Exploration.</li><li>Combat Survival.</li></ul></div>
+            <div class="map-card"><h3>Dungeons</h3><ul><li>Static Dungeons: academy simulations.</li><li>Wild Dungeons: spontaneous or Riftborn.</li><li>Memory Domains: forgotten pasts, rare, volatile.</li><li>Each has Signature Threat, Core Memory Anchor, rewards.</li></ul></div>
+            <div class="map-card"><h3>Unlock Flow</h3><ul><li>Reach MR2.</li><li>Questglass Kiosk.</li><li>MythOS quest accept.</li><li>Quest Intent Form.</li><li>Faculty approval.</li><li>Field Report, Magic Application Log, Reflection Note.</li></ul></div>
+            <div class="map-card"><h3>Guild Ranks</h3><ul><li>Initiate: basic quests.</li><li>Adept: medium quests.</li><li>Advanced: high-risk teams.</li><li>Elite: Rift expeditions.</li><li>Master Adventurer: years 4-6, classified missions.</li></ul></div>
+            <div class="map-card"><h3>Forbidden Quests</h3><ul><li>Path of the Unslipped.</li><li>Tower of Unfinished Spells.</li><li>Duel That Never Ends.</li><li>Riftborn Bargain.</li></ul></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="mythos">
+        <div class="panel-scroll">
+          <div class="panel-head"><div><p class="label">Interface Layer</p><h2>MythOS, Runestones, Kimonos, Weavery</h2><p class="small">The academy translates unstable identity-magic into wearable conduits, visible garments, stats, tabs, locks, and self-authored attire.</p></div><div class="section-code">Order breaks when the Rift intrudes</div></div>
+          <div class="panel-layout">
+            <aside class="context-panel"><div class="image-panel" style="background-image:url('Blaque Prep/20250405_0042_Rift-Infused Fabric Selection_simple_compose_01jr1fh40dektr4h47ckwr2p7e.png')"><div class="image-caption">Identity fabric: assigned kimono -> self-authored Weavery</div></div><h3>Interface Rule</h3><ul><li>Runestone stabilizes.</li><li>Kimono reveals.</li><li>MythOS translates.</li><li>Weavery authors.</li></ul></aside>
+            <div class="map-grid two">
+              <div class="map-card"><h3>Runestones</h3><ul><li>Personal resonant gem.</li><li>Bracelet preferred for safety.</li><li>Syncs magic to MythOS.</li><li>Stabilizes output.</li><li>Reveals instability.</li></ul></div>
+              <div class="map-card"><h3>MythOS</h3><ul><li>Magical operating system.</li><li>Grade tracker.</li><li>Soul interface.</li><li>Tracks Affinity, skills, gear, assignments, tools.</li><li>Locks content behind homework, quests, mentor clearance.</li></ul></div>
+              <div class="map-card"><h3>Kimonos</h3><ul><li>First equipment.</li><li>Living garments.</li><li>Catch spilled magic.</li><li>Show Affinity and heritage.</li><li>Visualize Dominion stability.</li></ul></div>
+              <div class="map-card"><h3>Weavery</h3><ul><li>Advanced garment craft.</li><li>Truth-based identity weaving.</li><li>Students design later attire.</li><li>Fabric remembers when the mind does not.</li><li>Needs deeper stage rules.</li></ul></div>
+            </div>
+          </div>
+          <div class="matrix" style="margin-top:18px"><h3>MythOS Stats And Tabs</h3><table><thead><tr><th>Layer</th><th>Established Elements</th><th>Next Spec Needed</th></tr></thead><tbody><tr><td>Stats</td><td>Vitality, Endurance, Arcana, Strength, Speed, Focus, Memory Resonance.</td><td>Define formulas, growth triggers, and what each stat unlocks.</td></tr><tr><td>Tabs</td><td>Affinities, Skill Trees, Gear, Assignments, Manifested Tool.</td><td>Add sample Kai / Nia / Kabelo profiles.</td></tr><tr><td>Warnings</td><td>Pending Review, unstable shadow behavior, faculty locks.</td><td>Define color states and Rift-corruption UI rules.</td></tr><tr><td>League</td><td>Loadout registration, tier tracking, CP, events.</td><td>Map combat regulations to MythOS slots.</td></tr></tbody></table></div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="characters">
+        <div class="panel-scroll">
+          <div class="panel-head"><div><p class="label">Character Power Index</p><h2>Core Crew Systems</h2><p class="small">Each character should read as a living system: Affinity, Dominion, Guardian, tool, friction, and future failure mode.</p></div><div class="section-code">Identity -> Power -> Risk</div></div>
+          <div class="matrix"><table><thead><tr><th>Character</th><th>Affinity / System</th><th>Dominion</th><th>Guardian</th><th>Tool / Interface</th><th>Core Friction</th></tr></thead><tbody>
+            <tr><td>Kai Adams</td><td>Fire plus Rift Shadow; Sunfire vs Abyss Flame</td><td>Ember-Void Plane</td><td>Golden Lion of the Eternal Savannah</td><td>Ebony Flame Blade; unstable runestone</td><td>Can he balance creation and erasure without becoming a Rift weapon?</td></tr>
+            <tr><td>Kabelo Moloi</td><td>Earth, Metal, Gravity potential</td><td>Adamant Expanse</td><td>Stone Golem Titan</td><td>Titan's Gauntlets</td><td>Protector identity becomes rigidity unless he learns flexibility.</td></tr>
+            <tr><td>Mei Takahashi</td><td>Wind and Lightning</td><td>Storm-coded Dominion</td><td>Thunder Serpent</td><td>Stormfang twin daggers / chain / short sword</td><td>Speed and instinct make her strong but reckless.</td></tr>
+            <tr><td>Arjun Raj</td><td>Illusion and Rift Magic</td><td>Mirage Veil</td><td>Mirage Fox</td><td>Phantom Veil war fan</td><td>If perception is weaponized, trust becomes his weakest stat.</td></tr>
+            <tr><td>Nia</td><td>Spirit and Nature; Harmonic Resonance</td><td>Spirit Bloom / growth resonance</td><td>Spirit Elk</td><td>Green runestone and living robe resonance</td><td>Healing, empathy, and balance can become self-erasure.</td></tr>
+            <tr><td>Elias Mwangi</td><td>Fire and Light</td><td>Mentor-level undisclosed</td><td>Lion symbolism link</td><td>Older runestone</td><td>Knows more about Kai's risk than he says.</td></tr>
+            <tr><td>Mrs. Dlamini</td><td>Silent Weaver authority</td><td>Unknown</td><td>Unknown</td><td>Transition control</td><td>Is she protecting students or pacifying them?</td></tr>
+            <tr><td>Rishi</td><td>Unawakened technomagic</td><td>System builder</td><td>None established</td><td>MythOS calibration tools</td><td>Tech support is part comic relief, part system witness.</td></tr>
+            <tr><td>Zola Ndlovu</td><td>Mundane investigator with memory resistance potential</td><td>None established</td><td>None established</td><td>Physical notes and case files</td><td>Refuses to forget in a world editing itself.</td></tr>
+          </tbody></table></div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="plot">
+        <div class="panel-scroll">
+          <div class="panel-head"><div><p class="label">Narrative Engine</p><h2>Plot Threads And Pressure Points</h2><p class="small">The academy wonder layer must keep colliding with the outside-world erasure layer.</p></div><div class="section-code">Wonder above / horror beneath</div></div>
+          <div class="map-grid">
+            <div class="map-card"><h3>Awakening Arc</h3><ul><li>Chapter 1: apartment, Sade warning, intruder, Slip rupture, Kai taken.</li><li>Chapter 2: arrival, panic, memory collapse.</li><li>Chapter 3: academy reveal, Baobab scale.</li><li>Chapter 4: platform ceremony, Affinity logic, first awakenings.</li><li>Chapter 5: Kai isolation, fire-shadow rupture.</li><li>Chapter 6: Elias mentor, Great Hall, system expansion.</li><li>Chapter 7-8: kimonos, runestones, Weavery, MythOS, Unawakened tech.</li></ul></div>
+            <div class="map-card"><h3>Mystery Arc</h3><ul><li>The Slip is designed.</li><li>Students forget; faculty remembers.</li><li>Riftborn remember differently.</li><li>Silent Weavers enforce the transition.</li><li>The Slip is failing.</li></ul></div>
+            <div class="map-card"><h3>War Arc</h3><ul><li>Rift expansion.</li><li>Riftborn organizing.</li><li>Academy containment weakening.</li><li>Sealed Wings expanding.</li><li>Riftborn War returning.</li></ul></div>
+            <div class="map-card"><h3>Zola Thread</h3><ul><li>Case File 013-22Z: Sarah Venter.</li><li>Parents barely remember.</li><li>School does not remember.</li><li>Art room clues survive.</li><li>Digital records change; physical notes matter.</li><li>Sade and Kai thread should converge later.</li></ul></div>
+            <div class="map-card"><h3>Core Character Pressure</h3><ul><li>Kai wants belonging but carries erasure risk.</li><li>Nia wants peace and purpose but absorbs too much.</li><li>Mei wants proof and outruns strategy.</li><li>Kabelo wants control and responsibility.</li><li>Arjun wants certainty while weaponizing uncertainty.</li></ul></div>
+            <div class="map-card"><h3>Outside World Pressure</h3><ul><li>Missing children.</li><li>Schools forget.</li><li>Records disappear.</li><li>City rewrites itself.</li><li>Remembering becomes rebellion.</li></ul></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="conflicts">
+        <div class="panel-scroll">
+          <div class="panel-head"><div><p class="label">Canon Ledger</p><h2>Clashing Plot Points</h2><p class="small">These are the decisions that need locking before the archive becomes a stable series bible.</p></div><div class="section-code">Priority: High / Medium / Low</div></div>
+          <div class="search-row"><input class="search" id="conflict-search" type="search" placeholder="Filter conflicts: Zola, League, Rank, Guardian, Rift..."><button class="ghost-button" id="expand-all" type="button">Expand All</button><button class="ghost-button" id="collapse-all" type="button">Collapse All</button></div>
+          <div class="map-grid" id="conflict-list">
+            <div class="map-card conflict-card"><h3>High Priority</h3><ul><li><b>Chapter 1 Setup:</b> apartment/Sade/Slip is current canon.</li><li><b>Zola First Case:</b> Sarah first, Sade/Kai later convergence.</li><li><b>Headmaster Name:</b> choose Zuberi or Ulonwe.</li><li><b>Battle League:</b> mandatory baseline evaluation, optional ranked ladder.</li><li><b>Ranking Systems:</b> Magic Rank, MR, CP, Guild Rank must stay separate.</li><li><b>Adventuring Terms:</b> Academy, Guild, Trials Guild hierarchy.</li><li><b>First-Year Quests:</b> MR2 low-risk field quests; Trials later.</li><li><b>Rift Access:</b> no first-year Rift entry by default.</li></ul></div>
+            <div class="map-card conflict-card"><h3>Medium Priority</h3><ul><li><b>Guardian Timing:</b> vision/resonance early, formal pact later.</li><li><b>Dominion Progression:</b> Rank 10 projection, Rank 15 infusion, Rank 20 battlefield.</li><li><b>Team Size:</b> 3+ starter safety, 5 full guild team.</li><li><b>BPCL Formats:</b> 3v3 ranked standard, 5v5 special events.</li><li><b>Loadout Model:</b> MythOS maps slots into regulations.</li><li><b>Unawakened League:</b> separate division/support/proxy/exhibition.</li><li><b>Kimono Origin:</b> 1994 as modern protocol reform.</li><li><b>Names:</b> lock Nia / Mei / Arjun surnames.</li></ul></div>
+            <div class="map-card conflict-card"><h3>Low Priority</h3><ul><li><b>House System:</b> mentioned but not defined.</li><li><b>Fifth Division:</b> keep as hidden historical mystery.</li></ul></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="next">
+        <div class="panel-scroll">
+          <div class="panel-head"><div><p class="label">Next Flesh Pass</p><h2>Systems That Need Deepening</h2><p class="small">These are not missing ideas. They are unresolved engine specs.</p></div><div class="section-code">Build order: systems before decoration</div></div>
+          <div class="map-grid">
+            <div class="map-card"><h3>Houses</h3><p>Names, values, sorting logic, plot function.</p><ul><li>Create 4-6 Houses tied to destiny patterns, not simple personality types.</li></ul></div>
+            <div class="map-card"><h3>Silent Weavers</h3><p>Authority chain, limits, ethics, failure conditions.</p><ul><li>Define what they can erase, what they cannot, and what failure costs.</li></ul></div>
+            <div class="map-card"><h3>MythOS</h3><p>Tabs, stat formulas, unlock logic.</p><ul><li>Build sample profiles for Kai, Nia, Kabelo, Mei, Arjun, Rishi.</li></ul></div>
+            <div class="map-card"><h3>Progression Matrix</h3><p>Magic Rank, Memory Rank, CP, Guild Rank.</p><ul><li>Show how each rank interacts without collapsing into one scale.</li></ul></div>
+            <div class="map-card"><h3>Weavery</h3><p>Student design process and garment power rules.</p><ul><li>Define when kimonos are outgrown and what custom garments can do.</li></ul></div>
+            <div class="map-card"><h3>Riftborn Heir</h3><p>Choice mechanics and prophecy pressure.</p><ul><li>Decide if Kai is the Heir, a candidate, a false signal, or one of several cycles.</li></ul></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" data-panel="sources">
+        <div class="panel-scroll">
+          <div class="panel-head"><div><p class="label">Source Register</p><h2>Archive Inputs</h2><p class="small">The console is built from the consolidated Riftborn brain file and the canon source hierarchy behind it.</p></div><div class="section-code">Generated from: RIFTBORN_BRAIN_MINDMAP.md</div></div>
+          <div class="source-grid">
+            <div class="source">RIFTBORN_BRAIN_MINDMAP.md - consolidated system brain, mindmaps, conflict ledger.</div>
+            <div class="source">Blaque Prep/The Riftborn Echoes Codex.docx - deep magic, academy, Dominion, guardians, BPCL, Trials, Rift, Slip.</div>
+            <div class="source">Blaque Prep/magic systems.docx - ranks, slots, affinity pools, Rift magic, customization.</div>
+            <div class="source">Blaque Prep/Character Codex - IN PROGRESS STILL.docx - character powers, Dominions, Guardians, tools.</div>
+            <div class="source">Combat League Orientation.pdf - BPCL tiers, formats, loadouts, rewards.</div>
+            <div class="source">Field Quest Orientation.pdf - field quests, dungeons, quest paperwork, restrictions.</div>
+            <div class="source">Blaque Prep Curriculum.pdf - Free-Weave curriculum, MR gates, course paths.</div>
+            <div class="source">Kimonos And Heritage.pdf - robe ceremony, memory cloth, Loom logic.</div>
+          </div>
+        </div>
+      </section>
+    </main>
   </div>
-  <div class="hero-scroll"><span class="hero-scroll-line"></span></div>
-</section>
 
-<section class="grid-section" id="projects">
-  <div class="section-header"><div><p class="section-eyebrow">Worlds</p><h2 class="section-title">Project Nodes</h2></div><span class="section-count">04 worlds · 04 games · 11 fidgets</span></div>
-  <div class="game-overlay" id="gameOverlay"></div>
-  <div class="game-modal" id="gameModal2048"><div class="game-header"><h3 class="game-title">2048</h3><div style="display:flex;align-items:center;gap:.75rem"><div class="game-score-wrap"><div class="game-score-label">Score</div><div class="game-score-val" id="gameScore">0</div></div><button class="game-close" id="closeGame2048">✕</button></div></div><div class="game-board" id="gameBoard"></div><div class="game-btns"><button class="game-btn" id="newGameBtn">New Game</button><button class="game-btn" id="undoGameBtn">Undo</button></div><div class="game-status" id="gameStatus"></div><div class="game-hint">Arrow keys or WASD</div></div>
-  <div class="game-modal" id="gameModalTetris"><div class="game-header"><h3 class="game-title">Tetris</h3><div style="display:flex;align-items:center;gap:.75rem"><div class="game-score-wrap"><div class="game-score-label">Score</div><div class="game-score-val" id="tetrisScore">0</div></div><button class="game-close" id="closeGameTetris">✕</button></div></div><canvas id="tetrisCanvas" width="300" height="390" style="background:#000;width:100%"></canvas><div class="game-btns"><button class="game-btn" id="newTetrisBtn">New Game</button></div><div class="game-status" id="tetrisStatus"></div><div class="game-hint">← → move · ↑ rotate · ↓ faster · Space drop</div></div>
-  <div class="game-modal" id="gameModalSnake"><div class="game-header"><h3 class="game-title">Snake</h3><div style="display:flex;align-items:center;gap:.75rem"><div class="game-score-wrap"><div class="game-score-label">Score</div><div class="game-score-val" id="snakeScore">0</div></div><button class="game-close" id="closeGameSnake">✕</button></div></div><canvas id="snakeCanvas" width="300" height="300" style="background:#000;width:100%"></canvas><div class="game-btns"><button class="game-btn" id="newSnakeBtn">New Game</button></div><div class="game-status" id="snakeStatus"></div><div class="game-hint">Arrow keys to move</div></div>
-  <div class="game-modal" id="gameModalSudoku"><div class="game-header"><h3 class="game-title">Sudoku</h3><div style="display:flex;align-items:center;gap:.75rem"><div class="game-score-wrap"><div class="game-score-label">Moves</div><div class="game-score-val" id="sudokuMoves">0</div></div><button class="game-close" id="closeGameSudoku">✕</button></div></div><div class="sudoku-grid" id="sudokuBoard"></div><div class="game-btns"><button class="game-btn" id="newSudokuBtn">New Puzzle</button></div><div class="game-status" id="sudokuStatus"></div></div>
+  <script>
+    const systems = {
+      academy: {
+        title: "Blaque Prep",
+        latin: "Academia Viva",
+        copy: "School, fortress, research institution, Rift containment structure, living magical city, sanctuary, and cage.",
+        metrics: [["4", "Public divisions"], ["6+", "Sealed structures"], ["MR", "Learning gate"], ["Slip", "Entry protocol"]],
+        branches: ["Celestial Baobab", "Nexus Courtyard", "Grand Hall", "Library of Echoes", "Combat Coliseum", "Weavery"]
+      },
+      codex: {
+        title: "The Codex",
+        latin: "Memoria Rerum",
+        copy: "Master lore source for cosmology, academy law, Affinity mechanics, Rift pressure, characters, and unresolved canon.",
+        metrics: [["63k", "Codex words"], ["12", "Source files"], ["20+", "Systems"], ["Canon", "Priority map"]],
+        branches: ["Rift / Slip / Echoes", "Magic engine", "Academy engine", "Progression engine", "Character engine", "Conflict ledger"]
+      },
+      weavery: {
+        title: "Weavery",
+        latin: "Tela Meminit",
+        copy: "Advanced garment identity system. Kimonos begin as stabilizers; later garments become self-authored magical signatures.",
+        metrics: [["1st", "Kimono stage"], ["Later", "Custom attire"], ["Loom", "Memory rite"], ["Risk", "Identity exposure"]],
+        branches: ["Living cloth", "Heritage record", "Dominion stability", "Student design", "Truth-based weaving", "Rift distortion"]
+      },
+      league: {
+        title: "Battle League",
+        latin: "Certamen Ordinatum",
+        copy: "BPCL turns combat into controlled pressure: tactics, trust, Affinity refinement, public ranking, and elite opportunity.",
+        metrics: [["3v3", "Ranked standard"], ["5v5", "Special events"], ["CP", "Combat score"], ["MR6+", "Obsidian tier"]],
+        branches: ["Solo duels", "Doubles", "Squads", "Dominion Clash", "Memory Scramble", "Rift Domination"]
+      },
+      riftwardens: {
+        title: "Riftwardens",
+        latin: "Custodes Fracturae",
+        copy: "Hidden containment arm tied to surveillance, suppression, retrieval, crisis response, and dangerous student classification.",
+        metrics: [["Red", "Restricted"], ["Rift", "Containment"], ["Logs", "Encounter records"], ["Risk", "Memory sanction"]],
+        branches: ["Suppression", "Retrieval", "Artifact surrender", "Silent Weaver overlap", "Unawakened support cells", "Forbidden records"]
+      },
+      mythos: {
+        title: "MythOS",
+        latin: "Anima Machina",
+        copy: "Magical operating system translating unstable personal magic into stats, tabs, tasks, locks, warnings, and growth paths.",
+        metrics: [["7", "Core stats"], ["5", "Known tabs"], ["MR", "Gate logic"], ["Pending", "Kai shadow review"]],
+        branches: ["Vitality", "Arcana", "Memory Resonance", "Skill Trees", "Gear / Augments", "Manifested Tools"]
+      }
+    };
 
-  <div class="bento">
-    <a href="https://mirrorflow.theguide.club" class="bcard bcard-portal bcard-mirrorflow"><div class="portal-glow"></div><div class="portal-content"><div class="proj-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v18"/><path d="M3 12a9 9 0 0 0 9 9"/><path d="M21 12a9 9 0 0 1-9 9"/><circle cx="12" cy="12" r="3"/></svg></div><p class="proj-title">MirrorFlow</p><p class="proj-desc">Intelligent coaching framework for reflection and growth in digital communication. Real-time engine with intent detection, gap analysis, and tone coaching.</p><span class="proj-status active">Active</span><div class="mf-chips"><span class="mf-chip">Lite</span><span class="mf-chip">Classic</span><span class="mf-chip">CoachPanel</span><span class="mf-chip">Engine v2</span></div></div><span class="portal-enter">Enter MirrorFlow <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></span></a>
-    <a href="https://sel.theguide.club/excelsior" class="bcard bcard-portal bcard-excelsior"><div class="portal-glow"></div><div class="portal-content"><div class="proj-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg></div><p class="proj-title">Excelsior</p><p class="proj-desc">Personal excellence system across career, health, and growth.</p><span class="proj-status building">Building</span></div><span class="portal-enter">Ever upward <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></span></a>
-    <div class="bcard bcard-portal bcard-riftborn" id="riftbornCard" role="button" tabindex="0"><div class="portal-glow"></div><div class="portal-content"><div class="proj-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2"/><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2"/><path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9"/><path d="M12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9"/></svg></div><p class="proj-title">Riftborn Echoes</p><p class="proj-desc">A narrative universe. Interactive fiction and world-building.</p><span class="proj-status soon">Coming Soon</span></div><span class="portal-enter">Slip into the rift <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></span></div>
-    <a href="https://sel.theguide.club/sync" class="bcard bcard-portal bcard-scheduler"><div class="portal-glow"></div><div class="portal-content"><div class="proj-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div><p class="proj-title">MirrorFlow Sync</p><p class="proj-desc">Scheduling, blueprint editing, and workforce planning.</p><span class="proj-status active">Active</span></div><span class="portal-enter">Launch Sync <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></span></a>
+    const metricsEl = document.getElementById("inspector-metrics");
+    const branchesEl = document.getElementById("inspector-branches");
+    const titleEl = document.getElementById("inspector-title");
+    const latinEl = document.getElementById("inspector-latin");
+    const copyEl = document.getElementById("inspector-copy");
 
-    <div class="bcard bcard-game" id="fidgetGame2048" tabindex="0" role="button"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--signal)" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg><div class="game-label">2048</div><div class="fidget-hint"><div class="fidget-pip" id="pip2048-1"></div><div class="fidget-pip" id="pip2048-2"></div><div class="fidget-pip" id="pip2048-3"></div><div class="fidget-pip" id="pip2048-4"></div><div class="fidget-pip" id="pip2048-5"></div></div></div>
-    <div class="bcard bcard-game" id="fidgetGameTetris" tabindex="0" role="button"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--signal)" stroke-width="1.5"><rect x="8" y="2" width="8" height="6" rx="1"/><rect x="4" y="8" width="8" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/></svg><div class="game-label">Tetris</div><div class="fidget-hint"><div class="fidget-pip" id="pipTetris-1"></div><div class="fidget-pip" id="pipTetris-2"></div><div class="fidget-pip" id="pipTetris-3"></div><div class="fidget-pip" id="pipTetris-4"></div><div class="fidget-pip" id="pipTetris-5"></div></div></div>
-    <div class="bcard bcard-game" id="fidgetGameSnake" tabindex="0" role="button"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--signal)" stroke-width="1.5"><path d="M4 12h4l2-4 3 8 2-6 2 3h3"/></svg><div class="game-label">Snake</div><div class="fidget-hint"><div class="fidget-pip" id="pipSnake-1"></div><div class="fidget-pip" id="pipSnake-2"></div><div class="fidget-pip" id="pipSnake-3"></div><div class="fidget-pip" id="pipSnake-4"></div><div class="fidget-pip" id="pipSnake-5"></div></div></div>
-    <div class="bcard bcard-game" id="fidgetGameSudoku" tabindex="0" role="button"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--signal)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg><div class="game-label">Sudoku</div><div class="fidget-hint"><div class="fidget-pip" id="pipSudoku-1"></div><div class="fidget-pip" id="pipSudoku-2"></div><div class="fidget-pip" id="pipSudoku-3"></div><div class="fidget-pip" id="pipSudoku-4"></div><div class="fidget-pip" id="pipSudoku-5"></div></div></div>
+    function setSystem(key) {
+      const system = systems[key] || systems.academy;
+      document.querySelectorAll(".portal").forEach((portal) => {
+        portal.dataset.active = portal.dataset.system === key ? "true" : "false";
+      });
+      titleEl.textContent = system.title;
+      latinEl.textContent = system.latin;
+      copyEl.textContent = system.copy;
+      metricsEl.innerHTML = system.metrics.map(([value, label]) =>
+        `<div class="metric"><b>${value}</b><span>${label}</span></div>`
+      ).join("");
+      branchesEl.innerHTML = system.branches.map((item) => `<li>${item}</li>`).join("");
+    }
 
-    <div class="bcard bcard-fidget" id="fidgetPulse" tabindex="0" role="button"><div class="pulse-wrap"><div class="pulse-ring" id="ring1"></div><div class="pulse-ring" id="ring2"></div><div class="pulse-ring" id="ring3"></div></div></div>
-    <div class="bcard bcard-fidget" id="fidgetMorph" tabindex="0" role="button"><div class="morph-shape"></div></div>
-    <div class="bcard bcard-fidget" id="fidgetOrbit" tabindex="0" role="button"><div class="orbit-wrap"><div class="orbit-center"></div><div class="orbit-dot"></div><div class="orbit-dot"></div><div class="orbit-dot"></div></div></div>
-    <div class="bcard bcard-fidget" id="fidgetWave" tabindex="0" role="button"><div class="wave-bars"><div class="wave-bar" style="animation-delay:0s"></div><div class="wave-bar" style="animation-delay:.1s"></div><div class="wave-bar" style="animation-delay:.2s"></div><div class="wave-bar" style="animation-delay:.3s"></div><div class="wave-bar" style="animation-delay:.4s"></div><div class="wave-bar" style="animation-delay:.5s"></div><div class="wave-bar" style="animation-delay:.6s"></div></div></div>
-    <div class="bcard bcard-fidget" id="fidgetShimmer" tabindex="0" role="button"><div class="shimmer-box"></div></div>
-    <div class="bcard bcard-fidget" id="fidgetSpiral" tabindex="0" role="button"><div class="spiral-wrap"><div style="width:50px;height:50px"></div><div style="width:38px;height:38px;top:6px;left:6px"></div><div style="width:26px;height:26px;top:12px;left:12px"></div></div></div>
-    <div class="bcard bcard-fidget" id="fidgetBounce" tabindex="0" role="button"><div class="bounce-dot"></div></div>
-    <div class="bcard bcard-fidget" id="fidgetHexa" tabindex="0" role="button"><div class="hexa-grid"><div class="hexa-cell"></div><div class="hexa-cell"></div><div class="hexa-cell"></div><div class="hexa-cell"></div><div class="hexa-cell"></div><div class="hexa-cell"></div><div class="hexa-cell"></div><div class="hexa-cell"></div><div class="hexa-cell"></div></div></div>
-    <div class="bcard bcard-fidget" id="fidgetStar" tabindex="0" role="button"><div class="star-shape">✦</div></div>
-    <div class="bcard bcard-fidget" id="fidgetCube" tabindex="0" role="button"><div class="cube-wrap"><div class="cube-face"></div></div></div>
-    <div class="bcard bcard-fidget" id="fidgetOrbit2" tabindex="0" role="button"><div class="orbit2-wrap"><div class="orbit2-ring"></div><div class="orbit2-ring"></div></div></div>
-    <div class="bcard bcard-fidget" id="fidgetMorph2" tabindex="0" role="button"><div class="morph2-shape"></div></div>
-  </div>
-</section>
+    function setPanel(panelName) {
+      const target = document.querySelector(`.panel[data-panel="${panelName}"]`);
+      if (!target) return;
+      document.querySelectorAll(".panel").forEach((panel) => {
+        panel.classList.toggle("is-active", panel === target);
+      });
+      document.querySelectorAll("[data-panel-trigger]").forEach((button) => {
+        button.classList.toggle("is-active", button.dataset.panelTrigger === panelName);
+      });
+      const scroll = target.querySelector(".panel-scroll");
+      if (scroll) scroll.scrollTop = 0;
+      try { history.replaceState(null, "", "#" + panelName); } catch (error) {}
+    }
 
-<section class="about-section" id="about">
-  <div class="about-inner">
-    <div class="about-left"><p class="section-eyebrow">Context</p><h2 class="about-quote">Building things that <span>matter</span>, thinking deeply, creating spaces.</h2><p class="about-text">A hub for connection. A space where different projects, ideas, and worlds intersect. It serves as a window into how I think, build, and explore—across writing, solving problems, and sharing knowledge gathered along the way.</p><p class="about-text">Every project here is an exploration. Some are tools for growth. Others are narratives that expand perspective. What ties them together is intentionality—a commitment to building things that matter.</p></div>
-    <div class="about-right">
-      <div class="about-pillar"><span class="about-pillar-icon">⚡</span><p class="about-pillar-title">Systems</p><p class="about-pillar-text">Building intelligent frameworks that solve real problems in digital communication and beyond.</p></div>
-      <div class="about-pillar"><span class="about-pillar-icon">✦</span><p class="about-pillar-title">Stories</p><p class="about-pillar-text">Narrative universes that blur the line between reader and participant.</p></div>
-      <div class="about-pillar"><span class="about-pillar-icon">◎</span><p class="about-pillar-title">Signal</p><p class="about-pillar-text">Knowledge distilled from the journey — shared for those who want to think deeper.</p></div>
-      <div class="about-pillar"><span class="about-pillar-icon">⬡</span><p class="about-pillar-title">Flow</p><p class="about-pillar-text">The MirrorFlow principle: reflection as a catalyst for intentional, sustainable growth.</p></div>
-    </div>
-  </div>
-</section>
+    document.querySelectorAll("[data-panel-trigger]").forEach((button) => {
+      button.addEventListener("click", () => setPanel(button.dataset.panelTrigger));
+    });
 
-<section class="contact-section" id="contact">
-  <p class="section-eyebrow">Connect</p>
-  <h2 class="contact-title">Let's build something.</h2>
-  <p class="contact-text">Whether you're curious about a project, want to collaborate, or just want to say hello — the door's open.</p>
-  <div class="contact-links"><a href="mailto:sel@theguide.club" class="contact-link">Email</a><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="contact-link">LinkedIn</a></div>
-</section>
+    document.querySelectorAll(".portal").forEach((portal) => {
+      portal.addEventListener("click", () => setSystem(portal.dataset.system));
+      portal.addEventListener("mouseenter", () => setSystem(portal.dataset.system));
+    });
 
-<footer class="footer"><div class="footer-left">the<span class="accent">guide</span>.club</div><div class="footer-glyphs" id="footerGlyphs" aria-hidden="true"></div><div class="footer-right">© 2026 · Systems. Stories. Signal.</div></footer>
+    document.getElementById("sidebarToggle").addEventListener("click", () => {
+      document.getElementById("shell").classList.toggle("is-sidebar-collapsed");
+    });
 
-<div class="modal-overlay" id="aboutModal" role="dialog" aria-labelledby="aboutModalTitle" aria-hidden="true"><div class="modal-box"><button class="modal-close" id="modalClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button><p class="modal-tag">About</p><h2 class="modal-title" id="aboutModalTitle">theguide.club</h2><div class="modal-items"><div class="modal-item"><p class="modal-item-title">What This Is</p><p class="modal-item-text">A personal hub—a nexus where different worlds collide. A place to explore ideas across writing, problem-solving, and knowledge-sharing.</p></div><div class="modal-item"><p class="modal-item-title">What I Do Here</p><p class="modal-item-text">Connect dots across disciplines. Write from depth. Build systems that solve real problems. Share knowledge gathered from the journey.</p></div><div class="modal-item"><p class="modal-item-title">Who This Welcomes</p><p class="modal-item-text">Anyone interested in the intersection of systems thinking, storytelling, and personal growth. This is a workspace made visible.</p></div></div></div></div>
+    const conflictSearch = document.getElementById("conflict-search");
+    const conflictCards = Array.from(document.querySelectorAll(".conflict-card li"));
 
-<div class="modal-overlay" id="riftbornModal" role="dialog" aria-labelledby="riftbornModalTitle" aria-hidden="true"><div class="modal-box"><button class="modal-close" id="riftbornModalClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button><p class="modal-tag">Coming Soon</p><h2 class="modal-title" id="riftbornModalTitle">Riftborn Echoes</h2><div class="modal-items"><div class="modal-item"><p class="modal-item-title">Narrative Universe</p><p class="modal-item-text">A narrative universe is being woven. Riftborn Echoes explores the boundaries between worlds, the echoes of choices unmade, and the stories that shape reality itself.</p></div><div class="modal-item"><p class="modal-item-title">What to Expect</p><p class="modal-item-text">Interactive fiction, world-building documentation, and immersive experiences that blur the line between reader and participant.</p></div></div><div class="modal-cta"><button id="riftbornFakeBtn" class="btn-ghost" style="cursor:none">Slip into the Rift →</button> <a href="https://sel.theguide.club/rbe" target="_blank" rel="noopener noreferrer" id="riftbornRealBtn" class="btn-ghost" style="opacity:.3;font-size:.8rem" title="The real gateway">◆</a></div></div></div>
+    conflictSearch.addEventListener("input", () => {
+      const query = conflictSearch.value.trim().toLowerCase();
+      conflictCards.forEach((item) => {
+        item.classList.toggle("hidden-by-search", query && !item.textContent.toLowerCase().includes(query));
+      });
+    });
 
-<script>
-const CD=document.getElementById('cursor-dot'),CR=document.getElementById('cursor-ring');let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;CD.style.left=mx+'px';CD.style.top=my+'px'});
-(function ac(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;CR.style.left=rx+'px';CR.style.top=ry+'px';requestAnimationFrame(ac)})();
+    document.getElementById("expand-all").addEventListener("click", () => {
+      document.querySelectorAll("details").forEach((detail) => detail.open = true);
+    });
 
-document.querySelectorAll('.bcard,.hero-project-card').forEach(c=>{c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();c.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');c.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%')})});
-document.querySelectorAll('.bcard').forEach(c=>{c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();const x=(e.clientX-r.left)/r.width-.5;const y=(e.clientY-r.top)/r.height-.5;c.style.transform=`perspective(800px) rotateY(${x*6}deg) rotateX(${-y*6}deg) translateY(-4px)`});c.addEventListener('mouseleave',()=>{c.style.transform=''})});
+    document.getElementById("collapse-all").addEventListener("click", () => {
+      document.querySelectorAll("details").forEach((detail) => detail.open = false);
+    });
 
-let theme='lunar';function setTheme(t){theme=t;document.documentElement.setAttribute('data-theme',t);document.getElementById('themeIcon').innerHTML=t==='sol'?'<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>':'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';}
+    setSystem("academy");
 
-const palettes=[{signal:'#00d4ff',signalDim:'rgba(0,212,255,0.3)',signalGhost:'rgba(0,212,255,0.06)'},{signal:'#7df9e8',signalDim:'rgba(125,249,232,0.3)',signalGhost:'rgba(125,249,232,0.06)'},{signal:'#8b5cf6',signalDim:'rgba(139,92,246,0.3)',signalGhost:'rgba(139,92,246,0.06)'},{signal:'#f43f5e',signalDim:'rgba(244,63,94,0.3)',signalGhost:'rgba(244,63,94,0.06)'},{signal:'#10b981',signalDim:'rgba(16,185,129,0.3)',signalGhost:'rgba(16,185,129,0.06)'}];let paletteIdx=0;
-function setPalette(i){paletteIdx=((i%palettes.length)+palettes.length)%palettes.length;const p=palettes[paletteIdx];const r=document.documentElement.style;r.setProperty('--signal',p.signal);r.setProperty('--signal-dim',p.signalDim);r.setProperty('--signal-ghost',p.signalGhost);r.setProperty('--signal-glow','0 0 40px '+p.signalDim);r.setProperty('--border-bright',p.signalDim);r.setProperty('--mirror-dim',p.signalDim)}
-
-let menuOpen=false;function toggleMenu(o){menuOpen=o!==undefined?o:!menuOpen;document.getElementById('slideMenu').classList.toggle('open',menuOpen);document.getElementById('menuBackdrop').classList.toggle('visible',menuOpen);const b=document.getElementById('menuToggle');b.classList.toggle('open',menuOpen);b.setAttribute('aria-expanded',menuOpen);document.getElementById('slideMenu').setAttribute('aria-hidden',!menuOpen);document.body.style.overflow=menuOpen?'hidden':''}
-
-function openModal(id){const m=document.getElementById(id);if(!m)return;m.classList.add('open');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
-function closeAllModals(){document.querySelectorAll('.modal-overlay').forEach(m=>{m.classList.remove('open');m.setAttribute('aria-hidden','true')});document.body.style.overflow=''}
-
-let riftCount=0;const riftR=['Access Denied.','No Entry.','You are not the chosen one.','Try again, if you dare.','The rift remains sealed.','Why do you persist?','Leave. Now.','I said NO.','STOP.','Bro, I said no.',"Are you SERIOUS right now?",'Fine. Keep clicking.',"This won't change anything.",'...',"ok you're just annoying at this point",'look behind you','made you look ahaha','lol','fiiiine you can enter','SYKE not today',"I'm ignoring you now. k, bye"];
-function showToast(msg,hostile){let c=document.getElementById('toastContainer');if(!c){c=document.createElement('div');c.id='toastContainer';c.className='toast-container';document.body.appendChild(c)}const t=document.createElement('div');t.className='toast'+(hostile?' hostile':'');t.textContent=msg;c.appendChild(t);setTimeout(()=>{t.classList.add('exit');setTimeout(()=>t.remove(),300)},3000)}
-function ripple(e,el){const r=el.getBoundingClientRect();const s=document.createElement('span');const sz=Math.max(r.width,r.height);s.style.cssText=`position:absolute;border-radius:50%;background:rgba(0,212,255,0.15);transform:scale(0);animation:rpl .6s ease-out forwards;width:${sz}px;height:${sz}px;left:${e.clientX-r.left-sz/2}px;top:${e.clientY-r.top-sz/2}px;pointer-events:none;`;if(!document.getElementById('rpl-style')){const st=document.createElement('style');st.id='rpl-style';st.textContent='@keyframes rpl{to{transform:scale(3);opacity:0;}}';document.head.appendChild(st)}el.appendChild(s);setTimeout(()=>s.remove(),600)}
-
-const GLYPHS=['◆','✦','✧','★','⬢','⬡','◇','◈','☉','◎','◉','❖','❈','ᚲ','ᛏ','ᛗ'];
-function initFooter(){const el=document.getElementById('footerGlyphs');const p=[...GLYPHS].sort(()=>Math.random()-.5).slice(0,4);el.innerHTML=p.map(g=>`<span class="footer-glyph">${g}</span>`).join('');el.querySelectorAll('.footer-glyph').forEach(g=>{g.addEventListener('click',()=>{g.textContent=GLYPHS[Math.floor(Math.random()*GLYPHS.length)]})})}
-
-const gamePips={'2048':0,tetris:0,snake:0,sudoku:0};const UNLOCK=5;
-function incrementPip(g){gamePips[g]=Math.min(gamePips[g]+1,UNLOCK);const pf={'2048':'pip2048',tetris:'pipTetris',snake:'pipSnake',sudoku:'pipSudoku'}[g];for(let i=1;i<=UNLOCK;i++){const p=document.getElementById(pf+'-'+i);if(p)p.classList.toggle('lit',i<=gamePips[g])}return gamePips[g]>=UNLOCK}
-
-class Game2048{constructor(){this.tiles=[];this.score=0;this.history=[];this.active=true;this.newGame();this.kh=e=>{if(!this.active)return;const m={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down',a:'left',d:'right',w:'up',s:'down',A:'left',D:'right',W:'up',S:'down'};if(m[e.key]){e.preventDefault();this.move(m[e.key])}}}
-enable(){document.addEventListener('keydown',this.kh)}disable(){document.removeEventListener('keydown',this.kh)}
-newGame(){this.tiles=Array(16).fill(0);this.score=0;this.history=[];this.active=true;this.addTile();this.addTile();this.render();document.getElementById('gameStatus').textContent='';document.getElementById('gameStatus').className='game-status'}
-addTile(){const e=this.tiles.map((v,i)=>v===0?i:null).filter(x=>x!==null);if(e.length)this.tiles[e[Math.floor(Math.random()*e.length)]]=Math.random()<.9?2:4}
-undo(){if(this.history.length){const s=this.history.pop();this.tiles=s.t;this.score=s.s;this.render()}}
-move(d){const o=[...this.tiles],os=this.score;const p=l=>{let a=l.filter(x=>x);for(let i=0;i<a.length-1;i++){if(a[i]===a[i+1]){a[i]*=2;this.score+=a[i];a.splice(i+1,1)}}while(a.length<4)a.push(0);return a};
-if(d==='left')for(let r=0;r<4;r++){const row=p(this.tiles.slice(r*4,r*4+4));row.forEach((v,i)=>this.tiles[r*4+i]=v)}
-else if(d==='right')for(let r=0;r<4;r++){const row=p(this.tiles.slice(r*4,r*4+4).reverse()).reverse();row.forEach((v,i)=>this.tiles[r*4+i]=v)}
-else if(d==='up')for(let c=0;c<4;c++){const col=p([0,1,2,3].map(r=>this.tiles[r*4+c]));col.forEach((v,r)=>this.tiles[r*4+c]=v)}
-else if(d==='down')for(let c=0;c<4;c++){const col=p([3,2,1,0].map(r=>this.tiles[r*4+c])).reverse();col.forEach((v,r)=>this.tiles[r*4+c]=v)}
-if(o.some((v,i)=>v!==this.tiles[i])||os!==this.score){this.history.push({t:[...o],s:os});this.addTile();this.render();this.check()}}
-check(){const w=this.tiles.includes(2048);const cm=this.tiles.includes(0)||[0,1,2,3].some(r=>[0,1,2,3].some(c=>{const i=r*4+c;return(c<3&&this.tiles[i]===this.tiles[i+1])||(r<3&&this.tiles[i]===this.tiles[i+4])}));const st=document.getElementById('gameStatus');if(w){st.textContent='🎉 You reached 2048!';st.className='game-status win'}else if(!cm){st.textContent='Game Over';st.className='game-status lose';this.active=false}}
-render(){const b=document.getElementById('gameBoard');if(!b)return;const cl={0:'',2:'rgba(0,212,255,.08)',4:'rgba(0,212,255,.15)',8:'rgba(0,212,255,.22)',16:'rgba(125,249,232,.2)',32:'rgba(125,249,232,.3)',64:'rgba(139,92,246,.25)',128:'rgba(139,92,246,.35)',256:'rgba(244,63,94,.25)',512:'rgba(244,63,94,.35)',1024:'rgba(251,191,36,.3)',2048:'rgba(251,191,36,.45)'};if(!b.children.length)for(let i=0;i<16;i++){const d=document.createElement('div');d.className='game-tile';b.appendChild(d)}this.tiles.forEach((v,i)=>{const d=b.children[i];d.textContent=v||'';d.style.background=cl[v]||'rgba(255,255,255,.08)';d.style.borderColor=v?'var(--signal-dim)':'var(--border)';d.style.color=v?'var(--text-primary)':'transparent';d.style.fontSize=v>=1024?'.8rem':'1.1rem'});document.getElementById('gameScore').textContent=this.score}}
-
-class TetrisGame{constructor(){this.W=10;this.H=13;this.running=true;this.score=0;this.board=[];this.cur=null;this.ctx=document.getElementById('tetrisCanvas').getContext('2d');this.CS=30;this.shapes=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]],[[0,1,1],[1,1,0]],[[1,1,0],[0,1,1]]];this.colors=['#00d4ff','#7df9e8','#8b5cf6','#f43f5e','#fbbf24','#10b981','#f97316'];this.reset();this.kh=e=>{if(!this.running)return;const m={ArrowLeft:'l',ArrowRight:'r',ArrowUp:'rot',ArrowDown:'d',' ':'drop'};if(m[e.key]){e.preventDefault();this.act(m[e.key])}};document.addEventListener('keydown',this.kh)}
-reset(){this.board=Array.from({length:this.H},()=>Array(this.W).fill(0));this.score=0;this.running=true;document.getElementById('tetrisScore').textContent=0;document.getElementById('tetrisStatus').textContent='';document.getElementById('tetrisStatus').className='game-status';this.spawn();this.loop()}
-spawn(){const i=Math.floor(Math.random()*this.shapes.length);this.cur={shape:this.shapes[i].map(r=>[...r]),color:this.colors[i],x:3,y:0};if(!this.valid(this.cur.shape,this.cur.x,this.cur.y)){this.running=false;document.getElementById('tetrisStatus').textContent='Game Over';document.getElementById('tetrisStatus').className='game-status lose'}}
-valid(s,x,y){for(let r=0;r<s.length;r++)for(let c=0;c<s[0].length;c++){if(!s[r][c])continue;const nx=x+c,ny=y+r;if(nx<0||nx>=this.W||ny>=this.H||(ny>=0&&this.board[ny][nx]))return false}return true}
-merge(){const{shape,x,y,color}=this.cur;for(let r=0;r<shape.length;r++)for(let c=0;c<shape[0].length;c++){if(shape[r][c]&&y+r>=0)this.board[y+r][x+c]=color}}
-clear(){let n=0;this.board=this.board.filter(r=>{if(r.every(c=>c)){n++;return false}return true});while(this.board.length<this.H)this.board.unshift(Array(this.W).fill(0));this.score+=n*100;document.getElementById('tetrisScore').textContent=this.score}
-rotate(s){return s[0].map((_,c)=>s.map(r=>r[c]).reverse())}
-act(a){if(!this.cur)return;let{shape,x,y}=this.cur;if(a==='l'&&this.valid(shape,x-1,y))this.cur.x--;else if(a==='r'&&this.valid(shape,x+1,y))this.cur.x++;else if(a==='d'){if(this.valid(shape,x,y+1))this.cur.y++;else{this.merge();this.clear();this.spawn()}}else if(a==='rot'){const ns=this.rotate(shape);if(this.valid(ns,x,y))this.cur.shape=ns}else if(a==='drop'){while(this.valid(this.cur.shape,this.cur.x,this.cur.y+1))this.cur.y++;this.merge();this.clear();this.spawn()}}
-draw(){const{ctx,CS,W,H}=this;ctx.fillStyle='#000';ctx.fillRect(0,0,W*CS,H*CS);for(let r=0;r<H;r++)for(let c=0;c<W;c++){if(this.board[r][c]){ctx.fillStyle=this.board[r][c];ctx.fillRect(c*CS+1,r*CS+1,CS-2,CS-2)}}if(this.cur){const{shape,x,y,color}=this.cur;ctx.fillStyle=color;for(let r=0;r<shape.length;r++)for(let c=0;c<shape[0].length;c++){if(shape[r][c])ctx.fillRect((x+c)*CS+1,(y+r)*CS+1,CS-2,CS-2)}}}
-loop(){if(!this.running)return;this.act('d');this.draw();setTimeout(()=>this.loop(),500)}
-disable(){document.removeEventListener('keydown',this.kh)}}
-
-class SnakeGame{constructor(){this.ctx=document.getElementById('snakeCanvas').getContext('2d');this.G=15;this.CS=20;this.running=true;this.score=0;this.reset();this.kh=e=>{const m={ArrowLeft:'l',ArrowRight:'r',ArrowUp:'u',ArrowDown:'d'};if(m[e.key]){e.preventDefault();this.dir=m[e.key]}};document.addEventListener('keydown',this.kh)}
-reset(){this.snake=[{x:7,y:7}];this.dir='r';this.food=this.nf();this.score=0;this.running=true;document.getElementById('snakeScore').textContent=0;document.getElementById('snakeStatus').textContent='';document.getElementById('snakeStatus').className='game-status';this.loop()}
-nf(){let f;do{f={x:Math.floor(Math.random()*this.G),y:Math.floor(Math.random()*this.G)}}while(this.snake.some(s=>s.x===f.x&&s.y===f.y));return f}
-loop(){if(!this.running)return;const h={...this.snake[0]};if(this.dir==='l')h.x--;if(this.dir==='r')h.x++;if(this.dir==='u')h.y--;if(this.dir==='d')h.y++;if(h.x<0||h.x>=this.G||h.y<0||h.y>=this.G||this.snake.some(s=>s.x===h.x&&s.y===h.y)){this.running=false;document.getElementById('snakeStatus').textContent='Game Over';document.getElementById('snakeStatus').className='game-status lose';return}this.snake.unshift(h);if(h.x===this.food.x&&h.y===this.food.y){this.score+=10;document.getElementById('snakeScore').textContent=this.score;this.food=this.nf()}else this.snake.pop();const{ctx,CS,G}=this;ctx.fillStyle='#000';ctx.fillRect(0,0,G*CS,G*CS);ctx.fillStyle='#00d4ff';this.snake.forEach(s=>ctx.fillRect(s.x*CS+1,s.y*CS+1,CS-2,CS-2));ctx.fillStyle='#f43f5e';ctx.fillRect(this.food.x*CS+1,this.food.y*CS+1,CS-2,CS-2);setTimeout(()=>this.loop(),120)}
-disable(){document.removeEventListener('keydown',this.kh)}}
-
-class SudokuGame{constructor(){this.moves=0;this.init()}
-init(){this.board=Array(9).fill(0).map(()=>Array(9).fill(0));this.fill(this.board);this.solution=this.board.map(r=>[...r]);this.remove();this.render()}
-fill(b){for(let r=0;r<9;r++)for(let c=0;c<9;c++){if(!b[r][c]){const ns=[1,2,3,4,5,6,7,8,9].sort(()=>Math.random()-.5);for(let n of ns){if(this.ok(b,r,c,n)){b[r][c]=n;if(this.fill(b))return true;b[r][c]=0}}return false}}return true}
-ok(b,r,c,n){if(b[r].includes(n))return false;if(b.map(row=>row[c]).includes(n))return false;const br=Math.floor(r/3)*3,bc=Math.floor(c/3)*3;for(let i=br;i<br+3;i++)for(let j=bc;j<bc+3;j++)if(b[i][j]===n)return false;return true}
-remove(){let n=0;while(n<40){const r=Math.floor(Math.random()*9),c=Math.floor(Math.random()*9);if(this.board[r][c]){this.board[r][c]=0;n++}}}
-render(){const el=document.getElementById('sudokuBoard');if(!el)return;el.innerHTML='';for(let r=0;r<9;r++)for(let c=0;c<9;c++){const inp=document.createElement('input');inp.type='number';inp.min='1';inp.max='9';inp.value=this.board[r][c]||'';inp.style.cssText=`width:100%;aspect-ratio:1;border:1px solid rgba(0,212,255,.2);border-right:${c%3===2?'2px solid rgba(0,212,255,.4)':'1px solid rgba(0,212,255,.1)'};border-bottom:${r%3===2?'2px solid rgba(0,212,255,.4)':'1px solid rgba(0,212,255,.1)'};background:transparent;color:var(--text-primary);font-size:.85rem;text-align:center;font-family:var(--font-display);font-weight:600`;if(!this.board[r][c]){inp.addEventListener('change',e=>{const v=parseInt(e.target.value);if(v>0&&v<10){this.board[r][c]=v;this.moves++;document.getElementById('sudokuMoves').textContent=this.moves;if(this.solved()){document.getElementById('sudokuStatus').textContent='🎉 Puzzle solved!';document.getElementById('sudokuStatus').className='game-status win'}}})}else{inp.disabled=true;inp.style.opacity='.6'}el.appendChild(inp)}}
-solved(){return this.board.every((row,r)=>row.every((v,c)=>v===this.solution[r][c]))}
-reset(){this.moves=0;document.getElementById('sudokuMoves').textContent=0;document.getElementById('sudokuStatus').textContent='';document.getElementById('sudokuStatus').className='game-status';this.init()}}
-
-let g2048=null,gTetris=null,gSnake=null,gSudoku=null;
-function openGame(t){document.getElementById('gameOverlay').classList.add('active');if(t==='2048'){document.getElementById('gameModal2048').style.display='block';if(!g2048)g2048=new Game2048();else g2048.render();g2048.enable()}if(t==='tetris'){document.getElementById('gameModalTetris').style.display='block';if(!gTetris)gTetris=new TetrisGame();else{gTetris.running=true;gTetris.loop()}}if(t==='snake'){document.getElementById('gameModalSnake').style.display='block';if(!gSnake)gSnake=new SnakeGame();else{gSnake.running=true}}if(t==='sudoku'){document.getElementById('gameModalSudoku').style.display='block';if(!gSudoku)gSudoku=new SudokuGame()}}
-function closeGames(){document.getElementById('gameOverlay').classList.remove('active');['gameModal2048','gameModalTetris','gameModalSnake','gameModalSudoku'].forEach(id=>document.getElementById(id).style.display='none');if(g2048)g2048.disable();if(gTetris){gTetris.running=false;gTetris.disable()}if(gSnake){gSnake.running=false;gSnake.disable()}}
-
-// INIT
-setTheme('lunar');initFooter();
-document.getElementById('themeToggle').addEventListener('click',()=>setTheme(theme==='lunar'?'sol':'lunar'));
-document.getElementById('paletteToggle').addEventListener('click',()=>setPalette(paletteIdx+1));
-document.getElementById('menuToggle').addEventListener('click',()=>toggleMenu());
-document.getElementById('menuBackdrop').addEventListener('click',()=>toggleMenu(false));
-document.querySelectorAll('.menu-link[data-scroll]').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.getElementById(l.getAttribute('data-target'));toggleMenu(false);if(t)setTimeout(()=>t.scrollIntoView({behavior:'smooth'}),350)})});
-
-document.getElementById('heroRiftborn').addEventListener('click',e=>{e.preventDefault();ripple(e,e.currentTarget);openModal('riftbornModal')});
-document.getElementById('riftbornCard').addEventListener('click',e=>{ripple(e,e.currentTarget);openModal('riftbornModal')});
-document.getElementById('menuRiftborn').addEventListener('click',e=>{e.preventDefault();toggleMenu(false);setTimeout(()=>openModal('riftbornModal'),350)});
-document.getElementById('modalClose').addEventListener('click',closeAllModals);
-document.getElementById('riftbornModalClose').addEventListener('click',closeAllModals);
-document.querySelectorAll('.modal-overlay').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)closeAllModals()})});
-
-document.getElementById('riftbornFakeBtn').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();showToast(riftR[Math.min(riftCount,riftR.length-1)],riftCount>=8);riftCount++;if(riftCount>10){const b=document.getElementById('riftbornFakeBtn');b.style.transform=`rotate(${(Math.random()-.5)*6}deg) scale(.97)`;setTimeout(()=>b.style.transform='',200)}});
-document.getElementById('riftbornRealBtn').addEventListener('click',()=>{riftCount=0});
-
-document.getElementById('fidgetGame2048').addEventListener('click',e=>{ripple(e,e.currentTarget);if(incrementPip('2048'))openGame('2048')});
-document.getElementById('fidgetGameTetris').addEventListener('click',e=>{ripple(e,e.currentTarget);if(incrementPip('tetris'))openGame('tetris')});
-document.getElementById('fidgetGameSnake').addEventListener('click',e=>{ripple(e,e.currentTarget);if(incrementPip('snake'))openGame('snake')});
-document.getElementById('fidgetGameSudoku').addEventListener('click',e=>{ripple(e,e.currentTarget);if(incrementPip('sudoku'))openGame('sudoku')});
-document.getElementById('closeGame2048').addEventListener('click',closeGames);
-document.getElementById('closeGameTetris').addEventListener('click',closeGames);
-document.getElementById('closeGameSnake').addEventListener('click',closeGames);
-document.getElementById('closeGameSudoku').addEventListener('click',closeGames);
-document.getElementById('gameOverlay').addEventListener('click',closeGames);
-document.getElementById('newGameBtn').addEventListener('click',()=>g2048&&g2048.newGame());
-document.getElementById('undoGameBtn').addEventListener('click',()=>g2048&&g2048.undo());
-document.getElementById('newTetrisBtn').addEventListener('click',()=>gTetris&&gTetris.reset());
-document.getElementById('newSnakeBtn').addEventListener('click',()=>gSnake&&gSnake.reset());
-document.getElementById('newSudokuBtn').addEventListener('click',()=>gSudoku&&gSudoku.reset());
-
-document.getElementById('fidgetPulse').addEventListener('click',()=>{['ring1','ring2','ring3'].forEach((id,i)=>{const r=document.getElementById(id);r.classList.remove('go');void r.offsetWidth;setTimeout(()=>r.classList.add('go'),i*150)})});
-['fidgetMorph','fidgetOrbit','fidgetWave','fidgetShimmer','fidgetSpiral','fidgetBounce','fidgetHexa','fidgetStar','fidgetCube','fidgetOrbit2','fidgetMorph2'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('click',e=>{ripple(e,el);el.querySelectorAll('div').forEach(c=>{const a=getComputedStyle(c).animation;if(a&&a!=='none'){c.style.animation='none';void c.offsetWidth;c.style.animation=''}})})});
-
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAllModals();closeGames();toggleMenu(false)}});
-document.querySelector('.hero-scroll')?.addEventListener('click',()=>{document.getElementById('projects').scrollIntoView({behavior:'smooth'})});
-</script>
+    const initialPanel = location.hash.replace("#", "");
+    if (initialPanel) setPanel(initialPanel);
+  </script>
 </body>
 </html>
