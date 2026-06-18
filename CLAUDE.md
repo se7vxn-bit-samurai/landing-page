@@ -83,6 +83,18 @@ All state uses `localStorage` via the `lsGet`/`lsSet` helpers. Key namespaces:
 
 No CSS framework. Styles are inline in `<style>` blocks. World/app accent colors are applied via CSS custom properties (`--ac`, `--wash`, `--bc`, `--pc`). The time-of-day background tint is computed on load from `new Date().getHours()`.
 
+### Responsive / Mobile
+
+Layout adapts by a layered set of media queries at the end of the main `<style>` block. The strategy separates **pointer capability** from **viewport width** so phone rotation switches layouts cleanly:
+
+- `@media (hover:none)` — touch devices always reveal door content (`.tp-reveal`) since there is no hover; hover-grow flex jumps are neutralized so a tapped door doesn't stick expanded.
+- `@media (max-width:980px)` — collapses the chamber's inner grids to one column.
+- `@media (max-width:680px)` — phone portrait: the sky band hides, `.tp-panels` becomes a vertical scrolling column of full-width door cards.
+- `@media (max-height:480px) and (min-width:681px)` — short landscape: trims the sky band so the horizontal doors keep height.
+- `@media (prefers-reduced-motion:reduce)` — disables all animation/transition.
+
+Above 680px the doors stay in their horizontal "cathedral" layout with the sky visible, so a landscape phone (wider than portrait) gets the full desktop presentation. `touch-action:manipulation`, `-webkit-text-size-adjust:100%`, and `-webkit-tap-highlight-color:transparent` on the root remove tap delay, iOS landscape font inflation, and tap flash. The star field renders 60 nodes under 680px (vs 120) to cut animated DOM cost on phones.
+
 ## Conventions
 
 - **No external dependencies** — everything is self-contained in `index.html`.
