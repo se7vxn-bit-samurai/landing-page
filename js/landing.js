@@ -116,8 +116,8 @@
       <div class="lp-h in-up d1">the ecosystem</div>
       <div class="lp-title in-up d2">A place that keeps its own memory</div>
       <div class="lp-eco in-up d3">
-        <div class="e"><b>MirrorFlow</b>The productivity arm ·Ping for the moment, Sync for the long arc.</div>
-        <div class="e"><b>Excelsior</b>The editorial sales coach ·argument, mindset, craft.</div>
+        <div class="e"><b>MirrorFlow</b>The productivity arm · Ping for the moment, Sync for the long arc.</div>
+        <div class="e"><b>Excelsior</b>The editorial sales coach · argument, mindset, craft.</div>
         <div class="e"><b>Riftborn</b>Fables, worlds & the Codex that keeps them canon.</div>
         <div class="e"><b>The Altar</b>Where new ideas are laid as candles, and watched.</div>
       </div>
@@ -143,7 +143,11 @@
     if(world && typeof openChamber==='function') setTimeout(()=>openChamber(world), 520);
   }
   wrap.querySelector('#lp-enter').addEventListener('click',()=>enterNave());
-  wrap.querySelectorAll('.lp-card').forEach(c=>c.addEventListener('click',()=>enterNave(c.dataset.world)));
+  wrap.querySelectorAll('.lp-card').forEach(c=>{
+    c.addEventListener('click',()=>enterNave(c.dataset.world));
+    /* pre-warm the world's app so entry from the landing is never a cold summon */
+    c.addEventListener('mouseenter',()=>{ try{ const w=W[c.dataset.world]; if(w && w.app && typeof Frame!=='undefined') Frame.warm(w.app); }catch(e){} });
+  });
 
   function showLanding(){
     const g=document.getElementById('gate'); if(g) g.classList.add('gone');

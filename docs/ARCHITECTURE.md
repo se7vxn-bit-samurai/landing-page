@@ -59,6 +59,11 @@ Replaces the injection the old bootstrap did at runtime. Three jobs:
    case — apps use real localStorage directly, exactly as they did under blob URLs.
 3. **Key relay** — forwards Esc, Ctrl/Cmd+K and Ctrl/Cmd+1–4 to the shell as
    `tgc.keys` messages so shell shortcuts work while an app has focus.
+4. **Theme handshake** — listens for `{type:'tgc.theme', theme}` broadcasts
+   (sent by the shell on frame mount, app hello, and every sky change) and maps
+   the sky onto the app's own skins: ping/notes → pulse·slate·linen,
+   coach → press·cream; sync/codex have no map and keep their own dress. An
+   in-app theme picker still works between sky changes.
 
 ## Views & core singletons
 
@@ -84,6 +89,7 @@ Replaces the injection the old bootstrap did at runtime. Three jobs:
 | `tgc.shell2.last` | last launched app (resume pill) |
 | `tgc.shell2.settings` | theme mode, observances, weather |
 | `tgc.shell2.pins` / `.recents` | pinned braziers · palette recency |
+| `tgc.shell2.visits` | per-app last-entered timestamps (feeds the Pulse) |
 | `tgc.appstore.<id>` | per-app store written via the bridge shim fallback |
 
 The **satchel** (vestry → pack/unpack) exports and imports every `tgc.*` key as one

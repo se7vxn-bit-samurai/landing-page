@@ -6,6 +6,31 @@
    3 · key relay · Esc / Ctrl+K / Ctrl+1-4 reach the shell
    ═══════════════════════════════════════════ */
 window.__TGC_APP_ID = (location.pathname.split('/').pop() || 'app').replace(/\.html$/, '');
+
+/* ── the theme handshake · the frame follows the shell's sky ──
+   The shell broadcasts { type:'tgc.theme', theme:'night'|'day'|'twilight' } on mount,
+   on hello, and whenever the sky changes. Each app maps the sky onto its own skins.
+   An in-app theme picker still works — it holds until the sky next changes. */
+(function () {
+  var MAP = {
+    ping:  { night: 'pulse', twilight: 'slate', day: 'linen' },
+    notes: { night: 'pulse', twilight: 'slate', day: 'linen' },
+    coach: { night: 'press', twilight: 'press', day: 'cream' }
+  };
+  window.addEventListener('message', function (e) {
+    var d = e.data;
+    if (!d || d.type !== 'tgc.theme' || typeof d.theme !== 'string') return;
+    var map = MAP[window.__TGC_APP_ID]; if (!map) return;         // sync & codex keep their own dress
+    var skin = map[d.theme]; if (!skin) return;
+    if (window.__TGC_LAST_SKY === d.theme) return;                 // only real sky changes re-skin
+    window.__TGC_LAST_SKY = d.theme;
+    function apply() { try { document.documentElement.dataset.theme = skin; } catch (err) {} }
+    apply();
+    /* some apps restore their own saved theme a beat after load · re-assert once so the mount matches the sky */
+    clearTimeout(window.__TGC_SKY_T);
+    window.__TGC_SKY_T = setTimeout(apply, 900);
+  });
+})();
 window.__TGC_LS_SEED = window.__TGC_LS_SEED || {};
 try {
   var __seed = window.parent !== window && window.parent.localStorage.getItem('tgc.appstore.' + window.__TGC_APP_ID);
