@@ -729,7 +729,8 @@ function navArrows(id){
   const ix = CH_ORDER.indexOf(id);
   const prev = CH_ORDER[(ix-1+CH_ORDER.length)%CH_ORDER.length];
   const next = CH_ORDER[(ix+1)%CH_ORDER.length];
-  return `<span class="x" data-nav="${prev}">←</span><span class="x" data-nav="${next}">→</span><span class="x" data-close>esc · return ✕</span>`;
+  const nm = k => WORLDS[k] ? WORLDS[k].name.toLowerCase() : 'the '+k;
+  return `<span class="x" data-nav="${prev}" title="walk left">← ${nm(prev)}</span><span class="x" data-nav="${next}" title="walk right">${nm(next)} →</span><span class="x" data-close>esc · return ✕</span>`;
 }
 function buildChamberHTML(id){
   if(id==='undercroft'){
@@ -1154,43 +1155,22 @@ addEventListener('unhandledrejection',__stumble);
 })();
 
 function boot(){
+  /* one ceremony only (B3): the scroll landing owns first-run entry and exits
+     through the door leaves; the old gate screen is retired — its element now
+     serves only as the initial paint cover, gone the moment boot decides. */
   const gate = $('#gate');
+  gate.classList.add('gone');
   const mApp = location.hash.match(/^#app=(\w+)$/);
   const mWorld = location.hash.match(/^#world\/(\w+)$/);
   const session = lsGet(KEYS.session,null);
   const deep = !!(mApp || mWorld);
   const restoreFrame = !deep && session && session.view==='frame' && APPS[session.app];
 
-  if(mApp && APPS[mApp[1]] && APPS[mApp[1]].localPath){ gate.classList.add('gone'); Frame.enter(mApp[1]); return; }
-  if(mWorld && (WORLDS[mWorld[1]] || mWorld[1]==='undercroft')){ gate.classList.add('gone'); openChamber(mWorld[1],false); return; }
-  if(restoreFrame){ gate.classList.add('gone'); Frame.enter(session.app); return; }
-  if(SETTINGS.gateOff){ gate.classList.add('gone'); return; }
-  if(sessionStorage.getItem(KEYS.gate)){ gate.classList.add('gone'); return; }
-
-  const stamp = $('#gate-build'); if(stamp) stamp.textContent = 'consecrated · '+BUILD;
-
-  const lines = ['warming the frames','restoring the session','reading the manifest','the doors part'];
-  let li = 0;
-  const lineT = setInterval(()=>{ li=Math.min(li+1,lines.length-1); $('#gate-line').textContent=lines[li]; },420);
-  requestAnimationFrame(()=>{ $('#gate-fill').style.width='100%'; });
-  let opened = false;
-  function open(){
-    if(opened) return; opened = true;
-    clearInterval(lineT);
-    try{ sessionStorage.setItem(KEYS.gate,'1'); }catch(e){}
-    gate.classList.add('opening');
-    setTimeout(()=>gate.classList.add('gone'),850);
-  }
+  if(mApp && APPS[mApp[1]] && APPS[mApp[1]].localPath){ Frame.enter(mApp[1]); return; }
+  if(mWorld && (WORLDS[mWorld[1]] || mWorld[1]==='undercroft')){ openChamber(mWorld[1],false); return; }
+  if(restoreFrame){ Frame.enter(session.app); return; }
   const last = localStorage.getItem(KEYS.last);
-  if(last && APPS[last]){
-    const r = $('#gate-resume'); r.style.display = 'inline-block';
-    r.textContent = 'you were last in '+APPS[last].short+' · resume ↘';
-    r.addEventListener('click',ev=>{ ev.stopPropagation(); open(); setTimeout(()=>Frame.enter(last),400); });
-    DOCK.includes(last) && Frame.warm(last);
-  }
-  setTimeout(open, last ? 3200 : 1800);
-  gate.addEventListener('click',open);
-  document.addEventListener('keydown',function once(){ open(); document.removeEventListener('keydown',once); });
+  if(last && APPS[last] && DOCK.includes(last)) Frame.warm(last);
 }
 
 /* ═══════════ APPSTORE PERSIST · fallback for shimmed app frames ═══════════ */

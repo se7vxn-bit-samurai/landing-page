@@ -69,6 +69,28 @@
   .lp-eco{display:flex;gap:30px;flex-wrap:wrap;justify-content:center;max-width:760px;margin-top:34px;position:relative}
   .lp-eco .e{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--ink2);text-align:left;max-width:210px}
   .lp-eco .e b{display:block;font-family:var(--display);font-size:16px;letter-spacing:0;color:var(--ink);margin-bottom:5px;font-weight:600}
+  /* §3 · the miniature sky — the nave in embryo, clickable */
+  .lp-sky{position:relative;width:min(760px,92vw);height:150px;margin-top:30px}
+  .lp-sky svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .lp-sky svg line{stroke:var(--gilt-dim);stroke-width:1;stroke-dasharray:3 5;animation:lpconstel 2.6s linear infinite}
+  @keyframes lpconstel{to{stroke-dashoffset:-16}}
+  .lp-star{position:absolute;top:34px;transform:translate(-50%,-50%);cursor:pointer}
+  .lp-star i{display:block;width:15px;height:15px;border-radius:50%;margin:0 auto;
+    background:radial-gradient(circle at 34% 30%,color-mix(in srgb,var(--sac) 85%,#fff),var(--sac) 55%,color-mix(in srgb,var(--sac) 35%,#000));
+    box-shadow:0 0 12px color-mix(in srgb,var(--sac) 60%,transparent);transition:transform .25s,box-shadow .25s;animation:lpbob2 7s ease-in-out infinite}
+  .lp-star:hover i{transform:scale(1.35);box-shadow:0 0 22px var(--sac)}
+  @keyframes lpbob2{0%,100%{translate:0 -2px}50%{translate:0 2px}}
+  .lp-star .n{font-family:var(--display);font-size:14px;font-weight:600;color:var(--ink);margin-top:14px;white-space:nowrap}
+  .lp-star .t{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-top:5px;max-width:150px;white-space:normal;line-height:1.7}
+  @media(max-width:760px){.lp-sky{height:200px}.lp-star .t{display:none}.lp-star .n{font-size:11px}}
+  /* the door leaves · the landing exits the way a chamber opens */
+  #lp-leaves{position:fixed;inset:0;z-index:395;pointer-events:none;display:none}
+  #lp-leaves.on{display:block}
+  #lp-leaves .lf{position:absolute;top:0;bottom:0;width:50.5%;background:var(--panel-2);
+    transition:transform .55s cubic-bezier(.7,0,.2,1)}
+  #lp-leaves .lf.l{left:0;border-right:1px solid var(--gilt-dim);transform:translateX(-101%)}
+  #lp-leaves .lf.r{right:0;border-left:1px solid var(--gilt-dim);transform:translateX(101%)}
+  #lp-leaves.shut .lf{transform:translateX(0)}
   .lp-enter{margin-top:48px;font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--cbg,var(--bg));
     background:var(--gilt);border:none;padding:16px 34px;cursor:pointer;font-weight:500;transition:all .25s;position:relative;display:inline-flex;gap:11px;align-items:center}
   .lp-enter:hover{gap:16px;box-shadow:0 0 34px var(--gilt-soft)}
@@ -115,12 +137,7 @@
       <div class="lp-bg" id="lp-bg3"></div>
       <div class="lp-h in-up d1">the ecosystem</div>
       <div class="lp-title in-up d2">A place that keeps its own memory</div>
-      <div class="lp-eco in-up d3">
-        <div class="e"><b>MirrorFlow</b>The productivity arm · Ping for the moment, Sync for the long arc.</div>
-        <div class="e"><b>Excelsior</b>The editorial sales coach · argument, mindset, craft.</div>
-        <div class="e"><b>Riftborn</b>Fables, worlds & the Codex that keeps them canon.</div>
-        <div class="e"><b>The Altar</b>Where new ideas are laid as candles, and watched.</div>
-      </div>
+      <div class="lp-sky in-up d3" id="lp-sky"></div>
       <button class="lp-enter in-up d4" id="lp-enter">enter the nave <span>↘</span></button>
       <div class="lp-foot">the sky follows your hour · night · day · twilight</div>
     </section>`;
@@ -131,16 +148,47 @@
   document.getElementById('lp-bg2').innerHTML = circleField('currentColor');
   document.getElementById('lp-bg3').innerHTML = tangleSwirls('currentColor');
 
+  // §3 · the miniature sky: the four worlds as their nave orbs, joined by the constellation
+  (function(){
+    const sky = document.getElementById('lp-sky'); if(!sky) return;
+    const X = (typeof SKY_X!=='undefined') ? SKY_X : {mirrorflow:16,excelsior:36,riftborn:64,altar:84};
+    const y = 34;
+    const pts = order.map(id=>X[id]);
+    sky.innerHTML = `<svg viewBox="0 0 100 150" preserveAspectRatio="none">${
+      pts.slice(0,-1).map((x,i)=>`<line x1="${x}" y1="${y}" x2="${pts[i+1]}" y2="${y}"/>`).join('')
+    }</svg>` + order.map(id=>{ const w=W[id]||{}; return `
+      <div class="lp-star" data-world="${id}" style="left:${X[id]}%;--sac:${w.accent||'#d4af37'}" role="button" tabindex="0"
+        aria-label="${w.name||id} · ${w.tagline||''}">
+        <i></i><div class="n">${w.name||id}</div><div class="t">${w.tagline||''}</div>
+      </div>`; }).join('');
+    sky.querySelectorAll('.lp-star').forEach(s=>{
+      s.addEventListener('click',()=>enterNave(s.dataset.world));
+      s.addEventListener('mouseenter',()=>{ try{ const w=W[s.dataset.world]; if(w && w.app && typeof Frame!=='undefined') Frame.warm(w.app); }catch(e){} });
+    });
+  })();
+
+  // the door leaves that carry every exit from the landing
+  const leaves = document.createElement('div');
+  leaves.id='lp-leaves'; leaves.innerHTML='<div class="lf l"></div><div class="lf r"></div>';
+  document.body.appendChild(leaves);
+
   // reveal on scroll
   const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('seen'); }),{threshold:.35});
   wrap.querySelectorAll('.lp').forEach(p=>io.observe(p));
 
-  // ── entry ──
+  // ── entry · the doors shut over the landing, then part onto the nave ──
+  let entering = false;
   function enterNave(world){
+    if(entering) return; entering = true;
     try{ sessionStorage.setItem(KEYS.gate,'1'); }catch(e){}
-    wrap.classList.add('gone');
-    setTimeout(()=>{ wrap.style.display='none'; wrap.scrollTop=0; }, 900);
-    if(world && typeof openChamber==='function') setTimeout(()=>openChamber(world), 520);
+    leaves.classList.add('on');
+    requestAnimationFrame(()=>requestAnimationFrame(()=>leaves.classList.add('shut')));
+    setTimeout(()=>{
+      wrap.classList.add('gone'); wrap.style.display='none'; wrap.scrollTop=0;
+      leaves.classList.remove('shut');                       // the doors part onto the nave
+      if(world && typeof openChamber==='function') setTimeout(()=>openChamber(world), 480);
+      setTimeout(()=>{ leaves.classList.remove('on'); entering=false; }, 700);
+    }, 590);
   }
   wrap.querySelector('#lp-enter').addEventListener('click',()=>enterNave());
   wrap.querySelectorAll('.lp-card').forEach(c=>{

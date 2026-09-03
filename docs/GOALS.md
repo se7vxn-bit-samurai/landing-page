@@ -29,11 +29,12 @@ its done-condition. Update statuses as things land. Intent behind all of it:
       candle counts, per-world instrument/active counts. Feeds door reveals
       (`.tp-pulse`), chamber stat rows, MirrorFlow cards.
       *Done when: no number in the shell is invented.*
-- [ ] **B3 · One entry ceremony** — retire `#gate` as a screen; reuse its
-      door-leaf animation as the landing's exit transition; landing §3 becomes a
-      clickable mini-sky (orbs + constellation) instead of four text blocks.
-      Files: `js/landing.js`, `js/shell.js` (boot), `css/shell.css`, `index.html`.
-      *Done when: exactly one first-run ceremony exists and it ends through the doors.*
+- [x] **B3 · One entry ceremony** — `#gate` retired as a screen (now only the
+      initial paint cover; boot dismisses it instantly); the landing exits
+      through door leaves (`#lp-leaves`, shut → part onto the nave); landing §3
+      is a clickable mini-sky (world orbs + live constellation at the real
+      `SKY_X` positions) instead of four text blocks.
+      *Done when: exactly one first-run ceremony exists and it ends through the doors.* ✓
 - [ ] **B4 · Altar alive** — one ember per resting idea (live from `IDEAS` +
       `tgc.shell2.altar`), hover names it; quick-lay a candle from the panel
       without opening the chamber. Files: `js/shell.js` (door render, embers),
@@ -52,7 +53,7 @@ its done-condition. Update statuses as things land. Intent behind all of it:
 ## Phase C · Polish (fold into the B-item that touches the area)
 
 - [ ] Night glyph base opacity 13% → ~20–22% (letterforms are near-subliminal) → with B6
-- [ ] Chamber ← → arrows show prev/next world name → with B3
+- [x] Chamber ← → arrows show prev/next world name (with B3)
 - [ ] Notes: align type stack (Inter/Cascadia → DM Sans/DM Mono) → with B1 follow-up
 - [ ] Mobile sky story (`#sky` is hidden under 980px; decide what the small
       screen gets once orbs carry pulse) → after B5
