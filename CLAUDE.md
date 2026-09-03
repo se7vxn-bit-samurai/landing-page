@@ -4,13 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is the landing page / shell for **TheGuide** (`sel.theguide.club`), described as "one roof, four worlds." It is a **single-file static application** — the entire UI, styles, and JavaScript live in `index.html` (~6.6 MB). There is no build step, no package manager, and no test framework.
+This is the landing page / shell for **TheGuide** (`sel.theguide.club`), described as "one roof, four worlds." It is a **multi-file static site** — no build step, no package manager, no test framework. The shell lives in `index.html` + `css/shell.css` + `js/shell.js` + `js/landing.js`; each hosted app is its own self-contained file under `apps/`; fonts are local woff2 under `fonts/`.
+
+Full architecture reference: `docs/ARCHITECTURE.md`. App contract & inventory: `docs/APPS.md`.
 
 ## Development Workflow
 
-- Edit `index.html` directly. There is no compilation step.
-- Deploy by pushing to `main`; GitHub Pages serves the site at `sel.theguide.club` (configured via `CNAME`).
-- To preview locally, open `index.html` in a browser or run any static file server (e.g. `python3 -m http.server`).
+- Edit the file that owns the concern: markup → `index.html`, shell styles → `css/shell.css`, shell logic → `js/shell.js`, scroll landing → `js/landing.js`, an app → `apps/<id>.html`.
+- Deploy by pushing to `main`; GitHub Pages serves the site at `sel.theguide.club` (configured via `CNAME`). Bump `version.json` on meaningful deploys (open tabs poll it and whisper "new build"); bump `VER` in `sw.js` when cached assets change shape.
+- To preview locally, run any static file server from the repo root (e.g. `python3 -m http.server`). Plain `file://` won't fetch the split assets — serve it.
 
 ## Architecture
 
@@ -18,75 +20,83 @@ The shell has two primary **views**, toggled by setting `document.body.dataset.v
 
 | `data-view` | What's visible |
 |---|---|
-| `nave` (default) | The sky nav, world panels, constellation, celstial bodies |
-| `frame` | The iframe frame + dockbar; nave is hidden |
+| `nave` (default) | The sky nav, world panels, constellation, celestial bodies |
+| `frame` | The iframe frame + topbar; nave is hidden |
 
-### Key Data Structures (top of `<script>`)
+First-run entry is owned by the **scroll landing** (`js/landing.js`, 3 snap sections); the older `#gate` threshold only fires for non-first-run paths. Script order in `index.html` matters: `js/shell.js` defers `boot()` with `setTimeout(0)` so `js/landing.js` can register first.
 
-- **`WORLDS`** — The four worlds: `mirrorflow`, `excelsior`, `riftborn`, `altar`. Each has `name`, `motto`, `tagline`, `status`, `accent`, `pulse`, `flagship`, and optionally `app` (the default app to launch for that world).
-- **`APPS`** — Individual apps (e.g. `ping`, `sync`, `coach`, `codex`, `notes`). Each has `id`, `world`, `glyph`, `accent`, `status`, `version`, `localPath` (the iframe URL), and `kind`.
-- **`DOCK`** — Ordered list of app IDs shown in the dockbar braziers: `['ping','sync','coach','codex']`.
+### Key Data Structures (top of `js/shell.js`)
+
+- **`WORLDS`** — The four worlds: `mirrorflow`, `excelsior`, `riftborn`, `altar`. Each has `name`, `motto`, `tagline`, `status`, `accent`, `pulse`, `palette`, `flagship`, and optionally `app` (the default app to launch for that world).
+- **`APPS`** — Individual apps (`ping`, `sync`, `coach`, `codex`, `notes`). Each has `id`, `world`, `glyph`, `accent`, `status`, `version`, `localPath` (the iframe URL, `apps/<id>.html`), and `kind`.
+- **`DOCK`** — Ordered list of app IDs shown in the topbar braziers: `['ping','sync','coach','codex']`.
 - **`ORDER`** — Display order of worlds in the nave: `['mirrorflow','excelsior','riftborn','altar']`.
-- **`STATUS`** — Maps status strings (`building`, `active`, `open`) to display label and dot color.
+- **`STATUS`** — Maps status strings (`building`, `active`, `open`, `soon`, `archived`) to display label and dot color.
+- **`ARCHIVE` / `EXCHANGE` / `IDEAS`** — sealed donors (undercroft), per-world bus contracts, and altar ideas.
 - **`KEYS`** — localStorage key constants under the `tgc.shell2.*` namespace.
 
 ### Core Singletons
 
 **`Frame`** — manages the iframe layer:
-- `Frame.enter(appId)` — launches an app by creating/reusing an iframe, switches to `frame` view, updates the dockbar.
+- `Frame.enter(appId)` — launches an app by creating/reusing a same-origin iframe pointed at its `localPath`, switches to `frame` view, updates the braziers.
 - `Frame.ascend()` — returns to the `nave` view.
-- `Frame.warm(appId)` — preloads an iframe without switching to it (max 3 iframes cached; LRU eviction).
-- `Frame.iframes`, `Frame.order`, `Frame.active` track mounted iframes.
+- `Frame.warm(appId)` — pre-fetches an app file into the HTTP cache without mounting it.
+- LRU cache: 4 mounted frames on desktop, 2 on phones; pinned braziers (right-click) are never evicted.
 
 **`Bus`** — cross-frame message passing:
 - Listens for `postMessage` from iframes. Apps announce themselves with `tgc.shell.hello` and receive packets via `tgc.exchange.deliver`.
-- Incoming packets from iframes use `tgc.exchange.send`.
-- `Bus.queue` persists to localStorage (`KEYS.inbox`) as draggable "missive" envelopes shown in the sky.
+- Incoming packets from iframes use `tgc.exchange.send` and must declare `contract: 'theguide.exchange.v1'`.
+- `Bus.queue` persists to localStorage (`KEYS.inbox`) as the draggable "missive" envelope shown in the sky; the full queue lives in the Inbox drawer.
 - `Bus.deliver(packet)` / `Bus.dismiss(packet)` route or discard missives.
-- A demo packet is injected on first visit.
+
+### The app bridge (`apps/bridge.js`)
+
+Every app's `<head>` loads `bridge.js` first. It derives the app id from the filename, installs a localStorage shim **only where storage is blocked** (persisting through the shell via `tgc.ls.persist` under `tgc.appstore.<id>`), and relays Esc / Ctrl+K / Ctrl+1–4 to the shell. When adding a new app, include this script tag and add a manifest entry to `APPS`.
 
 ### UI Sections (in DOM order)
 
 | Element | Role |
 |---|---|
-| `#gate` | Loading/threshold screen with animated progress bar |
-| `#stars` | CSS star field background |
+| `#topbar` | Persistent strip: home seal, braziers, missive badge, theme toggle, tips |
+| `#gate` | Threshold screen (non-first-run entry only) |
+| `#stars` / `.aurora` / `.weather` | Background layers |
 | `#nave` | Main navigation view |
 | `#sky` | Top strip: constellation SVG, world orbs, sun/moon, missive envelope |
 | `#tp-panels` | World panels (`.tp-panel[data-world]`), one per entry in `WORLDS` |
 | `#frame` | iframe container; `#veil` overlay while loading |
-| `#dockbar` | Persistent bar in frame view: brazier slots, app name, ascend button |
 | `#chamber` | Modal-style content pane rendered by `moduleXxx()` functions |
-| `#palette` | Command palette (keyboard shortcut: `/`) |
+| `#inbox` / `#rites` | Drawers: missive queue · environment self-test |
+| `#palette` | Command palette (Ctrl+K) |
 | `#toast` | Ephemeral toast notifications via `toast(msg)` |
+| `#landing` | Scroll landing, appended by `js/landing.js` |
 
 ### Module Rendering
 
-Each world has a corresponding `moduleXxx(world)` function that returns an HTML string injected into `#ch-content`. These open the `#chamber` overlay when a world panel is clicked. Modules include live data from `WORLDS`, `APPS`, and localStorage ideas (`KEYS.altar`).
+Each world has a corresponding `moduleXxx(world)` function in `js/shell.js` that returns an HTML string injected into `#ch-content`. These open the `#chamber` overlay when a world panel is clicked. Two extra chambers exist beyond the worlds: the **undercroft** (sealed donors) and the **vestry** (settings, satchel export/import, rites, storage meters).
 
 ### Persistence
 
 All state uses `localStorage` via the `lsGet`/`lsSet` helpers. Key namespaces:
-- `tgc.shell2.session` — last active app per session
-- `tgc.shell2.inbox` — pending missive queue
-- `tgc.shell2.demoDone` — whether demo packet was shown
-- `tgc.shell2.last` — last launched app ID (for "resume" button)
-- `tgc.appstore.<appId>` — per-app key-value store, set/read by hosted iframes via postMessage
+- `tgc.shell2.*` — session, inbox, altar ideas, settings, pins, recents, last app
+- `tgc.appstore.<appId>` — per-app key-value store written via the bridge shim fallback
+
+The **satchel** (vestry) exports/imports every `tgc.*` key as one JSON file.
 
 ### Keyboard Shortcuts
 
-- `/` — open command palette
-- `1`–`4` — launch DOCK apps by position (while in frame view)
-- `Esc` — ascend to nave (from frame), or close palette/chamber
+- `Ctrl+K` — command palette · `Ctrl+1–4` — switch DOCK apps
+- `1`–`6` — open chambers (worlds, undercroft, vestry) from the nave
+- `←`/`→` — walk chambers · `Ctrl+←/→` — cycle warm frames · `H` — home · `Esc` — ascend/close
 
 ### Theming
 
-No CSS framework. Styles are inline in `<style>` blocks. World/app accent colors are applied via CSS custom properties (`--ac`, `--wash`, `--bc`, `--pc`). The time-of-day background tint is computed on load from `new Date().getHours()`.
+No CSS framework. Three skins — night (default), day, twilight — via `:root[data-theme]` token overrides in `css/shell.css`; `auto` mode follows the clock with a continuous sky tint. World/app accents are applied via CSS custom properties (`--ac`, `--wash`, `--bc`, `--pc`); chambers re-skin via `--c*` variables from each world's `palette`.
 
 ## Conventions
 
-- **No external dependencies** — everything is self-contained in `index.html`.
+- **No external runtime dependencies** — the shell and every app are self-contained; the only external call is opt-in weather (Open-Meteo).
 - **Status values** are `'building'`, `'active'`, or `'open'`; rendered via the `pip()` helper.
-- **App URLs** are set via `localPath` in each `APPS` entry — update these when app deployment URLs change.
-- **Braziers** (`.brz`) are the 3-slot frame indicators that track which iframes are mounted.
-- The `$` helper is `document.querySelector`.
+- **App URLs** are set via `localPath` in each `APPS` entry — update these if app files move.
+- **Braziers** (`.brz`) are the 4-slot frame indicators in the topbar that track mounted iframes.
+- The `$` helper is `document.querySelector`; `$$` is `querySelectorAll` as an array.
+- Canon: **apps never read each other's storage — explicit exchange packets only.**
