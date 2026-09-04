@@ -13,9 +13,9 @@ window.__TGC_APP_ID = (location.pathname.split('/').pop() || 'app').replace(/\.h
    An in-app theme picker still works — it holds until the sky next changes. */
 (function () {
   var MAP = {
-    ping:  { night: 'pulse', twilight: 'slate', day: 'linen' },
-    notes: { night: 'pulse', twilight: 'slate', day: 'linen' },
-    coach: { night: 'press', twilight: 'press', day: 'cream' }
+    ping:  { night: 'pulse', twilight: 'slate', day: 'linen', pop: 'paper' },
+    notes: { night: 'pulse', twilight: 'slate', day: 'linen', pop: 'paper' },
+    coach: { night: 'press', twilight: 'press', day: 'cream', pop: 'cream' }
   };
   window.addEventListener('message', function (e) {
     var d = e.data;

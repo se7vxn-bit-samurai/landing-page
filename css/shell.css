@@ -15,8 +15,20 @@
   --scrim:rgba(6,8,13,.66); --star-op:.5; --frame-bg:#06080d;
   --sky-grad:transparent; --door-text:var(--ink);
 }
-/* ── DAY skin · summer colourpop · Muizenberg ── */
+/* ── DAY skin · the nave at noon · warm stone, pale gold, ink on paper (B6) ── */
 :root[data-theme="day"]{
+  --bg:#f4eee0; --bg2:#f8f3e7; --bg3:#fdfaf1;
+  --ink:#1f1c15; --ink2:#575040; --ink3:#867c64; --ink4:#b6ab90;
+  --gilt:#8b6914; --gilt-soft:rgba(139,105,20,.62); --gilt-dim:rgba(139,105,20,.32); --gilt-faint:rgba(139,105,20,.12);
+  --rule:rgba(139,105,20,.28); --hair:rgba(70,58,32,.15);
+  --skytint:rgba(255,238,196,.55);
+  --panel:#faf6ec; --panel-2:#ebe3d3; --chrome:rgba(250,246,236,.93);
+  --scrim:rgba(196,182,148,.5); --star-op:0; --frame-bg:#f4eee0;
+  --sky-grad:radial-gradient(130% 95% at 50% -28%,#fffdf6,transparent 72%);
+  color-scheme:light;
+}
+/* ── POP skin · summer colourpop · Muizenberg (optional, never auto) ── */
+:root[data-theme="pop"]{
   --bg:#bfe0f5; --bg2:#d3ebfa; --bg3:#eaf6ff;
   --ink:#143049; --ink2:#37597a; --ink3:#5e85a6; --ink4:#93b4cf;
   --gilt:#ef7d1a; --gilt-soft:rgba(239,125,26,.62); --gilt-dim:rgba(239,125,26,.32); --gilt-faint:rgba(239,125,26,.13);
@@ -49,7 +61,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:3
 /* aurora borealis · night (and a warm wash in twilight) */
 .aurora{position:fixed;inset:-25% -10% 30% -10%;z-index:0;pointer-events:none;opacity:.55;filter:blur(44px);overflow:hidden;transition:opacity .6s;will-change:transform}
 body[data-view="frame"] .aurora,body[data-view="frame"] .weather{display:none}
-:root[data-theme="day"] .aurora{opacity:0}
+:root[data-theme="day"] .aurora,:root[data-theme="pop"] .aurora{opacity:0}
 :root[data-theme="twilight"] .aurora{opacity:.3}
 .aurora span{position:absolute;left:-20%;right:-20%;height:46%;mix-blend-mode:screen;animation:aur 24s ease-in-out infinite}
 .aurora .a1{top:0%;background:radial-gradient(60% 100% at 30% 50%,rgba(90,222,160,.55),transparent 62%);animation-duration:22s}
@@ -168,21 +180,27 @@ body[data-view="frame"] .stars{display:none}
 .tp-panel:hover,.tp-panel.breathe{flex:2.05}
 .tp-panel.locked:hover{flex:1.3}
 .tp-glyph{position:absolute;top:44%;left:50%;transform:translate(calc(-50% + var(--px,0px)),-50%);font-family:var(--serif-alt);
-  font-size:min(18vw,240px);line-height:1;color:var(--ac);opacity:.13;transition:opacity .55s,text-shadow .55s;pointer-events:none}
+  font-size:min(18vw,240px);line-height:1;color:var(--ac);opacity:.21;transition:opacity .55s,text-shadow .55s;pointer-events:none}
 .tp-panel:hover .tp-glyph,.tp-panel.breathe .tp-glyph{opacity:.32;text-shadow:0 0 90px var(--ac)}
-.tp-panel.flag .tp-glyph{opacity:.2}
+.tp-panel.flag .tp-glyph{opacity:.26}
 /* DAY · neon letters that pop */
-:root[data-theme="day"] .tp-glyph{opacity:.92!important;font-weight:600;
+/* DAY · noon over paper — glyphs as quiet ink, no glow (B6) */
+:root[data-theme="day"] .tp-glyph{opacity:.22;font-weight:600;text-shadow:none}
+:root[data-theme="day"] .tp-panel:hover .tp-glyph{opacity:.42;text-shadow:none}
+:root[data-theme="day"] .tp-rays line{stroke-width:.8}
+:root[data-theme="day"] .tp-rays line:not(.lit){opacity:.25}
+/* POP · neon letters that pop (the old summer day, kept as a chosen skin) */
+:root[data-theme="pop"] .tp-glyph{opacity:.92;font-weight:600;
   text-shadow:0 0 28px currentColor,0 0 9px currentColor,0 1px 0 rgba(255,255,255,.4)}
-:root[data-theme="day"] .tp-panel:hover .tp-glyph{opacity:1!important}
-:root[data-theme="day"] .tp-panel[data-world="mirrorflow"] .tp-glyph{color:#00e6a2}
-:root[data-theme="day"] .tp-panel[data-world="excelsior"] .tp-glyph{color:#ff7a00}
-:root[data-theme="day"] .tp-panel[data-world="riftborn"] .tp-glyph{color:#ff2e93}
-:root[data-theme="day"] .tp-panel[data-world="altar"] .tp-glyph{color:#b8e000}
-:root[data-theme="day"] .tp-rays line{stroke-width:.9;opacity:.9}
-:root[data-theme="day"] .tp-rays line:not(.lit){opacity:.35}
-:root[data-theme="day"] .tp-rays{opacity:.4}
-:root[data-theme="day"] .tp-moonring .mn i,:root[data-theme="day"] .orbit-ring i,:root[data-theme="day"] .tp-embers .em{filter:saturate(1.6) brightness(1.15)}
+:root[data-theme="pop"] .tp-panel:hover .tp-glyph{opacity:1}
+:root[data-theme="pop"] .tp-panel[data-world="mirrorflow"] .tp-glyph{color:#00e6a2}
+:root[data-theme="pop"] .tp-panel[data-world="excelsior"] .tp-glyph{color:#ff7a00}
+:root[data-theme="pop"] .tp-panel[data-world="riftborn"] .tp-glyph{color:#ff2e93}
+:root[data-theme="pop"] .tp-panel[data-world="altar"] .tp-glyph{color:#b8e000}
+:root[data-theme="pop"] .tp-rays line{stroke-width:.9;opacity:.9}
+:root[data-theme="pop"] .tp-rays line:not(.lit){opacity:.35}
+:root[data-theme="pop"] .tp-rays{opacity:.4}
+:root[data-theme="pop"] .tp-moonring .mn i,:root[data-theme="pop"] .orbit-ring i,:root[data-theme="pop"] .tp-embers .em{filter:saturate(1.6) brightness(1.15)}
 /* TWILIGHT · letters lift a touch */
 :root[data-theme="twilight"] .tp-glyph{opacity:.26;text-shadow:0 0 30px currentColor}
 :root[data-theme="twilight"] .tp-panel:hover .tp-glyph{opacity:.5}
@@ -252,12 +270,12 @@ body[data-view="frame"] .stars{display:none}
 /* (door pulse styles retired with the placeholder stats) */
 .tp-actions{display:flex;justify-content:center;gap:10px;margin-top:14px}
 .tp-act{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
-  border:1px solid var(--hair);border-radius:999px;padding:8px 16px;color:var(--ink2);background:rgba(10,13,20,.5);transition:all .25s}
+  border:1px solid var(--hair);border-radius:999px;padding:8px 16px;color:var(--ink2);background:color-mix(in srgb,var(--panel-2) 55%,transparent);transition:all .25s}
 .tp-act:hover{border-color:var(--gilt-soft);color:var(--gilt)}
 .tp-act.go{border-color:var(--gilt-dim);color:var(--gilt)}
 .tp-act.go:hover{background:var(--gilt-faint)}
 .tp-panel.locked .tp-glyph{animation:nebula 6s ease-in-out infinite}
-@keyframes nebula{0%,100%{opacity:.09;filter:blur(0)}50%{opacity:.2;filter:blur(2px)}}
+@keyframes nebula{0%,100%{opacity:.13;filter:blur(0)}50%{opacity:.26;filter:blur(2px)}}
 /* (legacy bottom bar removed · chrome now lives in #topbar) */
 .brz-row{display:inline-flex;align-items:center;gap:7px}
 .brz{width:19px;height:19px;border:1px solid var(--hair);border-radius:50%;display:inline-flex;align-items:center;
@@ -319,8 +337,9 @@ body[data-view="frame"] #tb-reload{display:inline-block}
 #tb-auto.on{color:var(--gilt);border-color:var(--gilt-dim);box-shadow:0 0 7px var(--gilt-faint)}
 #tb-theme i{width:11px;height:11px;border-radius:50%;border:1px solid var(--hair);display:inline-block;cursor:pointer;transition:all .2s}
 #tb-theme i[data-t="night"]{background:radial-gradient(circle at 35% 35%,#2a6e5a,#0a0d14 70%)}
-#tb-theme i[data-t="day"]{background:linear-gradient(135deg,#1e90ff,#ffd24a 60%,#ff4d6d)}
+#tb-theme i[data-t="day"]{background:linear-gradient(135deg,#fdfaf1,#e8d9a8 55%,#8b6914)}
 #tb-theme i[data-t="twilight"]{background:linear-gradient(135deg,#ff9e4a,#b86ad0 55%,#3a5ad0)}
+#tb-theme i[data-t="pop"]{background:linear-gradient(135deg,#1e90ff,#ffd24a 60%,#ff4d6d)}
 #tb-theme i.on{border-color:var(--gilt);box-shadow:0 0 7px var(--gilt-soft);transform:scale(1.18)}
 /* tips dropdown */
 .tb-tips{position:relative}

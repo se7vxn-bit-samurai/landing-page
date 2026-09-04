@@ -46,15 +46,16 @@ its done-condition. Update statuses as things land. Intent behind all of it:
       MirrorFlow moons stop orbiting on hover and fan into a labeled 14px
       launcher; Riftborn's crack widens when watched.
       *Done when: each motif reflects real state or improves a real interaction.* ✓
-- [ ] **B6 · Day = the nave at noon** — rebuild the day skin as warm stone /
-      pale gold / ink-on-paper (Coach's cream is the reference); demote the
-      Muizenberg colourpop to an optional named skin. Kill the `!important`
-      neon-glyph overrides. Files: `css/shell.css`.
-      *Done when: all three canonical skins read as one building at different hours.*
+- [x] **B6 · Day = the nave at noon** — day rebuilt as warm stone / pale gold /
+      ink-on-paper (Coach's cream as reference: `#f4eee0` ground, `#8b6914`
+      gilt); the Muizenberg colourpop lives on as the chosen-only **pop** skin
+      (fourth toggle dot, `auto` never derives it; frames map pop→paper/cream).
+      `!important` neon-glyph overrides gone; glyphs are quiet ink at noon.
+      *Done when: all three canonical skins read as one building at different hours.* ✓
 
 ## Phase C · Polish (fold into the B-item that touches the area)
 
-- [ ] Night glyph base opacity 13% → ~20–22% (letterforms are near-subliminal) → with B6
+- [x] Night glyph base opacity 13% → 21% (flag 26%, nebula lifted to match) — with B6
 - [x] Chamber ← → arrows show prev/next world name (with B3)
 - [ ] Notes: align type stack (Inter/Cascadia → DM Sans/DM Mono) → with B1 follow-up
 - [ ] Mobile sky story (`#sky` is hidden under 980px; decide what the small
