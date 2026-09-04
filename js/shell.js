@@ -536,19 +536,32 @@ window.addEventListener('message',e=>{
 })();
 
 /* ═══════════ THE DOORS ═══════════ */
+const LADDER = { lit: 9, total: 12 };   // excelsior's rung count · one source, read by the door rays and the chamber ladder
+/* the altar's embers · one per resting idea, named on hover (B4) */
+function altarEmbersHTML(){
+  const ideas = [...IDEAS, ...userIdeas()];
+  return `<div class="tp-embers">${ideas.map((i,k)=>
+    `<span class="em" data-nm="${String(i.name).replace(/"/g,'&quot;')}" style="left:${18+((k*29)%64)}%;animation-delay:${((k*0.8)%4.2).toFixed(1)}s"></span>`
+  ).join('')}</div>`;
+}
+function paintEmbers(){
+  const old = $('.tp-panel[data-world="altar"] .tp-embers');
+  if(old) old.outerHTML = altarEmbersHTML();
+}
 $('#tp-panels').innerHTML = ORDER.map(id=>{
   const w = WORLDS[id], locked = !w.app;
   const moons = id==='mirrorflow' ? `
     <div class="tp-moonring">
-      ${[['ping',9],['sync',14],['notes',20]].map(([mid,T])=>`
-      <div class="mn" style="--T:${T}s">
-        <i style="--mc:${APPS[mid].accent}" data-launch="${mid}" title="${APPS[mid].name}"></i>
+      ${[['ping',9,'-52deg'],['sync',14,'0deg'],['notes',20,'52deg']].map(([mid,T,fan])=>`
+      <div class="mn" style="--T:${T}s;--fan:${fan}">
+        <i style="--mc:${APPS[mid].accent}" data-launch="${mid}" data-nm="${APPS[mid].short}" title="${APPS[mid].name}"></i>
       </div>`).join('')}
     </div>` : '';
+  const litRays = Math.round(24*LADDER.lit/LADDER.total);
   const MOTIF = {
-    excelsior:`<svg class="tp-rays" viewBox="0 0 200 200" aria-hidden="true">${[...Array(24)].map((_,k)=>{const a=k*Math.PI/12;return `<line x1="${100+Math.cos(a)*58}" y1="${100+Math.sin(a)*58}" x2="${100+Math.cos(a)*(k%2?78:88)}" y2="${100+Math.sin(a)*(k%2?78:88)}"/>`;}).join('')}</svg>`,
+    excelsior:`<svg class="tp-rays" viewBox="0 0 200 200" aria-hidden="true">${[...Array(24)].map((_,k)=>{const a=k*Math.PI/12;return `<line class="${k<litRays?'lit':''}" x1="${100+Math.cos(a)*58}" y1="${100+Math.sin(a)*58}" x2="${100+Math.cos(a)*(k%2?78:88)}" y2="${100+Math.sin(a)*(k%2?78:88)}"/>`;}).join('')}</svg>`,
     riftborn:`<div class="tp-orbits">${[['13s','42%','normal'],['19s','58%','reverse'],['25s','74%','normal']].map(([T,R,D])=>`<div class="orbit-ring" style="--T:${T};--rr:${R};animation-direction:${D}"><i></i></div>`).join('')}<span class="tp-rift-line"></span></div>`,
-    altar:`<div class="tp-embers">${[...Array(6)].map((_,k)=>`<span class="em e${k}"></span>`).join('')}</div>`
+    altar: altarEmbersHTML()
   };
   const motif = MOTIF[id] || '';
   return `
@@ -568,8 +581,10 @@ $('#tp-panels').innerHTML = ORDER.map(id=>{
         <div class="tp-pulse">${Pulse.line(id)}</div>
         <div class="tp-actions">
           <span class="tp-act">open the chamber</span>
+          ${id==='altar'?`<span class="tp-act go" data-altar-lay>✶ lay an idea</span>`:''}
           ${locked?'':`<span class="tp-act go" data-launch="${w.app}">↘ enter now</span>`}
         </div>
+        ${id==='altar'?`<div class="tp-lay" hidden><input maxlength="60" placeholder="name the idea, press enter…" aria-label="lay a new idea on the altar"></div>`:''}
       </div>
     </div>
   </div>`;
@@ -607,8 +622,8 @@ function moduleExcelsior(w){ return `
     <div class="ex-d"><div class="r">II</div><div class="t">Mindset</div><div class="s">The seller's posture: calm, curious, never needy.</div></div>
     <div class="ex-d"><div class="r">III</div><div class="t">Craft</div><div class="s">Delivery: timing, language, the review after the call.</div></div>
   </div>
-  <div class="ex-ladder">the ladder · current rung: <b style="color:var(--cacc)">v2.7</b>
-    <div class="rungs">${[1,1,1,1,1,1,1,1,1,0,0,0].map(x=>`<span class="rung ${x?'lit':''}"></span>`).join('')}</div>
+  <div class="ex-ladder">the ladder · current rung: <b style="color:var(--cacc)">${w.version}</b>
+    <div class="rungs">${[...Array(LADDER.total)].map((_,k)=>`<span class="rung ${k<LADDER.lit?'lit':''}"></span>`).join('')}</div>
     <div class="cap"><span>prototype</span><span>excelsior · ever upward</span><span>v3.0</span></div>
   </div>`;
 }
@@ -840,13 +855,45 @@ function closeChamber(){
   if(document.body.dataset.view!=='frame') history.replaceState(null,'','#nave');
 }
 
+/* quick-lay · a candle laid straight from the altar door (B4) */
+document.addEventListener('click',e=>{
+  const lay = e.target.closest('[data-altar-lay]');
+  if(!lay) return;
+  e.stopPropagation();
+  const panel = $('.tp-panel[data-world="altar"]');
+  const form = panel && panel.querySelector('.tp-lay');
+  if(!form) return;
+  form.hidden = false; lay.hidden = true;
+  const inp = form.querySelector('input');
+  const close = ()=>{ form.hidden = true; lay.hidden = false; inp.value=''; };
+  inp.value=''; inp.focus();
+  if(!inp.dataset.wired){
+    inp.dataset.wired = '1';
+    inp.addEventListener('keydown',ev=>{
+      ev.stopPropagation();
+      if(ev.key==='Enter' && inp.value.trim()){
+        const ideas = userIdeas();
+        ideas.push({name:inp.value.trim(),stage:'laid',
+          desc:'Laid at the door · '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}),dest:'unplaced'});
+        lsSet(KEYS.altar,ideas);
+        close(); paintEmbers(); Pulse.paint();
+        if(currentChamber==='altar') relight();
+        toast('a new candle burns on the altar');
+      }
+      if(ev.key==='Escape'){ ev.stopImmediatePropagation(); close(); }
+    });
+    inp.addEventListener('blur',()=>{ if(form && !form.hidden && !inp.value.trim()) close(); });
+  }
+});
+
 /* altar candles */
 document.addEventListener('click',e=>{
   const snuff = e.target.closest('[data-snuff]');
   if(snuff){
     const ideas = userIdeas(); ideas.splice(parseInt(snuff.dataset.snuff,10),1);
     lsSet(KEYS.altar,ideas);
-    relight(); toast('candle snuffed · sealed in the undercroft'); return;
+    relight(); paintEmbers(); Pulse.paint();
+    toast('candle snuffed · sealed in the undercroft'); return;
   }
   const slot = e.target.closest('#al-new');
   if(slot && !slot.querySelector('input')){
@@ -859,7 +906,8 @@ document.addEventListener('click',e=>{
         const ideas = userIdeas();
         ideas.push({name:inp.value.trim(),stage:'laid',desc:'Laid by hand · '+new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}),dest:'unplaced'});
         lsSet(KEYS.altar,ideas);
-        relight(); toast('a new candle burns on the altar');
+        relight(); paintEmbers(); Pulse.paint();
+        toast('a new candle burns on the altar');
       }
       if(ev.key==='Escape'){ relight(); }
     });
@@ -933,7 +981,7 @@ document.addEventListener('click',e=>{
   const nav = e.target.closest('[data-nav]');
   if(nav) return openChamber(nav.dataset.nav,false);
   const panel = e.target.closest('.tp-panel');
-  if(panel && !e.target.closest('[data-toast],[data-launch]')) openChamber(panel.dataset.world);
+  if(panel && !e.target.closest('[data-toast],[data-launch],[data-altar-lay],.tp-lay')) openChamber(panel.dataset.world);
 });
 /* ═══════════ TOP BAR · home, tips, theme ═══════════ */
 function goHome(){
