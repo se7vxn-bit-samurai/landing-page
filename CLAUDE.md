@@ -93,7 +93,7 @@ The **satchel** (vestry) exports/imports every `tgc.*` key as one JSON file.
 
 ### Theming
 
-No CSS framework. Three skins — night (default), day, twilight — via `:root[data-theme]` token overrides in `css/shell.css`; `auto` mode follows the clock with a continuous sky tint. World/app accents are applied via CSS custom properties (`--ac`, `--wash`, `--bc`, `--pc`); chambers re-skin via `--c*` variables from each world's `palette`.
+No CSS framework. Four skins via `:root[data-theme]` token overrides in `css/shell.css`: night (default), day ("the nave at noon" — warm stone/pale gold/ink-on-paper), twilight, and pop (Muizenberg colourpop — chosen only, `auto` never derives it). `auto` mode follows the clock with a continuous sky tint. World/app accents are applied via CSS custom properties (`--ac`, `--wash`, `--bc`, `--pc`); chambers re-skin via `--c*` variables from each world's `palette`.
 
 ## Conventions
 

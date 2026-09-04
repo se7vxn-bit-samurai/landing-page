@@ -1001,7 +1001,7 @@ $('#tb-tips-btn').addEventListener('click',e=>{ e.stopPropagation(); $('#tb-tips
 document.addEventListener('click',e=>{ if(!e.target.closest('#tb-tips')) $('#tb-tips').classList.remove('open'); });
 
 /* ═══════════ THEMES · time-aware, gradual sky ═══════════ */
-const THEMES = ['night','day','twilight'];
+const THEMES = ['night','day','twilight','pop'];   // pop is a chosen skin only · auto never derives it
 // themeMode: 'auto' (follow the clock) | a fixed skin name
 let themeMode = SETTINGS.themeMode || (THEMES.includes(SETTINGS.theme)?SETTINGS.theme:'auto');
 function phaseForHour(h){
@@ -1041,7 +1041,7 @@ function applyTheme(){
   if(eff==='night') document.documentElement.removeAttribute('data-theme');
   else document.documentElement.setAttribute('data-theme',eff);
   const mt = document.getElementById('meta-theme');
-  if(mt) mt.content = ({night:'#0a0d14',day:'#bfe0f5',twilight:'#3a2c55'})[eff] || '#0a0d14';
+  if(mt) mt.content = ({night:'#0a0d14',day:'#f4eee0',twilight:'#3a2c55',pop:'#bfe0f5'})[eff] || '#0a0d14';
   // gradual sky in auto; let the skin own it when pinned
   const root = document.documentElement.style;
   if(themeMode==='auto'){ const now=new Date(); root.setProperty('--skytint', skyTintForHour(now.getHours()+now.getMinutes()/60)); }
