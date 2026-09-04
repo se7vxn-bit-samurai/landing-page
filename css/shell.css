@@ -585,7 +585,12 @@ body[data-view="frame"] #tb-reload{display:inline-block}
   .ch-grid{grid-template-columns:1fr;gap:30px}
   .ex-disc,.cx-shelves{grid-template-columns:1fr}
   .mf-pair{grid-template-columns:1fr}
-  #sky{display:none}
+  /* the small-screen sky · a slim band of orbs, still the real heavens (C) */
+  #sky{height:60px}
+  .sky-meta,#sky-seal{display:none}
+  .sky-orb{width:22px;height:22px}
+  .sky-body.flag .sky-orb{width:27px;height:27px}
+  #sun,#moon{display:none}   /* the band is for doors on a phone · the hour still tints the sky */
   /* lighter GPU load */
   .aurora{filter:blur(30px)}
   .stars i:nth-child(2n){display:none}
