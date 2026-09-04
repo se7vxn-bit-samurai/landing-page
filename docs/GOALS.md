@@ -35,15 +35,17 @@ its done-condition. Update statuses as things land. Intent behind all of it:
       is a clickable mini-sky (world orbs + live constellation at the real
       `SKY_X` positions) instead of four text blocks.
       *Done when: exactly one first-run ceremony exists and it ends through the doors.* ✓
-- [ ] **B4 · Altar alive** — one ember per resting idea (live from `IDEAS` +
-      `tgc.shell2.altar`), hover names it; quick-lay a candle from the panel
-      without opening the chamber. Files: `js/shell.js` (door render, embers),
-      `css/shell.css`.
-      *Done when: laying an idea takes one interaction from the nave and the door shows it burning.*
-- [ ] **B5 · Motifs earn their keep** — Excelsior rays lit by ladder progress
-      (9/12); MirrorFlow moons pause + fan into a labeled launcher on hover
-      (today: 9 px moving targets); Riftborn crack widens slightly on hover.
-      *Done when: each motif reflects real state or improves a real interaction.*
+- [x] **B4 · Altar alive** — one ember per resting idea (live from `IDEAS` +
+      `tgc.shell2.altar`), hover pauses it and names it; "✶ lay an idea" on the
+      door opens an inline input — a candle laid in one interaction from the
+      nave, embers and pulse repainting immediately (`altarEmbersHTML`,
+      `paintEmbers`, quick-lay handler).
+      *Done when: laying an idea takes one interaction from the nave and the door shows it burning.* ✓
+- [x] **B5 · Motifs earn their keep** — Excelsior rays lit by ladder progress
+      (`LADDER` 9/12, one source read by the door rays and the chamber ladder);
+      MirrorFlow moons stop orbiting on hover and fan into a labeled 14px
+      launcher; Riftborn's crack widens when watched.
+      *Done when: each motif reflects real state or improves a real interaction.* ✓
 - [ ] **B6 · Day = the nave at noon** — rebuild the day skin as warm stone /
       pale gold / ink-on-paper (Coach's cream is the reference); demote the
       Muizenberg colourpop to an optional named skin. Kill the `!important`
