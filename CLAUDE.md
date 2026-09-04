@@ -16,6 +16,8 @@ Full architecture reference: `docs/ARCHITECTURE.md`. App contract & inventory: `
 
 ## Architecture
 
+Product intent and design canon: `docs/INTENT.md`. Roadmap/backlog: `docs/GOALS.md` — keep its checkboxes current as work lands.
+
 The shell has two primary **views**, toggled by setting `document.body.dataset.view`:
 
 | `data-view` | What's visible |
@@ -27,13 +29,14 @@ First-run entry is owned by the **scroll landing** (`js/landing.js`, 3 snap sect
 
 ### Key Data Structures (top of `js/shell.js`)
 
-- **`WORLDS`** — The four worlds: `mirrorflow`, `excelsior`, `riftborn`, `altar`. Each has `name`, `motto`, `tagline`, `status`, `accent`, `pulse`, `palette`, `flagship`, and optionally `app` (the default app to launch for that world).
+- **`WORLDS`** — The four worlds: `mirrorflow`, `excelsior`, `riftborn`, `altar`. Each has `name`, `motto`, `tagline`, `status`, `accent`, `palette`, `flagship`, and optionally `app` (the default app to launch for that world).
 - **`APPS`** — Individual apps (`ping`, `sync`, `coach`, `codex`, `notes`). Each has `id`, `world`, `glyph`, `accent`, `status`, `version`, `localPath` (the iframe URL, `apps/<id>.html`), and `kind`.
 - **`DOCK`** — Ordered list of app IDs shown in the topbar braziers: `['ping','sync','coach','codex']`.
 - **`ORDER`** — Display order of worlds in the nave: `['mirrorflow','excelsior','riftborn','altar']`.
 - **`STATUS`** — Maps status strings (`building`, `active`, `open`, `soon`, `archived`) to display label and dot color.
 - **`ARCHIVE` / `EXCHANGE` / `IDEAS`** — sealed donors (undercroft), per-world bus contracts, and altar ideas.
 - **`KEYS`** — localStorage key constants under the `tgc.shell2.*` namespace.
+- **`Pulse`** — honest live signals (visit stamps under `tgc.shell2.visits`, altar counts, per-world instrument counts) feeding door reveals, chamber stat rows and MirrorFlow cards. Never show an invented number; extend `Pulse` instead.
 
 ### Core Singletons
 
@@ -51,7 +54,7 @@ First-run entry is owned by the **scroll landing** (`js/landing.js`, 3 snap sect
 
 ### The app bridge (`apps/bridge.js`)
 
-Every app's `<head>` loads `bridge.js` first. It derives the app id from the filename, installs a localStorage shim **only where storage is blocked** (persisting through the shell via `tgc.ls.persist` under `tgc.appstore.<id>`), and relays Esc / Ctrl+K / Ctrl+1–4 to the shell. When adding a new app, include this script tag and add a manifest entry to `APPS`.
+Every app's `<head>` loads `bridge.js` first. It derives the app id from the filename, installs a localStorage shim **only where storage is blocked** (persisting through the shell via `tgc.ls.persist` under `tgc.appstore.<id>`), relays Esc / Ctrl+K / Ctrl+1–4 to the shell, and applies the **theme handshake**: the shell broadcasts `{type:'tgc.theme', theme:'night'|'day'|'twilight'}` on mount/hello/sky-change and the bridge maps it onto each app's native skins (ping/notes: pulse·slate·linen; coach: press·cream; sync/codex opt out). When adding a new app, include this script tag and add a manifest entry to `APPS`.
 
 ### UI Sections (in DOM order)
 

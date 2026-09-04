@@ -12,37 +12,37 @@ const STATUS = {
 };
 const WORLDS = {
   mirrorflow:{name:'MirrorFlow',motto:'Specvlvm Lvcens',tagline:'The communication mirror.',status:'building',version:'v1.4',
-    pulse:{label:'reflections',value:1182,trend:'+312'},accent:'#5dd9ff',glyph:'M',app:'ping',appName:'MirrorFlow Ping',
+    accent:'#5dd9ff',glyph:'M',app:'ping',appName:'MirrorFlow Ping',
     palette:{bg:'#070d14',ink:'#eef0f5',accent:'#5dd9ff',fire:'#7df9e8'},
     desc:'The productivity arm, expressed as two instruments. Ping holds the moment: one mirror, one note back. Sync holds the long arc: continuity across days. Notes catches what falls between. Together: your voice, reflected and kept.'},
   excelsior:{name:'Excelsior',motto:'Ars Vendendi',tagline:'The editorial sales coach.',status:'active',version:'v2.7',
-    pulse:{label:'sessions / wk',value:24,trend:'+18%'},accent:'#d4a832',glyph:'E',flagship:true,app:'coach',appName:'Excelsior Coach',
+    accent:'#d4a832',glyph:'E',flagship:true,app:'coach',appName:'Excelsior Coach',
     palette:{bg:'#17120b',ink:'#f4eee0',accent:'#d4a832',fire:'#e05c24'},
     desc:'A coaching atelier for sellers who think in arguments, not scripts. The flagship of the house: mindset, craft, and the art of the honest sale. Every session is an argument refined; every review, a rung on the ladder.'},
   riftborn:{name:'Riftborn',motto:'Inter Mvndos',tagline:'Fables, worlds & memory.',status:'active',version:'v2.0',
-    pulse:{label:'codex entries',value:318,trend:'+2'},accent:'#b98bff',glyph:'R',app:'codex',appName:'the Codex',
+    accent:'#b98bff',glyph:'R',app:'codex',appName:'the Codex',
     palette:{bg:'#0c0816',ink:'#ede7ff',accent:'#b98bff',fire:'#ff6ec7'},
     desc:'The fable arm of the house: worldbuilding, symbolism, and the memory that keeps it canon. The Codex is its living terminal: rituals, design bibles and lore, all sealed here. Inside it, the game is still forming: a card-and-tile crossing between worlds.'},
   altar:{name:'The Altar',motto:'Nova Flamma',tagline:'Where new ideas are laid.',status:'open',version:'tier',
-    pulse:{label:'ideas resting',value:3,trend:'+1'},accent:'#e08b4a',glyph:'A',app:null,appName:null,
+    accent:'#e08b4a',glyph:'A',app:null,appName:null,
     palette:{bg:'#100c09',ink:'#ece4d6',accent:'#e08b4a',fire:'#ffb36b'},
     desc:'The fourth door is not a product. It is a tier. New ideas are laid here as candles: named, given a line of intent, and watched. An idea that catches fire earns a world of its own; one that gutters descends to the undercroft. Nothing is pitched in the dark.'}
 };
 const APPS = {
   ping:{id:'ping',short:'Ping',name:'MirrorFlow Ping',world:'mirrorflow',glyph:'P',accent:'#7df9e8',status:'active',version:'v6',
-    kind:'Message mirror',pulse:'38 mirrors today',localPath:'apps/ping.html',
+    kind:'Message mirror',localPath:'apps/ping.html',
     desc:'A single tap. One mirror, one moment, one note back.'},
   sync:{id:'sync',short:'Sync',name:'MirrorFlow Sync',world:'mirrorflow',glyph:'S',accent:'#9bb8ff',status:'building',version:'v64',
-    kind:'Schedules & continuity',pulse:'214 shifts tracked',localPath:'apps/sync.html',
+    kind:'Schedules & continuity',localPath:'apps/sync.html',
     desc:'Continuity across days, your voice over time.'},
   notes:{id:'notes',short:'Notes',name:'MirrorFlow Notes',world:'mirrorflow',glyph:'N',accent:'#a9b6c8',status:'active',version:'v3',
-    kind:'Capture surface',pulse:'91 captures',localPath:'apps/notes.html',
+    kind:'Capture surface',localPath:'apps/notes.html',
     desc:'A fast capture surface. Catch it before it goes.'},
   coach:{id:'coach',short:'Coach',name:'Excelsior Coach',world:'excelsior',glyph:'E',accent:'#d4a832',status:'active',version:'v2.7',
-    kind:'Editorial sales coach',pulse:'24 sessions / wk',localPath:'apps/coach.html',
+    kind:'Editorial sales coach',localPath:'apps/coach.html',
     desc:'Coaching for sellers who think in arguments.'},
   codex:{id:'codex',short:'Codex',name:'the Codex',world:'riftborn',glyph:'C',accent:'#b98bff',status:'active',version:'v2.0',
-    kind:'Riftborn terminal',pulse:'318 entries',localPath:'apps/codex.html',
+    kind:'Riftborn terminal',localPath:'apps/codex.html',
     desc:'Rituals, bibles, lore: sealed and canon.'}
 };
 window.TGC_APPS = APPS;            // apps live under apps/<id>.html · fetched on demand
@@ -69,7 +69,8 @@ const IDEAS = [
 ];
 /* demo packet retired · the exchange carries real missives only (Ping → hand to Coach) */
 const KEYS = {session:'tgc.shell2.session',inbox:'tgc.shell2.inbox',demo:'tgc.shell2.demoDone',
-  altar:'tgc.shell2.altar',gate:'tgc.shell2.gate',last:'tgc.shell2.last',settings:'tgc.shell2.settings'};
+  altar:'tgc.shell2.altar',gate:'tgc.shell2.gate',last:'tgc.shell2.last',settings:'tgc.shell2.settings',
+  visits:'tgc.shell2.visits'};
 const BUILD_RAW = '3 Jul 2026 · v2.0';                       // the builder stamps the real date here · qol pass
 const QOL = 'satchel·relay·inbox·stamp·rites·vestry';     // sync marker
 const BUILD = BUILD_RAW.charAt(0)==='@' ? 'workshop build' : BUILD_RAW;
@@ -128,13 +129,14 @@ const Frame = {
       fr.setAttribute('data-shell-app',id);
       fr.src = a.localPath;                       // apps/<id>.html · same-origin frame
       $('#veil').classList.add('on'); $('#veil-line').textContent = 'summoning '+a.short.toLowerCase();
-      fr.addEventListener('load',()=>{ $('#veil').classList.remove('on'); Bus.flush(id); });
+      fr.addEventListener('load',()=>{ $('#veil').classList.remove('on'); Bus.flush(id); broadcastTheme(fr.contentWindow); });
       $('#frame').appendChild(fr);
       Frame.iframes[id] = fr;
     } else {
       const ix = Frame.order.indexOf(id); if(ix>-1) Frame.order.splice(ix,1);
     }
     Frame.order.push(id);
+    { const v = lsGet(KEYS.visits,{}); v[id] = Date.now(); lsSet(KEYS.visits,v); }   /* the pulse: when each door was last truly entered */
     Object.entries(Frame.iframes).forEach(([k,f])=>f.classList.toggle('active',k===id));
     Frame.active = id;
     localStorage.setItem(KEYS.last,id);
@@ -148,6 +150,7 @@ const Frame = {
     lsSet(KEYS.session,{view:'nave'});
     history.replaceState(null,'','#nave');
     renderBraziers(); updateBadge();
+    if(typeof Pulse!=='undefined') Pulse.paint();   // door pulse lines reflect the visit just made
   },
   warm(id){
     const a = APPS[id];
@@ -165,7 +168,7 @@ const Bus = {
   init(){
     window.addEventListener('message',e=>{
       const d = e.data; if(!d || typeof d!=='object') return;
-      if(d.type==='tgc.shell.hello' && typeof d.appId==='string') Bus.flush(d.appId, e.source);
+      if(d.type==='tgc.shell.hello' && typeof d.appId==='string'){ Bus.flush(d.appId, e.source); broadcastTheme(e.source); }
       if(d.type==='tgc.exchange.send' && d.packet) Bus.receive(d.packet);
     });
     Bus.queue = Bus.queue.filter(p=>!p.demo);   // demo missive (Hartley & Co.) retired · inbox starts clean
@@ -390,6 +393,40 @@ function clearAppData(id){
   toast(APPS[id].short+'’s data cleared · re-summons fresh');
 }
 
+/* ═══════════ THE PULSE · honest live signals, no theatre ═══════════
+   Everything here is read from real state: visit stamps (KEYS.visits),
+   appstore bytes, altar candles. If the house can't know it, it isn't shown. */
+const Pulse = {
+  visits: () => lsGet(KEYS.visits,{}),
+  appBytes: id => bytesOf('tgc.appstore.'+id),
+  worldApps: id => Object.values(APPS).filter(a=>a.world===id),
+  ideas: () => IDEAS.length + userIdeas().length,
+  ago(ts){
+    const s = Math.max(0,(Date.now()-ts)/1000);
+    if(s<90) return 'moments ago';
+    if(s<5400) return Math.round(s/60)+' min ago';
+    if(s<129600) return Math.round(s/3600)+' h ago';
+    return Math.round(s/86400)+' d ago';
+  },
+  visitLine(id){
+    const t = Pulse.visits()[id];
+    return t ? 'entered '+Pulse.ago(t) : 'not yet entered here';
+  },
+  worldLast(id){
+    const v = Pulse.visits();
+    const ts = Pulse.worldApps(id).map(a=>v[a.id]||0).reduce((a,b)=>Math.max(a,b),0);
+    return ts || null;
+  },
+  line(id){
+    if(id==='altar'){ const n=Pulse.ideas(); return n+' idea'+(n===1?'':'s')+' resting'; }
+    const apps = Pulse.worldApps(id), act = apps.filter(a=>a.status==='active').length;
+    const last = Pulse.worldLast(id);
+    return apps.length+' instrument'+(apps.length===1?'':'s')+' · '+act+' active'
+      + (last ? ' · entered '+Pulse.ago(last) : '');
+  },
+  paint(){ $$('.tp-panel').forEach(p=>{ const el=p.querySelector('.tp-pulse'); if(el) el.textContent = Pulse.line(p.dataset.world); }); }
+};
+
 /* ═══════════ THE RITES · self-test ═══════════ */
 function runRites(){
   const rites = [];
@@ -528,6 +565,7 @@ $('#tp-panels').innerHTML = ORDER.map(id=>{
       <div class="tp-reveal">
         <div class="tp-kind">${w.tagline}</div>
         <div class="tp-meta"><span class="pip" style="--pc:${STATUS[w.status].dot}"><i></i>${STATUS[w.status].label} · ${w.version}</span></div>
+        <div class="tp-pulse">${Pulse.line(id)}</div>
         <div class="tp-actions">
           <span class="tp-act">open the chamber</span>
           ${locked?'':`<span class="tp-act go" data-launch="${w.app}">↘ enter now</span>`}
@@ -580,14 +618,14 @@ function moduleMirrorflow(w){
       <div class="g">${a.glyph}</div><div class="n">${a.short}</div>
       <div class="k">${a.kind} · ${a.version} · ${STATUS[a.status].label}</div>
       <div class="d">${a.desc}</div>
-      <div class="foot"><span>${a.pulse}</span><span class="e">enter ↘</span></div>
+      <div class="foot"><span>${Pulse.visitLine(id)}</span><span class="e">enter ↘</span></div>
     </div>`; };
   return `
   <div class="ch-mod-h">The two instruments</div>
   <div class="mf-pair">${card('ping')}${card('sync')}</div>
   <div class="mf-axis">· the moment ↔ the long arc ·</div>
   <div class="mf-notes" data-launch="notes">
-    <span class="g">N</span><span><b style="font-weight:500;color:var(--cink)">Notes</b> · ${APPS.notes.desc} <span style="opacity:.6">· ${APPS.notes.pulse}</span></span>
+    <span class="g">N</span><span><b style="font-weight:500;color:var(--cink)">Notes</b> · ${APPS.notes.desc} <span style="opacity:.6">· ${Pulse.visitLine('notes')}</span></span>
     <span class="e">enter ↘</span>
   </div>`;
 }
@@ -691,7 +729,8 @@ function navArrows(id){
   const ix = CH_ORDER.indexOf(id);
   const prev = CH_ORDER[(ix-1+CH_ORDER.length)%CH_ORDER.length];
   const next = CH_ORDER[(ix+1)%CH_ORDER.length];
-  return `<span class="x" data-nav="${prev}">←</span><span class="x" data-nav="${next}">→</span><span class="x" data-close>esc · return ✕</span>`;
+  const nm = k => WORLDS[k] ? WORLDS[k].name.toLowerCase() : 'the '+k;
+  return `<span class="x" data-nav="${prev}" title="walk left">← ${nm(prev)}</span><span class="x" data-nav="${next}" title="walk right">${nm(next)} →</span><span class="x" data-close>esc · return ✕</span>`;
 }
 function buildChamberHTML(id){
   if(id==='undercroft'){
@@ -750,8 +789,13 @@ function buildChamberHTML(id){
       <div class="motto">· ${w.motto} ·</div>
       <div class="desc">${w.desc}</div>
       <div class="ch-pulse-row">
-        <div class="ch-pulse"><div class="n">${w.version}</div><div class="l">${id==='altar'?'a standing tier':'current build'}</div></div>
-        <div class="ch-pulse"><div class="n">${STATUS[w.status].label}</div><div class="l">state of the world</div></div>
+        ${id==='altar'
+          ? `<div class="ch-pulse"><div class="n">${STATUS[w.status].label}</div><div class="l">a standing tier</div></div>
+             <div class="ch-pulse"><div class="n">${Pulse.ideas()}</div><div class="l">ideas resting</div></div>
+             <div class="ch-pulse"><div class="n">${userIdeas().length}</div><div class="l">laid by hand</div></div>`
+          : `<div class="ch-pulse"><div class="n">${w.version}</div><div class="l">current build</div></div>
+             <div class="ch-pulse"><div class="n">${Pulse.worldApps(id).filter(a=>a.status==='active').length}<small>of ${Pulse.worldApps(id).length}</small></div><div class="l">instruments active</div></div>
+             <div class="ch-pulse"><div class="n">${Pulse.worldLast(id)?Pulse.ago(Pulse.worldLast(id)):'—'}</div><div class="l">last entered</div></div>`}
       </div>
       ${locked
         ? `<button class="ch-enter" disabled>${id==='altar'?'a tier, not an app · no frame to enter':'forming · the door is not yet cut'}</button>`
@@ -937,6 +981,13 @@ function skyTintForHour(hf){
   return `rgba(${Math.round(mix[0])},${Math.round(mix[1])},${Math.round(mix[2])},${mix[3].toFixed(3)})`;
 }
 function effectiveTheme(){ return themeMode==='auto' ? phaseForHour(new Date().getHours()) : themeMode; }
+/* the theme handshake · the sky is broadcast to every hosted frame; apps/bridge.js
+   maps it onto each app's own skin (ping/notes: pulse·slate·linen, coach: press·cream) */
+function broadcastTheme(win){
+  const msg = { type:'tgc.theme', theme: effectiveTheme(), mode: themeMode };
+  if(win){ try{ win.postMessage(msg,'*'); }catch(e){} return; }
+  Object.values(Frame.iframes).forEach(fr=>{ try{ fr.contentWindow.postMessage(msg,'*'); }catch(e){} });
+}
 function applyTheme(){
   const eff = effectiveTheme();
   if(eff==='night') document.documentElement.removeAttribute('data-theme');
@@ -956,6 +1007,7 @@ function applyTheme(){
   $$('#tb-theme i').forEach(i=>i.classList.toggle('on', themeMode==='auto' ? i.dataset.t===eff : i.dataset.t===themeMode));
   const ap=$('#tb-auto'); if(ap) ap.classList.toggle('on', themeMode==='auto');
   SETTINGS.themeMode = themeMode; SETTINGS.theme = eff; lsSet(KEYS.settings,SETTINGS);
+  broadcastTheme();   // the hosted frames follow the sky
 }
 function setThemeMode(m){ themeMode=m; applyTheme(); }
 $$('#tb-theme i').forEach(i=>i.addEventListener('click',()=>{ setThemeMode(i.dataset.t); toast('the sky is set to '+i.dataset.t); }));
@@ -1049,7 +1101,7 @@ window.addEventListener('storage',e=>{
 document.addEventListener('visibilitychange',()=>{
   if(document.hidden) return;
   Bus.queue = lsGet(KEYS.inbox,[]);
-  renderMissive(); updateBadge(); renderBraziers();
+  renderMissive(); updateBadge(); renderBraziers(); Pulse.paint();
 });
 
 /* ═══════════ WEB-NATIVE · service worker, update whisper, error watch ═══════════ */
@@ -1103,43 +1155,22 @@ addEventListener('unhandledrejection',__stumble);
 })();
 
 function boot(){
+  /* one ceremony only (B3): the scroll landing owns first-run entry and exits
+     through the door leaves; the old gate screen is retired — its element now
+     serves only as the initial paint cover, gone the moment boot decides. */
   const gate = $('#gate');
+  gate.classList.add('gone');
   const mApp = location.hash.match(/^#app=(\w+)$/);
   const mWorld = location.hash.match(/^#world\/(\w+)$/);
   const session = lsGet(KEYS.session,null);
   const deep = !!(mApp || mWorld);
   const restoreFrame = !deep && session && session.view==='frame' && APPS[session.app];
 
-  if(mApp && APPS[mApp[1]] && APPS[mApp[1]].localPath){ gate.classList.add('gone'); Frame.enter(mApp[1]); return; }
-  if(mWorld && (WORLDS[mWorld[1]] || mWorld[1]==='undercroft')){ gate.classList.add('gone'); openChamber(mWorld[1],false); return; }
-  if(restoreFrame){ gate.classList.add('gone'); Frame.enter(session.app); return; }
-  if(SETTINGS.gateOff){ gate.classList.add('gone'); return; }
-  if(sessionStorage.getItem(KEYS.gate)){ gate.classList.add('gone'); return; }
-
-  const stamp = $('#gate-build'); if(stamp) stamp.textContent = 'consecrated · '+BUILD;
-
-  const lines = ['warming the frames','restoring the session','reading the manifest','the doors part'];
-  let li = 0;
-  const lineT = setInterval(()=>{ li=Math.min(li+1,lines.length-1); $('#gate-line').textContent=lines[li]; },420);
-  requestAnimationFrame(()=>{ $('#gate-fill').style.width='100%'; });
-  let opened = false;
-  function open(){
-    if(opened) return; opened = true;
-    clearInterval(lineT);
-    try{ sessionStorage.setItem(KEYS.gate,'1'); }catch(e){}
-    gate.classList.add('opening');
-    setTimeout(()=>gate.classList.add('gone'),850);
-  }
+  if(mApp && APPS[mApp[1]] && APPS[mApp[1]].localPath){ Frame.enter(mApp[1]); return; }
+  if(mWorld && (WORLDS[mWorld[1]] || mWorld[1]==='undercroft')){ openChamber(mWorld[1],false); return; }
+  if(restoreFrame){ Frame.enter(session.app); return; }
   const last = localStorage.getItem(KEYS.last);
-  if(last && APPS[last]){
-    const r = $('#gate-resume'); r.style.display = 'inline-block';
-    r.textContent = 'you were last in '+APPS[last].short+' · resume ↘';
-    r.addEventListener('click',ev=>{ ev.stopPropagation(); open(); setTimeout(()=>Frame.enter(last),400); });
-    DOCK.includes(last) && Frame.warm(last);
-  }
-  setTimeout(open, last ? 3200 : 1800);
-  gate.addEventListener('click',open);
-  document.addEventListener('keydown',function once(){ open(); document.removeEventListener('keydown',once); });
+  if(last && APPS[last] && DOCK.includes(last)) Frame.warm(last);
 }
 
 /* ═══════════ APPSTORE PERSIST · fallback for shimmed app frames ═══════════ */
