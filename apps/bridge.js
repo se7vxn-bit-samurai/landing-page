@@ -5,7 +5,8 @@
        persists to the shell via tgc.ls.persist postMessage
    3 · key relay · Esc / Ctrl+K / Ctrl+1-4 reach the shell
    ═══════════════════════════════════════════ */
-window.__TGC_APP_ID = (location.pathname.split('/').pop() || 'app').replace(/\.html$/, '');
+/* the portable build presets __TGC_APP_ID before inlining this file (blob URLs have no filename) */
+window.__TGC_APP_ID = window.__TGC_APP_ID || (location.pathname.split('/').pop() || 'app').replace(/\.html$/, '');
 
 /* ── the theme handshake · the frame follows the shell's sky ──
    The shell broadcasts { type:'tgc.theme', theme:'night'|'day'|'twilight' } on mount,

@@ -57,14 +57,20 @@ its done-condition. Update statuses as things land. Intent behind all of it:
 
 - [x] Night glyph base opacity 13% → 21% (flag 26%, nebula lifted to match) — with B6
 - [x] Chamber ← → arrows show prev/next world name (with B3)
-- [ ] Notes: align type stack (Inter/Cascadia → DM Sans/DM Mono) → with B1 follow-up
-- [ ] Mobile sky story (`#sky` is hidden under 980px; decide what the small
-      screen gets once orbs carry pulse) → after B5
+- [x] Notes: type stack aligned — DM Sans / DM Mono / Playfair via the shell's
+      `fonts/fonts.css` (self-hosted, same origin; portable build strips the link)
+- [x] Mobile sky: a slim 60px band of tappable 22px world orbs replaces the
+      old `display:none` — meta text, seal, sun and moon step aside on phones
 
 ## Phase D · Rituals & tooling
 
-- [ ] `build-portable.py` — regenerate the single-file offline build from the
-      partitioned source (the old monofile as an *output*, not the source)
+- [x] `build-portable.py` — regenerates the single-file offline edition from
+      the partitioned source (fonts as data URIs, shell inlined, apps as blob
+      payloads with the bridge inlined and `__TGC_APP_ID` preset). Output is
+      gitignored — the monofile is a build product now, never the source.
+- [x] Deploy-skew hardening — the service worker fetches with `cache:'no-cache'`
+      so a fresh `index.html` is never paired with a 10-min-stale `shell.css`
+      from the Pages HTTP cache (the "pop looked like night" report)
 - [x] Deploy ritual documented: bump `version.json` per deploy; bump `VER` in
       `sw.js` when asset shape changes (see ARCHITECTURE.md)
 - [ ] Post-deploy sanity: landing → app → vestry → rites 7/7 on the live domain

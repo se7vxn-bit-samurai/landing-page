@@ -43,9 +43,9 @@ worker keeps them for offline return visits.
 
 > History: the pre-partition monofile (~7.5 MB) carried all five apps as base64 inside a
 > `v2-bootstrap` script that re-pointed `localPath` at blob URLs, plus ~850 KB of inline
-> fonts. That machinery is gone; a portable single-file build can still be produced by a
-> builder that re-inlines these pieces (the `data-src` attribute on the shell-guard
-> script marks the assembly points).
+> fonts. That machinery is gone from the source; `python3 build-portable.py` regenerates
+> the single-file offline edition on demand (fonts as data URIs, shell inlined, apps as
+> blob payloads). The output is gitignored — a build product, never the source.
 
 ## apps/bridge.js (injected into every app)
 
