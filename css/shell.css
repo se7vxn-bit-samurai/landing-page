@@ -522,6 +522,13 @@ body[data-view="frame"] #tb-reload{display:inline-block}
 .ib-row{display:flex;gap:14px;padding:15px 18px;border-bottom:1px solid var(--hair);border-left:2px solid var(--iacc)}
 .ib-row:last-child{border-bottom:none}
 .ib-sigil{color:var(--iacc);font-family:var(--serif-alt);font-size:18px}
+/* the kind chip · a missive says what it is before it says anything else (exchange v2) */
+.ib-kind{font-weight:400;letter-spacing:.16em;border:1px solid var(--hair);border-radius:3px;padding:1px 6px;margin-right:3px;color:var(--ink2)}
+.ib-row[data-kind="handoff"] .ib-kind{color:var(--gilt);border-color:var(--gilt-dim)}
+.ib-row[data-kind="digest"]  .ib-kind{color:var(--soon);border-color:color-mix(in srgb,var(--soon) 35%,transparent)}
+.ib-row[data-kind="receipt"] .ib-kind{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 35%,transparent)}
+.ib-row[data-kind="receipt"]{border-left-color:var(--ok)}
+.ib-row[data-kind="digest"]{border-left-color:var(--soon)}
 .ib-main{flex:1;min-width:0}
 .ib-sub{font-family:var(--display);font-size:15px;font-weight:600;color:var(--ink)}
 .ib-meta{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-top:5px;display:flex;gap:7px;flex-wrap:wrap}

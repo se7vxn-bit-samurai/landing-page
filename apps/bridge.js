@@ -8,6 +8,28 @@
 /* the portable build presets __TGC_APP_ID before inlining this file (blob URLs have no filename) */
 window.__TGC_APP_ID = window.__TGC_APP_ID || (location.pathname.split('/').pop() || 'app').replace(/\.html$/, '');
 
+/* ── the exchange · sealing and receiving missives (theguide.exchange.v2) ──
+   tgcSeal('handoff'|'digest'|'receipt', {to, subject, ...}) sends one upward;
+   tgcOnMissive(fn) receives the ones the shell delivers into this frame.
+   The shell validates every packet at the door and shows it in the inbox —
+   nothing is ever applied to an app without a person accepting it. */
+window.tgcSeal = function (kind, packet) {
+  var p = {}; packet = packet || {};
+  for (var k in packet) if (Object.prototype.hasOwnProperty.call(packet, k)) p[k] = packet[k];
+  p.contract = 'theguide.exchange.v2';
+  p.kind = kind;
+  p.from = p.from || window.__TGC_APP_ID;
+  p.at = p.at || Date.now();
+  try { parent.postMessage({ type: 'tgc.exchange.send', packet: p }, '*'); } catch (e) {}
+  return p;
+};
+window.tgcOnMissive = function (fn) {
+  window.addEventListener('message', function (e) {
+    var d = e.data;
+    if (d && d.type === 'tgc.exchange.deliver' && d.packet) { try { fn(d.packet); } catch (err) {} }
+  });
+};
+
 /* ── the theme handshake · the frame follows the shell's sky ──
    The shell broadcasts { type:'tgc.theme', theme:'night'|'day'|'twilight' } on mount,
    on hello, and whenever the sky changes. Each app maps the sky onto its own skins.
