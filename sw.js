@@ -4,7 +4,7 @@
    version.json is never cached: it powers the "new build" whisper in the topbar.
    Fetches revalidate (cache:'no-cache') so a deploy can never skew — a fresh
    index.html is never paired with a stale shell.css from the HTTP cache. */
-const VER = 'tgc-shell-v2-noskew-1';
+const VER = 'tgc-shell-v2-vendored-1';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => e.waitUntil(

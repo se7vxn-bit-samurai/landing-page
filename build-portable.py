@@ -43,6 +43,12 @@ for f in sorted((ROOT / 'apps').glob('*.html')):
               + bridge.replace('</script', '<\\/script') + '</scr' + 'ipt>')
     app = app.replace('<script src="bridge.js"></script>', inline, 1)
     app = app.replace('<link rel="stylesheet" href="../fonts/fonts.css">', '', 1)  # no relative fetches under blob
+    # vendored libraries are inlined too — a blob URL cannot resolve ../vendor/*.js,
+    # and the portable edition has to run whole with no network at all
+    def inline_vendor(m):
+        js = (ROOT / 'vendor' / m.group(1)).read_text(encoding='utf-8')
+        return '<scr' + 'ipt>' + js.replace('</script', '<\\/script') + '</scr' + 'ipt>'
+    app = re.sub(r'<script[^>]*src="\.\./vendor/([^"]+)"[^>]*>\s*</script>', inline_vendor, app)
     b64[app_id] = base64.b64encode(app.encode('utf-8')).decode()
 
 bootstrap = """<script data-src="v2-bootstrap">

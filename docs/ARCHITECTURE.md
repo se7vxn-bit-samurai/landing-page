@@ -17,7 +17,10 @@ js/landing.js       the scroll landing (3 snap sections) · self-contained modul
 fonts/fonts.css     @font-face declarations → local woff2 files
 fonts/*.woff2       19 faces: Playfair Display, Cormorant Garamond, DM Sans, DM Mono
 apps/<id>.html      the five hosted apps: ping, sync, coach, codex, notes
-apps/bridge.js      injected into every app <head> · app-id, storage shim, key relay
+apps/bridge.js      injected into every app <head> · app-id, storage shim, key relay,
+                    theme handshake, exchange helpers
+vendor/*.js         third-party libraries Sync needs, served same-origin
+                    (xlsx, exceljs, jszip, html2canvas) · see vendor/README.md
 sw.js               service worker · network-first with cache fallback (offline after
                     first visit; version.json is never cached)
 manifest.json       PWA manifest
@@ -46,6 +49,20 @@ worker keeps them for offline return visits.
 > fonts. That machinery is gone from the source; `python3 build-portable.py` regenerates
 > the single-file offline edition on demand (fonts as data URIs, shell inlined, apps as
 > blob payloads). The output is gitignored — a build product, never the source.
+
+## vendor/ (third-party libraries)
+
+Sync reads and writes spreadsheets, which needs four libraries. They are served
+from `vendor/` rather than a CDN, so the service worker caches them like any other
+asset and Sync runs with no network. Each file came from the package's own npm
+tarball and was verified byte-for-byte against the **SRI hash the page was already
+trusting on the CDN** — all four matched, so vendoring introduced no new trust. The
+`integrity` attributes stay on the `<script>` tags and now guard our own copies.
+Provenance and the update procedure live in `vendor/README.md`.
+
+**Canon check:** with these vendored, a full session — shell plus every app — makes
+**zero external requests**. The only outbound call in the whole house is the opt-in
+weather lookup in the vestry. The QC suite fails if that ever stops being true.
 
 ## apps/bridge.js (injected into every app)
 

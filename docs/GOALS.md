@@ -91,8 +91,13 @@ its done-condition. Update statuses as things land. Intent behind all of it:
 - [x] Canon repair: Coach and Sync fetched Google Fonts on every mount, which
       broke the offline promise and leaked a request per open. Both now use the
       self-hosted faces; Cinzel falls back to the hosted Playfair
-- [ ] Sync also loads four CDN libraries (xlsx, html2canvas, exceljs, jszip) —
-      a real canon violation, but vendoring them is its own piece of work
+- [x] Sync's four CDN libraries vendored into `vendor/` (xlsx 0.18.5, exceljs
+      4.4.0, jszip 3.10.1, html2canvas 1.4.1). Each pulled from its npm tarball
+      and verified byte-for-byte against the SRI hash the page already trusted,
+      so no new trust was introduced; `integrity` now guards our own copies. The
+      portable builder inlines them too, so Sync finally works offline in both
+      builds. **The house now makes zero external requests** — only the opt-in
+      weather lookup remains, and QC fails if that changes
 - [ ] Post-deploy sanity: landing → app → vestry → rites 8/8 on the live domain
 
 ## Horizon (not scheduled, kept on purpose)

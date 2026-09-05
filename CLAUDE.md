@@ -97,7 +97,7 @@ No CSS framework. Four skins via `:root[data-theme]` token overrides in `css/she
 
 ## Conventions
 
-- **No external runtime dependencies** — the shell and every app are self-contained; the only external call is opt-in weather (Open-Meteo).
+- **No external runtime dependencies** — the shell and every app are self-contained. Fonts live in `fonts/`, Sync's spreadsheet libraries in `vendor/` (see `vendor/README.md` before touching them). The only outbound call in the whole house is opt-in weather (Open-Meteo); the QC suite fails on any other external request.
 - **Status values** are `'building'`, `'active'`, or `'open'`; rendered via the `pip()` helper.
 - **App URLs** are set via `localPath` in each `APPS` entry — update these if app files move.
 - **Braziers** (`.brz`) are the 4-slot frame indicators in the topbar that track mounted iframes.
