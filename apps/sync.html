@@ -6,12 +6,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
 <title>MirrorFlow Sync v64 — WFM</title>
+<link rel="stylesheet" href="../fonts/fonts.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha384-vtjasyidUo0kW94K5MXDXntzOJpQgBKXmE7e2Ga4LG0skTTLeBi97eFAXsqewJjw" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js" integrity="sha384-Pqp51FUN2/qzfxZxBCtF0stpc9ONI6MYZpVqmo8m20SoaQCzf+arZvACkLkirlPz" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" integrity="sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&family=DM+Mono:wght@400;500&display=swap');
+/* house faces are served locally by ../fonts/fonts.css · no external fetch */
 *{margin:0;padding:0;box-sizing:border-box}
 /* ── v2: 4-theme system — Surge (dark violet), Tide (dark teal), Press (warm light editorial), Newsprint (cool light editorial) ── */
 :root{
@@ -697,17 +698,17 @@ body.th-newsprint{
 .lc-eyebrow-text{font-family:'DM Mono',monospace;font-size:clamp(7px,0.82vw,9px);letter-spacing:.22em;text-transform:uppercase;color:var(--lc-label);white-space:nowrap}
 .lc-title-block{margin-bottom:clamp(8px,1.4vh,22px);flex-shrink:0}
 .lc-kicker{font-family:'DM Mono',monospace;font-size:clamp(6px,0.75vw,8px);letter-spacing:.28em;text-transform:uppercase;color:var(--lc-faint);margin-bottom:clamp(4px,.7vh,9px)}
-.lc-title{font-family:'Cinzel',serif;font-size:clamp(24px,3.9vw,48px);font-weight:900;line-height:.92;letter-spacing:.03em;color:var(--lc-title);margin-bottom:4px}
-.lc-title-sub{font-family:'Cinzel',serif;font-size:clamp(11px,1.5vw,19px);font-weight:400;letter-spacing:.18em;color:var(--lc-title-sub);text-transform:uppercase;margin-bottom:clamp(7px,1.1vh,16px)}
+.lc-title{font-family:'Cinzel','Playfair Display',Georgia,serif;font-size:clamp(24px,3.9vw,48px);font-weight:900;line-height:.92;letter-spacing:.03em;color:var(--lc-title);margin-bottom:4px}
+.lc-title-sub{font-family:'Cinzel','Playfair Display',Georgia,serif;font-size:clamp(11px,1.5vw,19px);font-weight:400;letter-spacing:.18em;color:var(--lc-title-sub);text-transform:uppercase;margin-bottom:clamp(7px,1.1vh,16px)}
 .lc-desc{font-family:'Cormorant Garamond',serif;font-size:clamp(11px,1.15vw,14px);font-style:italic;color:var(--lc-desc);line-height:1.55;max-width:340px}
 .lc-features{flex:1;min-height:0;overflow:hidden}
 .lc-feature{display:flex;align-items:flex-start;gap:12px;padding:clamp(6px,.9vh,11px) 0;border-bottom:.5px solid var(--lc-accent-faint)}
-.lc-feat-num{font-family:'Cinzel',serif;font-size:clamp(8px,0.82vw,10px);font-weight:700;color:var(--lc-accent);min-width:14px;padding-top:2px;opacity:.8;flex-shrink:0}
+.lc-feat-num{font-family:'Cinzel','Playfair Display',Georgia,serif;font-size:clamp(8px,0.82vw,10px);font-weight:700;color:var(--lc-accent);min-width:14px;padding-top:2px;opacity:.8;flex-shrink:0}
 .lc-feat-head{font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(11px,1.05vw,13px);color:var(--lc-feat-head);margin-bottom:2px}
 .lc-feat-body{font-family:'Cormorant Garamond',serif;font-size:clamp(10px,.95vw,12px);color:var(--lc-feat-body);line-height:1.4}
 .lc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--lc-stat-sep);flex-shrink:0;margin-top:auto}
 .lc-stat{background:var(--lc-stat-bg);padding:clamp(7px,1.1vh,13px) 8px;text-align:center}
-.lc-stat-n{font-family:'Cinzel',serif;font-size:clamp(13px,1.5vw,19px);font-weight:700;color:var(--lc-accent);margin-bottom:2px}
+.lc-stat-n{font-family:'Cinzel','Playfair Display',Georgia,serif;font-size:clamp(13px,1.5vw,19px);font-weight:700;color:var(--lc-accent);margin-bottom:2px}
 .lc-stat-l{font-family:'DM Mono',monospace;font-size:clamp(6px,0.65vw,7px);letter-spacing:.14em;text-transform:uppercase;color:var(--lc-faint)}
 .lc-right{background:var(--lc-right-bg);padding:clamp(14px,2.2vh,26px) clamp(12px,1.6vw,20px);position:relative;z-index:1;display:flex;flex-direction:column;overflow:hidden}
 .lc-right-label{font-family:'DM Mono',monospace;font-size:clamp(7px,0.75vw,9px);letter-spacing:.22em;text-transform:uppercase;color:var(--lc-label);margin-bottom:clamp(8px,1.3vh,14px);display:flex;align-items:center;gap:8px;flex-shrink:0}
@@ -1711,7 +1712,7 @@ button:active,
    ═══════════════════════════════════════════════════════════════ */
 #wfmv{display:none;flex:1;flex-direction:column;min-height:0}
 .wv-mh{display:flex;align-items:center;gap:8px;padding:0 16px;height:44px;border-bottom:1px solid var(--rule);background:var(--bg2);flex-shrink:0}
-.wv-brand{font-family:'Cinzel',serif;font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--ink2);text-transform:uppercase;white-space:nowrap}
+.wv-brand{font-family:'Cinzel','Playfair Display',Georgia,serif;font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--ink2);text-transform:uppercase;white-space:nowrap}
 .wv-brand span{color:var(--accent)}
 .wv-sep{width:1px;height:14px;background:var(--rule);flex-shrink:0}
 .wv-meta{font-family:'DM Mono',monospace;font-size:9px;color:var(--tm);letter-spacing:.07em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
@@ -1740,7 +1741,7 @@ button:active,
 .wv-sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:7px}
 .wv-sc{background:var(--card);border:1px solid var(--card-border);border-radius:var(--r);padding:9px 11px;text-align:center;transition:border-color .12s}
 .wv-sc:hover{border-color:var(--accent)}
-.wv-sn{font-family:'Cinzel',serif;font-size:17px;font-weight:700;color:var(--accent);margin-bottom:1px}
+.wv-sn{font-family:'Cinzel','Playfair Display',Georgia,serif;font-size:17px;font-weight:700;color:var(--accent);margin-bottom:1px}
 .wv-sl{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.15em;text-transform:uppercase;color:var(--tm)}
 .wv-team{background:var(--card);border:1px solid var(--card-border);border-radius:var(--r);overflow:hidden}
 .wv-thdr{display:flex;align-items:center;gap:8px;padding:8px 13px;background:var(--bg3);border-bottom:1px solid var(--rule);cursor:pointer;user-select:none;transition:background .12s}
@@ -1786,7 +1787,7 @@ button:active,
 .wv-card-dn{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.06em;text-transform:uppercase;color:var(--tm);margin-bottom:2px}
 .wv-card-ds{font-family:'DM Mono',monospace;font-size:7px;padding:2px 2px;border-radius:2px;text-align:center;min-height:16px;display:flex;align-items:center;justify-content:center}
 .wv-card-ft{padding:5px 11px;border-top:1px solid var(--rule2);display:flex;align-items:center;justify-content:space-between;background:var(--card-top)}
-.wv-card-hrs{font-family:'Cinzel',serif;font-size:11px;font-weight:700}
+.wv-card-hrs{font-family:'Cinzel','Playfair Display',Georgia,serif;font-size:11px;font-weight:700}
 .wv-card-hl{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--tm)}
 .wv-card-exc{font-family:'DM Mono',monospace;font-size:8px;color:var(--flag)}
 .wv-heatmap-wrap{overflow-x:auto}
@@ -1795,12 +1796,12 @@ button:active,
 .wv-heatmap th:first-child{text-align:left}
 .wv-heatmap td{padding:4px 6px;border-bottom:.5px solid var(--rule2);text-align:center}
 .wv-heatmap tr:hover td{background:var(--al)}
-.wv-hm-cell{display:inline-flex;align-items:center;justify-content:center;padding:2px 6px;border-radius:3px;font-family:'Cinzel',serif;font-size:11px;font-weight:700;min-width:36px}
+.wv-hm-cell{display:inline-flex;align-items:center;justify-content:center;padding:2px 6px;border-radius:3px;font-family:'Cinzel','Playfair Display',Georgia,serif;font-size:11px;font-weight:700;min-width:36px}
 .wv-day-bar{height:10px;border-radius:2px;background:var(--al);overflow:hidden;margin:3px 0}
 .wv-day-seg{height:100%;float:left}
 .wv-exc-wrap{background:var(--card);border:1px solid var(--card-border);border-radius:var(--r);overflow:hidden}
 .wv-exc-frow{display:flex;align-items:center;gap:7px;padding:7px 12px;background:var(--bg3);border-bottom:1px solid var(--rule);flex-wrap:wrap}
-.wv-exc-ct{font-family:'Cinzel',serif;font-size:18px;font-weight:700;color:var(--flag)}
+.wv-exc-ct{font-family:'Cinzel','Playfair Display',Georgia,serif;font-size:18px;font-weight:700;color:var(--flag)}
 .wv-exc-type{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border-radius:3px;border:1px solid var(--bdr);background:transparent;color:var(--tm);cursor:pointer;transition:all .12s}
 .wv-exc-type.on{background:var(--flag-bg);border-color:rgba(192,112,112,.3);color:var(--flag)}
 .wv-exc-type.on.wv-et-hol{background:var(--ok-bg);border-color:rgba(96,168,120,.3);color:var(--ok)}
@@ -1820,10 +1821,10 @@ button:active,
 .wv-modal-day{background:var(--card);border:1px solid var(--card-border);border-radius:5px;padding:7px 5px;text-align:center}
 .wv-modal-dn{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.09em;text-transform:uppercase;color:var(--tm);margin-bottom:3px}
 .wv-modal-dd{font-family:'DM Mono',monospace;font-size:7px;color:var(--tm);margin-bottom:3px}
-.wv-modal-dh{font-family:'Cinzel',serif;font-size:10px;font-weight:700;color:var(--accent);margin-top:2px}
+.wv-modal-dh{font-family:'Cinzel','Playfair Display',Georgia,serif;font-size:10px;font-weight:700;color:var(--accent);margin-top:2px}
 .wv-modal-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
 .wv-modal-stat{background:var(--card);border:1px solid var(--card-border);border-radius:5px;padding:9px;text-align:center}
-.wv-modal-sn{font-family:'Cinzel',serif;font-size:17px;font-weight:700;color:var(--accent)}
+.wv-modal-sn{font-family:'Cinzel','Playfair Display',Georgia,serif;font-size:17px;font-weight:700;color:var(--accent)}
 .wv-modal-sl{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--tm)}
 .wv-nodata{text-align:center;padding:32px 16px;color:var(--tm);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px}
 
@@ -1879,7 +1880,7 @@ button:active,
 .wv-card2-blank{color:var(--ink4);opacity:.3;font-family:'DM Mono',monospace;font-size:12px}
 .wv-card2-exc{flex-direction:column;gap:2px}
 .wv-card2-shift{flex-direction:column;gap:1px}
-.wv-card2-st{font-family:'Cinzel',serif;font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.04em}
+.wv-card2-st{font-family:'Cinzel','Playfair Display',Georgia,serif;font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.04em}
 .wv-card2-en{font-family:'DM Mono',monospace;font-size:9px;color:var(--ink2);letter-spacing:.03em}
 .wv-card2-ft{padding:10px 16px;border-top:1px solid var(--rule2);display:flex;align-items:center;justify-content:space-between;background:var(--card-top)}
 .wv-card2-wm{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink4);opacity:.5}
@@ -6678,7 +6679,7 @@ function _wvRenderSchedule(teams,d){
       const hc=ag.totalHours>=36?'var(--ok)':ag.totalHours>=28?'var(--accent)':ag.totalHours>0?'var(--flag)':'var(--tm)';
       h+=`<tr><td><div class="wv-aname" onclick="wvShowAgentModal(${JSON.stringify(ag.name)},${JSON.stringify(ag.team)})">${X(ag.name)}</div><div class="wv-aid">${X(ag.id)}</div></td>`;
       h+=`<td><span style="font-family:'DM Mono',monospace;font-size:8px;color:var(--tm)">${X(ag.id)}</span></td>`;
-      h+=`<td style="text-align:center"><span style="font-family:'Cinzel',serif;font-size:10px;font-weight:700;color:${hc}">${ag.totalHours||'—'}</span></td>`;
+      h+=`<td style="text-align:center"><span style="font-family:'Cinzel','Playfair Display',Georgia,serif;font-size:10px;font-weight:700;color:${hc}">${ag.totalHours||'—'}</span></td>`;
       ag.days.forEach(dy=>{
         if(!dy.date||!dy.display){h+=`<td style="text-align:center"><span class="wv-blank">–</span></td>`;return;}
         h+=`<td style="text-align:center"><span class="wv-chip ${dy.cls}">${X(dy.display)}</span></td>`;
@@ -6760,7 +6761,7 @@ function _wvRenderCalendar(teams,d){
         border:${isSel?'2px solid var(--accent)':isToday?'1.5px solid var(--accent)':'1px solid var(--bdr)'};
         background:${isSel?'var(--al)':'var(--card)'};transition:all .12s;text-align:center;flex-shrink:0">`;
       h+=`<div style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.12em;text-transform:uppercase;color:${isSel||isToday?'var(--accent)':'var(--tm)'};margin-bottom:3px">${DN[dt.getDay()]}</div>`;
-      h+=`<div style="font-family:'Cinzel',serif;font-size:19px;font-weight:700;color:${isSel||isToday?'var(--accent)':'var(--ink)'};margin-bottom:3px">${dt.getDate()}</div>`;
+      h+=`<div style="font-family:'Cinzel','Playfair Display',Georgia,serif;font-size:19px;font-weight:700;color:${isSel||isToday?'var(--accent)':'var(--ink)'};margin-bottom:3px">${dt.getDate()}</div>`;
       h+=`<div style="font-family:'DM Mono',monospace;font-size:7px;color:var(--tm)">${dd.onShift.length} on shift</div>`;
       if(dd.exceptions.length)h+=`<div style="font-family:'DM Mono',monospace;font-size:7px;color:var(--flag);margin-top:1px">${dd.exceptions.length} exc</div>`;
       if(!hasData)h+=`<div style="font-family:'DM Mono',monospace;font-size:7px;color:var(--tm);opacity:.3;margin-top:1px">—</div>`;
@@ -6781,8 +6782,8 @@ function _wvRenderCalendar(teams,d){
       h+=`<div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--tm);letter-spacing:.1em;text-transform:uppercase">${DN[selDt.getDay()]}${isToday?' · Today':''}</div></div>`;
     }
     h+=`<div style="margin-left:auto;display:flex;gap:10px;align-items:center">`;
-    h+=`<div style="text-align:center"><div style="font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--ok)">${dd.onShift.length}</div><div style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--tm)">Working</div></div>`;
-    if(dd.exceptions.length)h+=`<div style="text-align:center"><div style="font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--flag)">${dd.exceptions.length}</div><div style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--tm)">Out</div></div>`;
+    h+=`<div style="text-align:center"><div style="font-family:'Cinzel','Playfair Display',Georgia,serif;font-size:15px;font-weight:700;color:var(--ok)">${dd.onShift.length}</div><div style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--tm)">Working</div></div>`;
+    if(dd.exceptions.length)h+=`<div style="text-align:center"><div style="font-family:'Cinzel','Playfair Display',Georgia,serif;font-size:15px;font-weight:700;color:var(--flag)">${dd.exceptions.length}</div><div style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--tm)">Out</div></div>`;
     h+=`</div></div>`;
     if(!dd.onShift.length&&!dd.exceptions.length){
       h+=`<div class="wv-nodata" style="padding:28px">No schedule data for this day${isToday?' — today may not be in the loaded file':''}</div>`;
@@ -6832,7 +6833,7 @@ function _wvRenderCalendar(teams,d){
   [{n:allAgents.length,l:'Agents'},{n:teams.length,l:'Teams'},{n:Math.round(totalHrs)+'h',l:'Total hrs'},{n:totalExcs,l:'Exceptions',col:totalExcs?'var(--flag)':null}]
     .forEach(({n,l,col})=>{
     h+=`<div style="background:var(--bg3);border-radius:4px;padding:7px;text-align:center">`;
-    h+=`<div style="font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:${col||'var(--accent)'}">${n}</div>`;
+    h+=`<div style="font-family:'Cinzel','Playfair Display',Georgia,serif;font-size:14px;font-weight:700;color:${col||'var(--accent)'}">${n}</div>`;
     h+=`<div style="font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--tm)">${l}</div>`;
     h+=`</div>`;
   });
@@ -6844,7 +6845,7 @@ function _wvRenderCalendar(teams,d){
       const ct=allAgents.flatMap(a=>a.days).filter(dy=>dy.offL===ex).length;
       h+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:3px 0;border-bottom:.5px solid var(--rule2)">`;
       h+=`<span class="wv-chip ${_WV_EX_CLS[ex]||'wv-other'}" style="font-size:7px">${X(ex)}</span>`;
-      h+=`<span style="font-family:'Cinzel',serif;font-size:11px;font-weight:700;color:var(--flag)">${ct}</span>`;
+      h+=`<span style="font-family:'Cinzel','Playfair Display',Georgia,serif;font-size:11px;font-weight:700;color:var(--flag)">${ct}</span>`;
       h+=`</div>`;
     });
     h+=`</div>`;
@@ -6862,8 +6863,8 @@ function _wvRenderCalendar(teams,d){
         const tot=on+exc;
         h+=`<div style="display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:.5px solid var(--rule2)">`;
         h+=`<span style="font-family:'DM Mono',monospace;font-size:8px;color:var(--tm);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${X(tl.split(' ')[0])}</span>`;
-        h+=`<span style="font-family:'Cinzel',serif;font-size:11px;font-weight:700;color:var(--ok)">${on}</span>`;
-        if(exc)h+=`<span style="font-family:'Cinzel',serif;font-size:10px;color:var(--flag)">+${exc}</span>`;
+        h+=`<span style="font-family:'Cinzel','Playfair Display',Georgia,serif;font-size:11px;font-weight:700;color:var(--ok)">${on}</span>`;
+        if(exc)h+=`<span style="font-family:'Cinzel','Playfair Display',Georgia,serif;font-size:10px;color:var(--flag)">+${exc}</span>`;
         h+=`<div style="width:44px;height:5px;background:var(--bg3);border-radius:2px;overflow:hidden">`;
         h+=`<div style="width:${Math.round(on/tot*100)}%;height:100%;background:var(--ok);float:left"></div>`;
         if(exc)h+=`<div style="width:${Math.round(exc/tot*100)}%;height:100%;background:var(--flag);float:left;opacity:.5"></div>`;
@@ -6878,7 +6879,7 @@ function _wvRenderCalendar(teams,d){
         Object.entries(sg).sort((a,b)=>b[1]-a[1]).forEach(([sh,ct])=>{
           h+=`<div style="display:flex;align-items:center;gap:8px;padding:3px 0;border-bottom:.5px solid var(--rule2)">`;
           h+=`<span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--accent);flex:1">${X(sh)}</span>`;
-          h+=`<span style="font-family:'Cinzel',serif;font-size:11px;font-weight:700;color:var(--text)">${ct}</span>`;
+          h+=`<span style="font-family:'Cinzel','Playfair Display',Georgia,serif;font-size:11px;font-weight:700;color:var(--text)">${ct}</span>`;
           h+=`</div>`;
         });
         h+=`</div>`;

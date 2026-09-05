@@ -85,6 +85,14 @@ its done-condition. Update statuses as things land. Intent behind all of it:
       from the Pages HTTP cache (the "pop looked like night" report)
 - [x] Deploy ritual documented: bump `version.json` per deploy; bump `VER` in
       `sw.js` when asset shape changes (see ARCHITECTURE.md)
+- [x] QC sweep automated — 39 checks across entry, pulse, all four skins, the
+      handshake, motifs, altar, exchange, rites, satchel, mobile and the
+      portable build; it also guards the canon (fails on any external request)
+- [x] Canon repair: Coach and Sync fetched Google Fonts on every mount, which
+      broke the offline promise and leaked a request per open. Both now use the
+      self-hosted faces; Cinzel falls back to the hosted Playfair
+- [ ] Sync also loads four CDN libraries (xlsx, html2canvas, exceljs, jszip) —
+      a real canon violation, but vendoring them is its own piece of work
 - [ ] Post-deploy sanity: landing → app → vestry → rites 8/8 on the live domain
 
 ## Horizon (not scheduled, kept on purpose)
