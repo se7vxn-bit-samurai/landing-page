@@ -98,7 +98,10 @@ its done-condition. Update statuses as things land. Intent behind all of it:
       portable builder inlines them too, so Sync finally works offline in both
       builds. **The house now makes zero external requests** — only the opt-in
       weather lookup remains, and QC fails if that changes
-- [ ] Post-deploy sanity: landing → app → vestry → rites 8/8 on the live domain
+- [x] Post-deploy sanity confirmed on the live domain (5 Sep 2026, v2.8):
+      rites **8/8 · all rites held**. The automated sweep runs against a clean
+      checkout of the merged commit and covers everything except delivery
+      (DNS, TLS, Pages) — that part needs a real browser on the real domain
 
 ## Horizon (not scheduled, kept on purpose)
 
