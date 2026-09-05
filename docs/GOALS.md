@@ -62,6 +62,18 @@ its done-condition. Update statuses as things land. Intent behind all of it:
 - [x] Mobile sky: a slim 60px band of tappable 22px world orbs replaces the
       old `display:none` — meta text, seal, sun and moon step aside on phones
 
+## Phase E · The Exchange
+
+- [x] **Exchange v2 · typed packets** — every missive declares its `kind`
+      (`handoff` · `digest` · `receipt`); `readPacket()` validates contract,
+      kind and recipient at the door and refuses with a reason. v1 packets
+      still accepted, read as handoffs. Per-kind inbox rendering (sigil, chip,
+      action verb), kind-aware missive envelope and topbar badge, receipts
+      acknowledge instead of routing. `tgcSeal()`/`tgcOnMissive()` in
+      `apps/bridge.js` give apps a one-line producer/consumer; a new
+      *exchange contract* rite self-tests the whole schema.
+      *Done when: a receiver never has to guess what arrived, and a malformed packet is refused with a reason.* ✓
+
 ## Phase D · Rituals & tooling
 
 - [x] `build-portable.py` — regenerates the single-file offline edition from
@@ -73,12 +85,20 @@ its done-condition. Update statuses as things land. Intent behind all of it:
       from the Pages HTTP cache (the "pop looked like night" report)
 - [x] Deploy ritual documented: bump `version.json` per deploy; bump `VER` in
       `sw.js` when asset shape changes (see ARCHITECTURE.md)
-- [ ] Post-deploy sanity: landing → app → vestry → rites 7/7 on the live domain
+- [x] QC sweep automated — 39 checks across entry, pulse, all four skins, the
+      handshake, motifs, altar, exchange, rites, satchel, mobile and the
+      portable build; it also guards the canon (fails on any external request)
+- [x] Canon repair: Coach and Sync fetched Google Fonts on every mount, which
+      broke the offline promise and leaked a request per open. Both now use the
+      self-hosted faces; Cinzel falls back to the hosted Playfair
+- [ ] Sync also loads four CDN libraries (xlsx, html2canvas, exceljs, jszip) —
+      a real canon violation, but vendoring them is its own piece of work
+- [ ] Post-deploy sanity: landing → app → vestry → rites 8/8 on the live domain
 
 ## Horizon (not scheduled, kept on purpose)
 
 - MirrorFlow Insight as the consumer of real Pulse data once apps report
   activity over the bus (packets, still — never storage reads)
-- Exchange v2: typed packet kinds (handoff, digest, receipt) with per-kind inbox
-  rendering
+- MirrorFlow Insight's first real feed: apps calling `tgcSeal('digest', …)` on
+  their own activity, so the Pulse widens beyond visit stamps (packets only)
 - The Rift (Riftborn game) gets its bus only "when the rift opens"

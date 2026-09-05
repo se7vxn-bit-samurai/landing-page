@@ -48,7 +48,7 @@ First-run entry is owned by the **scroll landing** (`js/landing.js`, 3 snap sect
 
 **`Bus`** — cross-frame message passing:
 - Listens for `postMessage` from iframes. Apps announce themselves with `tgc.shell.hello` and receive packets via `tgc.exchange.deliver`.
-- Incoming packets from iframes use `tgc.exchange.send` and must declare `contract: 'theguide.exchange.v1'`.
+- Incoming packets use `tgc.exchange.send` and are validated by `readPacket()`: contract `theguide.exchange.v2` (v1 accepted, read as a handoff), a known `kind` (`handoff` · `digest` · `receipt`), and an existing recipient for handoffs and digests. Refusals toast the reason. Apps produce with `tgcSeal(kind, packet)` and consume with `tgcOnMissive(fn)` — both from `apps/bridge.js`. Full contract: `docs/APPS.md`.
 - `Bus.queue` persists to localStorage (`KEYS.inbox`) as the draggable "missive" envelope shown in the sky; the full queue lives in the Inbox drawer.
 - `Bus.deliver(packet)` / `Bus.dismiss(packet)` route or discard missives.
 

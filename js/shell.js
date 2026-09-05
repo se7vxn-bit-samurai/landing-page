@@ -57,11 +57,30 @@ const ARCHIVE = [
   {name:'Excelsior Classic',version:'v0.0.9',sealed:'Feb 2026',to:'Coach',world:'excelsior',note:'The printed-dossier prototype. Now the Coach Library.'}
 ];
 const EXCHANGE = {
-  excelsior:{consumes:'theguide.exchange.v1',produces:'none',note:'Coach receives missives: Ping hands conversations here for review.'},
-  mirrorflow:{consumes:'theguide.exchange.v1 (Sync)',produces:'theguide.exchange.v1 (Ping, Notes)',note:'Ping and Notes seal missives; Sync receives them.'},
+  excelsior:{consumes:'theguide.exchange.v2 · handoff',produces:'theguide.exchange.v2 · receipt',note:'Coach receives handoffs: Ping hands conversations here for review, and seals a receipt when the work is done.'},
+  mirrorflow:{consumes:'theguide.exchange.v2 (Sync)',produces:'theguide.exchange.v2 (Ping, Notes)',note:'Ping and Notes seal handoffs and digests; Sync receives them.'},
   riftborn:{consumes:'none',produces:'none',note:'The Codex keeps memory, not correspondence. The game gets no bus until the rift opens.'},
   altar:{consumes:'none',produces:'none',note:'Ideas have no bus. An idea earns one by becoming an app.'}
 };
+/* ═══════════ THE CONTRACT · what a missive may be ═══════════
+   v2 adds a declared kind so the receiver never has to guess what arrived.
+   v1 packets are still accepted and read as handoffs — the old contract holds. */
+const CONTRACTS = ['theguide.exchange.v1','theguide.exchange.v2'];
+const KINDS = {
+  handoff:{sigil:'✦',label:'handoff',verb:'deliver',note:'work handed to another instrument'},
+  digest: {sigil:'◈',label:'digest', verb:'open',   note:'a summary, sealed for reading'},
+  receipt:{sigil:'✓',label:'receipt',verb:'acknowledge',note:'an acknowledgement that work was done'}
+};
+function readPacket(p){
+  if(!p || typeof p!=='object') return {ok:false,why:'not a packet'};
+  if(CONTRACTS.indexOf(p.contract)<0) return {ok:false,why:'must declare '+CONTRACTS[CONTRACTS.length-1]};
+  const kind = p.kind || (p.contract==='theguide.exchange.v1' ? 'handoff' : null);
+  if(!kind) return {ok:false,why:'a v2 packet must declare a kind'};
+  if(!KINDS[kind]) return {ok:false,why:'unknown kind · '+kind};
+  if(kind!=='receipt' && !APPS[p.to]) return {ok:false,why:'unknown recipient · '+(p.to||'none named')};
+  return {ok:true,kind};
+}
+const kindOf = p => (readPacket(p).kind || 'handoff');
 const IDEAS = [
   {name:'MirrorFlow Insight',stage:'concept',desc:'Analytics, pattern detection, signal layers over Ping & Sync data.',dest:'MirrorFlow'},
   {name:'Undercroft Exchange',stage:'prototype',desc:'A harvest surface: browsing donor engines and porting them as modules. Handoff received.',dest:'Shell'},
@@ -175,25 +194,30 @@ const Bus = {
     Bus.save();
   },
   receive(p){
-    if(!p || p.contract!=='theguide.exchange.v1'){ toast('packet refused: must declare theguide.exchange.v1'); return; }
+    const v = readPacket(p);
+    if(!v.ok){ toast('packet refused · '+v.why); return; }
     Bus.queue.push(p); Bus.save();
     renderMissive(); updateBadge();
-    toast('a missive arrives · '+(p.from||'?')+' → '+(p.to||'?'));
+    toast('a '+KINDS[v.kind].label+' arrives · '+(p.from||'?')+(p.to?' → '+p.to:''));
   },
   deliver(p){
+    if(kindOf(p)==='receipt') return Bus.acknowledge(p);   // a receipt has nowhere to be delivered
     const i = Bus.queue.indexOf(p); if(i>-1) Bus.queue.splice(i,1);
-    if(p.demo) localStorage.setItem(KEYS.demo,'1');
     Bus.save();
     const target = p.to;
     Bus.pending[target] = Bus.pending[target]||[]; Bus.pending[target].push(p);
     renderMissive(); updateBadge();
-    toast('missive delivered into '+(APPS[target]?APPS[target].short:target));
+    toast(KINDS[kindOf(p)].label+' delivered into '+(APPS[target]?APPS[target].short:target));
     Frame.enter(target);
     Bus.flush(target);
   },
+  acknowledge(p){
+    const i = Bus.queue.indexOf(p); if(i>-1) Bus.queue.splice(i,1);
+    Bus.save(); renderMissive(); updateBadge();
+    toast('receipt acknowledged · the work is recorded');
+  },
   dismiss(p){
     const i = Bus.queue.indexOf(p); if(i>-1) Bus.queue.splice(i,1);
-    if(p.demo) localStorage.setItem(KEYS.demo,'1');
     Bus.save(); renderMissive(); updateBadge();
     toast('missive set aside');
   },
@@ -212,7 +236,7 @@ function updateBadge(){
   const n = Bus.queue.length;
   document.title = (n>0?'✦'+n+' · ':'') + (Frame.active?APPS[Frame.active].short+' · ':'') + 'theGuide.Club';
   const dm = $('#tb-missive');
-  if(dm){ dm.textContent = '✦ '+n; dm.classList.toggle('on',n>0); }
+  if(dm){ dm.textContent = (n?KINDS[kindOf(Bus.queue[0])].sigil:'✦')+' '+n; dm.classList.toggle('on',n>0); }
   const an = $('#tb-appname'); if(an) an.textContent = Frame.active ? APPS[Frame.active].name+' · '+APPS[Frame.active].version : '';
   const cv = document.createElement('canvas'); cv.width = cv.height = 32;
   const x = cv.getContext('2d');
@@ -270,10 +294,12 @@ function renderMissive(){
   c.style.setProperty('--cx2',SKY_X[toW]+'%');   c.style.setProperty('--cy2','46%');
   sky.appendChild(c);
   const m = document.createElement('div');
-  m.id='missive'; m.textContent='✦ '+Bus.queue.length;
+  m.id='missive'; m.textContent=KINDS[kindOf(head)].sigil+' '+Bus.queue.length;
   m.setAttribute('role','button'); m.setAttribute('tabindex','0');
   m.setAttribute('aria-label',Bus.queue.length+' sealed missives waiting · open the inbox');
-  m.title='drag onto '+(WORLDS[toW]?WORLDS[toW].name:toW)+' to deliver · double-click to set aside';
+  m.title = kindOf(head)==='receipt'
+    ? 'a receipt waits · click to open the inbox and acknowledge it'
+    : 'drag onto '+(WORLDS[toW]?WORLDS[toW].name:toW)+' to '+KINDS[kindOf(head)].verb+' · double-click to set aside';
   const homeLeft = (SKY_X[toW]+3.4)+'%';
   m.style.left = homeLeft; m.style.top='30%';
   sky.appendChild(m);
@@ -297,7 +323,7 @@ function renderMissive(){
     const under = document.elementFromPoint(e.clientX,e.clientY);
     const door = under && under.closest ? under.closest('.tp-panel') : null;
     $$('.tp-panel').forEach(p=>p.classList.remove('drop-ok'));
-    if(moved && door && door.dataset.world===toW) return Bus.deliver(head);
+    if(moved && door && door.dataset.world===toW && kindOf(head)!=='receipt') return Bus.deliver(head);
     home();
     if(moved && door) toast('the missive is addressed to '+(APPS[head.to]?APPS[head.to].short:head.to)+' · it will not open elsewhere');
     else if(!moved) openInbox();
@@ -314,16 +340,19 @@ function renderInbox(){
     list.innerHTML = `<div class="ib-empty">the inbox is clear · no missives wait</div>`;
   } else {
     list.innerHTML = Bus.queue.map((p,ix)=>{
-      const toApp = APPS[p.to];
-      return `<div class="ib-row" style="--iacc:${toApp?toApp.accent:'#d4af37'}">
-        <div class="ib-sigil">✦</div>
+      const toApp = APPS[p.to], kind = kindOf(p), K = KINDS[kind];
+      const act = kind==='receipt' ? 'acknowledge ✓'
+                : kind==='digest'  ? (toApp?'open in '+toApp.short:'open')+' ↘'
+                                   : (toApp?'deliver to '+toApp.short:'deliver')+' ↘';
+      return `<div class="ib-row" data-kind="${kind}" style="--iacc:${toApp?toApp.accent:'#d4af37'}">
+        <div class="ib-sigil" title="${K.note}">${K.sigil}</div>
         <div class="ib-main">
           <div class="ib-sub">${p.subject||'a sealed missive'}</div>
-          <div class="ib-meta">${(p.from||'?')}<span>→</span>${(p.to||'?')}${p.demo?' · demo':''}${p.privacy?' · '+p.privacy:''}</div>
+          <div class="ib-meta"><b class="ib-kind">${K.label}</b>${(p.from||'?')}${p.to?`<span>→</span>${p.to}`:''}${p.privacy?' · '+p.privacy:''}</div>
           ${p.coachSeed?`<div class="ib-seed">${p.coachSeed}</div>`:''}
         </div>
         <div class="ib-acts">
-          <button class="ib-btn go" data-ib-deliver="${ix}">${toApp?'deliver to '+toApp.short:'deliver'} ↘</button>
+          <button class="ib-btn go" data-ib-deliver="${ix}">${act}</button>
           <button class="ib-btn" data-ib-dismiss="${ix}">set aside</button>
         </div>
       </div>`;
@@ -455,6 +484,16 @@ function runRites(){
   window.addEventListener('message',onEcho);
   try{ window.postMessage({type:'tgc.rite.echo',token},'*'); }catch(e){}
   rites.push(['exchange bus','postMessage echoes',null]); // resolved async
+  // the contract itself · every kind reads, every malformed packet is refused
+  let contractOk = false;
+  try{
+    contractOk = Object.keys(KINDS).every(k=>readPacket({contract:'theguide.exchange.v2',kind:k,from:'ping',to:'coach'}).ok)
+      && readPacket({contract:'theguide.exchange.v1',from:'ping',to:'coach'}).kind==='handoff'
+      && !readPacket({contract:'not.a.contract',from:'ping',to:'coach'}).ok
+      && !readPacket({contract:'theguide.exchange.v2',kind:'nonsense',to:'coach'}).ok
+      && !readPacket({contract:'theguide.exchange.v2',kind:'handoff',to:'no-such-app'}).ok;
+  }catch(e){}
+  rites.push(['exchange contract','v2 kinds read · malformed refused',contractOk]);
   function paint(){
     const idx = rites.findIndex(r=>r[0]==='exchange bus');
     if(idx>-1) rites[idx][2] = busOk;
