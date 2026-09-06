@@ -37,10 +37,13 @@ const APPS = {
     desc:'Continuity across days, your voice over time.'},
   notes:{id:'notes',short:'Notes',name:'MirrorFlow Notes',world:'mirrorflow',glyph:'N',accent:'#a9b6c8',status:'active',version:'v4',
     kind:'The workbench',localPath:'apps/notes.html',
-    desc:'Catch it before it goes, then shape it into something worth handing over.'},
+    desc:'Catch it before it goes, then shape it. Hands work to the Bench.'},
   coach:{id:'coach',short:'Coach',name:'Excelsior Coach',world:'excelsior',glyph:'E',accent:'#d4a832',status:'active',version:'v2.7',
     kind:'Editorial sales coach',localPath:'apps/coach.html',
     desc:'Coaching for sellers who think in arguments.'},
+  bench:{id:'bench',short:'Bench',name:'MirrorFlow Bench',world:'mirrorflow',glyph:'B',accent:'#8ec8b8',status:'building',version:'v1',
+    kind:'The review desk',localPath:'apps/bench.html',
+    desc:'Where work lands to be looked at. It sorts and stamps; it does not score.'},
   insight:{id:'insight',short:'Insight',name:'MirrorFlow Insight',world:'mirrorflow',glyph:'I',accent:'#7df9e8',status:'soon',version:'—',
     kind:'Pattern & signal layer',localPath:null,
     desc:'The memory of the mirror. Reads digests, shows the arc.'},
@@ -49,7 +52,7 @@ const APPS = {
     desc:'Rituals, bibles, lore: sealed and canon.'}
 };
 window.TGC_APPS = APPS;            // apps live under apps/<id>.html · fetched on demand
-const DOCK = ['ping','sync','coach','codex'];
+const DOCK = ['ping','sync','notes','bench','coach','codex'];   // Ctrl+1-6 · not the braziers, which track mounted frames
 const ORDER = ['mirrorflow','excelsior','riftborn','altar'];
 const SKY_X = {mirrorflow:16,excelsior:36,riftborn:64,altar:84};
 const ARCHIVE = [
@@ -60,8 +63,8 @@ const ARCHIVE = [
   {name:'Excelsior Classic',version:'v0.0.9',sealed:'Feb 2026',to:'Coach',world:'excelsior',note:'The printed-dossier prototype. Now the Coach Library.'}
 ];
 const EXCHANGE = {
-  excelsior:{consumes:'theguide.exchange.v2 · handoff',produces:'theguide.exchange.v2 · receipt',note:'Coach receives handoffs: Ping hands conversations here for review, and seals a receipt when the work is done.'},
-  mirrorflow:{consumes:'theguide.exchange.v2 (Sync)',produces:'theguide.exchange.v2 (Ping, Notes)',note:'Ping and Notes seal handoffs and digests; Sync receives them.'},
+  excelsior:{consumes:'none yet',produces:'theguide.exchange.v2 · handoff',note:'Coach hands an analysis or a scorecard to the Bench. It does not yet receive; the old claim that it did was a promise, not a build.'},
+  mirrorflow:{consumes:'theguide.exchange.v2 · handoff (Notes, Bench)',produces:'theguide.exchange.v2 · handoff & digest (Ping, Sync, Notes, Bench)',note:'The Bench receives what the others lay down; Notes both seals and receives, and hands a piece back when it is time to work on it.'},
   riftborn:{consumes:'none',produces:'none',note:'The Codex keeps memory, not correspondence. The game gets no bus until the rift opens.'},
   altar:{consumes:'none',produces:'none',note:'Ideas have no bus. An idea earns one by becoming an app.'}
 };
@@ -115,7 +118,7 @@ $('#sky-date').textContent = new Date().toLocaleDateString('en-GB',{weekday:'lon
 
 /* ═══════════ THE FRAME · manager (LRU-3, session, veil) ═══════════ */
 const Frame = {
-  iframes:{}, order:[], active:null, warmed:{},
+  iframes:{}, order:[], active:null, warmed:{}, ready:{},   // ready: the frame has finished loading and can be posted to
   pinned: new Set(lsGet('tgc.shell2.pins',[])),
   togglePin(id){
     Frame.pinned.has(id) ? Frame.pinned.delete(id) : Frame.pinned.add(id);
@@ -127,6 +130,7 @@ const Frame = {
     const id = Frame.active; if(!id) return;
     const fr = Frame.iframes[id]; if(!fr) return;
     $('#veil').classList.add('on'); $('#veil-line').textContent='re-summoning '+APPS[id].short.toLowerCase();
+    Frame.ready[id] = false;
     fr.src = APPS[id].localPath;
   },
   enter(id){
@@ -143,7 +147,7 @@ const Frame = {
         if(evictId){
           Frame.order.splice(Frame.order.indexOf(evictId),1);
           const f2 = Frame.iframes[evictId]; if(f2) f2.remove();
-          delete Frame.iframes[evictId];
+          delete Frame.iframes[evictId]; delete Frame.ready[evictId];
           toast(APPS[evictId].short+' evicted from the braziers · re-summons on return');
         }
       }
@@ -151,7 +155,8 @@ const Frame = {
       fr.setAttribute('data-shell-app',id);
       fr.src = a.localPath;                       // apps/<id>.html · same-origin frame
       $('#veil').classList.add('on'); $('#veil-line').textContent = 'summoning '+a.short.toLowerCase();
-      fr.addEventListener('load',()=>{ $('#veil').classList.remove('on'); Bus.flush(id); broadcastTheme(fr.contentWindow); });
+      Frame.ready[id] = false;
+      fr.addEventListener('load',()=>{ Frame.ready[id] = true; $('#veil').classList.remove('on'); Bus.flush(id); broadcastTheme(fr.contentWindow); });
       $('#frame').appendChild(fr);
       Frame.iframes[id] = fr;
     } else {
@@ -246,6 +251,10 @@ const Bus = {
     const fr = Frame.iframes[id];
     const win = source || (fr && fr.contentWindow);
     if(!win || !Bus.pending[id] || !Bus.pending[id].length) return;
+    /* Without an explicit source, only post to a frame that has actually loaded.
+       A brand-new iframe hands back its about:blank window, which swallows the
+       packet while splice(0) below drops it from the queue for good. */
+    if(!source && !Frame.ready[id]) return;
     Bus.pending[id].splice(0).forEach(p=>{
       try{ win.postMessage({type:'tgc.exchange.deliver',packet:p},'*'); }catch(e){}
     });
@@ -438,7 +447,7 @@ function storageReport(){
 }
 function clearAppData(id){
   try{ localStorage.removeItem('tgc.appstore.'+id); }catch(e){}
-  if(Frame.iframes[id]){ Frame.iframes[id].remove(); delete Frame.iframes[id]; const ix=Frame.order.indexOf(id); if(ix>-1) Frame.order.splice(ix,1); renderBraziers(); }
+  if(Frame.iframes[id]){ Frame.iframes[id].remove(); delete Frame.iframes[id]; delete Frame.ready[id]; const ix=Frame.order.indexOf(id); if(ix>-1) Frame.order.splice(ix,1); renderBraziers(); }
   if(currentChamber==='vestry') relight();
   toast(APPS[id].short+'’s data cleared · re-summons fresh');
 }
@@ -558,7 +567,7 @@ window.addEventListener('message',e=>{
   const c = d.combo;
   if(c==='esc'){ if(currentChamber) return closeChamber(); if(document.body.dataset.view==='frame') return Frame.ascend(); return; }
   if(c==='ctrlk'){ return $('#palette').classList.contains('open') ? palClose() : palOpen(); }
-  if(/^ctrl[1-4]$/.test(c)){ return Frame.enter(DOCK[parseInt(c.slice(4),10)-1]); }
+  if(/^ctrl[1-6]$/.test(c)){ return Frame.enter(DOCK[parseInt(c.slice(4),10)-1]); }
 });
 
 /* ═══════════ THE SKY · bodies, sun, moon ═══════════ */
@@ -700,13 +709,9 @@ function moduleMirrorflow(w){
       <div class="foot"><span>${Pulse.visitLine(id)}</span><span class="e">enter ↘</span></div>
     </div>`; };
   return `
-  <div class="ch-mod-h">The two instruments</div>
-  <div class="mf-pair">${card('ping')}${card('sync')}</div>
-  <div class="mf-axis">· the moment ↔ the long arc ·</div>
-  <div class="mf-notes" data-launch="notes">
-    <span class="g">N</span><span><b style="font-weight:500;color:var(--cink)">Notes</b> · ${APPS.notes.desc} <span style="opacity:.6">· ${Pulse.visitLine('notes')}</span></span>
-    <span class="e">enter ↘</span>
-  </div>`;
+  <div class="ch-mod-h">The four instruments</div>
+  <div class="mf-pair">${card('ping')}${card('sync')}${card('notes')}${card('bench')}</div>
+  <div class="mf-axis">· the moment · the long arc · the workbench · the bench ·</div>`;
 }
 function moduleRiftborn(w){ return `
   <div class="ch-mod-h">The Codex · memory of the worlds</div>
@@ -1156,7 +1161,7 @@ document.addEventListener('keydown',e=>{
   if(e.target.tagName==='INPUT' && e.target.id!=='pal-q') return;
   if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='k'){ e.preventDefault();
     $('#palette').classList.contains('open') ? palClose() : palOpen(); return; }
-  if((e.ctrlKey||e.metaKey) && ['1','2','3','4'].includes(e.key)){
+  if((e.ctrlKey||e.metaKey) && ['1','2','3','4','5','6'].includes(e.key)){
     e.preventDefault(); Frame.enter(DOCK[parseInt(e.key,10)-1]); return; }
   if((e.ctrlKey||e.metaKey) && (e.key==='ArrowRight'||e.key==='ArrowLeft') && Frame.order.length>1 && !currentChamber){
     e.preventDefault();

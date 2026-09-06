@@ -426,11 +426,6 @@ body[data-view="frame"] #tb-reload{display:inline-block}
 .mf-card .foot{display:flex;justify-content:space-between;align-items:center;margin-top:16px;
   font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--cmut)}
 .mf-card .foot .e{color:var(--iacc);letter-spacing:.16em}
-.mf-notes{margin-top:18px;border:1px dashed var(--crule);padding:13px 18px;display:flex;align-items:center;gap:14px;
-  cursor:pointer;transition:border-color .25s;font-size:12.5px;color:var(--cmut)}
-.mf-notes:hover{border-color:var(--iacc)}
-.mf-notes .g{font-family:var(--serif-alt);font-size:20px;color:var(--iacc)}
-.mf-notes .e{margin-left:auto;font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--iacc)}
 .mf-axis{text-align:center;font-family:var(--mono);font-size:8.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--cmut2);margin:14px 0 0}
 .cx-term{border:1px solid var(--crule);background:rgba(0,0,0,.32);padding:22px 24px;font-family:var(--mono);font-size:11.5px;line-height:2.1;color:var(--cmut)}
 .cx-term .ln b{color:var(--cink);font-weight:400}

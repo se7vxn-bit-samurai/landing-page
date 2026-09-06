@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="pulse">
+<head>
+<script src="bridge.js"></script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>MirrorFlow Bench</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230a0d14'/%3E%3Cpath d='M5 13h22' stroke='%238ec8b8' stroke-width='2.2' stroke-linecap='round'/%3E%3Cpath d='M8 13v11M24 13v11' stroke='%238ec8b8' stroke-width='2.2' stroke-linecap='round'/%3E%3Cpath d='M11 9h10' stroke='%238ec8b8' stroke-width='1.6' stroke-linecap='round' opacity='.6'/%3E%3C/svg%3E"/>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+/* ============================================================
+   MIRRORFLOW BENCH · where work lands to be looked at
+
+   Notes authors. The Bench receives. That line is the whole
+   reason both exist: one is yours to write in, the other is
+   where Ping, Sync and Excelsior put things down for you.
+
+   The engine here is four honest functions - normalise,
+   classify, shelve, render. It sorts and it stamps. It does
+   NOT score anything, and the empty state says so, because a
+   rubric guessed before any real traffic is a rubric that
+   will be wrong in an expensive way.
+
+   Token layer and grounds are shared with Notes and lifted
+   from css/shell.css. bridge.js maps the sky onto these names:
+   night->pulse · twilight->slate · day->linen · pop->paper.
+   ============================================================ */
+
+:root {
+  --mf-display:   'Playfair Display', Georgia, serif;
+  --mf-editorial: 'Cormorant Garamond', Georgia, serif;
+  --mf-body:      'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --mf-mono:      'DM Mono', ui-monospace, Menlo, monospace;
+
+  --mf-s1: 4px;  --mf-s2: 8px;  --mf-s3: 12px; --mf-s4: 16px;
+  --mf-s5: 20px; --mf-s6: 24px; --mf-s7: 32px; --mf-s8: 44px;
+  --mf-r-xs: 3px; --mf-r-sm: 4px; --mf-r-md: 7px; --mf-r-lg: 12px; --mf-r-pill: 999px;
+
+  --mf-ease: cubic-bezier(.4,0,.2,1);
+  --mf-ease-out: cubic-bezier(.16,1,.3,1);
+  --mf-fast: 150ms; --mf-base: 240ms; --mf-slow: 380ms;
+
+  --mf-topbar-h: 48px;
+  --mf-rail-w: 196px;
+  --mf-rail-collapsed: 56px;
+}
+
+:root,
+:root[data-theme="pulse"] {
+  --mf-mode: dark;
+  --mf-bg: #0a0d14;  --mf-surface: #0d1119;  --mf-surface-2: #080a10;
+  --mf-border: rgba(200,212,224,.14);  --mf-hair: rgba(200,212,224,.08);
+  --mf-ink: #e6e2d6;  --mf-ink-2: #9aa8b5;  --mf-ink-3: #5d7080;  --mf-ink-4: #36475a;
+  --mf-accent: #8ec8b8;  --mf-accent-2: #6aa697;
+  --mf-accent-soft: rgba(142,200,184,.14);
+  --mf-glow: rgba(142,200,184,.20);
+  --mf-dot: rgba(142,200,184,.26);
+  --mf-shadow: 0 8px 32px rgba(0,0,0,.5);
+  --mf-tint: rgba(90,110,160,.05);
+}
+:root[data-theme="slate"] {
+  --mf-mode: dark;
+  --mf-bg: #3a2c55;  --mf-surface: #46366a;  --mf-surface-2: #382a56;
+  --mf-border: rgba(180,150,220,.26);  --mf-hair: rgba(180,150,220,.14);
+  --mf-ink: #fff2e6;  --mf-ink-2: #f3c7ab;  --mf-ink-3: #c9aee0;  --mf-ink-4: #9685bd;
+  --mf-accent: #9fd4c6;  --mf-accent-2: #79b0a2;
+  --mf-accent-soft: rgba(159,212,198,.16);
+  --mf-glow: rgba(159,212,198,.22);
+  --mf-dot: rgba(200,180,235,.26);
+  --mf-shadow: 0 8px 32px rgba(30,16,52,.5);
+  --mf-tint: rgba(255,160,95,.14);
+}
+:root[data-theme="linen"] {
+  --mf-mode: light;
+  --mf-bg: #f4eee0;  --mf-surface: #faf6ec;  --mf-surface-2: #ebe3d3;
+  --mf-border: rgba(70,58,32,.20);  --mf-hair: rgba(70,58,32,.11);
+  --mf-ink: #1f1c15;  --mf-ink-2: #575040;  --mf-ink-3: #867c64;  --mf-ink-4: #b6ab90;
+  --mf-accent: #3f6f61;  --mf-accent-2: #2a5347;
+  --mf-accent-soft: rgba(63,111,97,.13);
+  --mf-glow: rgba(63,111,97,.14);
+  --mf-dot: rgba(70,58,32,.18);
+  --mf-shadow: 0 8px 28px rgba(150,130,90,.22);
+  --mf-tint: rgba(255,238,196,.4);
+  color-scheme: light;
+}
+:root[data-theme="paper"] {
+  --mf-mode: light;
+  --mf-bg: #bfe0f5;  --mf-surface: #fbfdff;  --mf-surface-2: #e1f1fc;
+  --mf-border: rgba(20,70,110,.20);  --mf-hair: rgba(20,70,110,.11);
+  --mf-ink: #143049;  --mf-ink-2: #37597a;  --mf-ink-3: #5e85a6;  --mf-ink-4: #93b4cf;
+  --mf-accent: #2f6b60;  --mf-accent-2: #1e4f46;
+  --mf-accent-soft: rgba(47,107,96,.13);
+  --mf-glow: rgba(47,107,96,.15);
+  --mf-dot: rgba(20,70,110,.17);
+  --mf-shadow: 0 8px 28px rgba(80,140,185,.26);
+  --mf-tint: rgba(120,200,255,.4);
+  color-scheme: light;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  background: var(--mf-bg); color: var(--mf-ink);
+  font-family: var(--mf-body); font-size: 14px; line-height: 1.5;
+  -webkit-font-smoothing: antialiased; overflow: hidden;
+  transition: background var(--mf-slow) var(--mf-ease), color var(--mf-slow) var(--mf-ease);
+}
+::selection { background: var(--mf-accent-soft); }
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: none; }
+
+body::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(circle at 1px 1px, var(--mf-dot) 0 1px, transparent 1.2px) 0 0/28px 28px,
+    radial-gradient(120% 80% at 50% -10%, var(--mf-tint), transparent 70%);
+  opacity: .5;
+}
+
+/* ═══════════ TOPBAR ═══════════ */
+.mf-topbar {
+  position: relative; z-index: 3; height: var(--mf-topbar-h);
+  display: flex; align-items: center; gap: var(--mf-s4);
+  padding: 0 var(--mf-s5);
+  background: var(--mf-surface); border-bottom: 1px solid var(--mf-border);
+}
+.mf-topbar::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--mf-accent) 50%, transparent);
+  opacity: .4;
+}
+.mf-brand { font-family: var(--mf-display); font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+.mf-brand em { font-family: var(--mf-editorial); font-style: italic; font-weight: 600; color: var(--mf-accent); }
+.mf-spacer { flex: 1; }
+.mf-skins { display: flex; gap: 6px; align-items: center; }
+.mf-skin { width: 18px; height: 18px; border-radius: var(--mf-r-pill); border: 2px solid var(--mf-border); transition: all var(--mf-fast) var(--mf-ease); }
+.mf-skin:hover { transform: scale(1.14); border-color: var(--mf-accent); }
+.mf-skin[aria-pressed="true"] { border-color: var(--mf-accent); box-shadow: 0 0 0 2px var(--mf-accent-soft); }
+.mf-skin[data-skin="pulse"] { background: #0a0d14; }
+.mf-skin[data-skin="slate"] { background: #3a2c55; }
+.mf-skin[data-skin="linen"] { background: #f4eee0; }
+.mf-skin[data-skin="paper"] { background: #bfe0f5; }
+.mf-version { font-family: var(--mf-mono); font-size: 10px; letter-spacing: .1em; color: var(--mf-ink-3); }
+
+/* ═══════════ SHELL ═══════════ */
+.mf-shell {
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: var(--mf-rail-w) minmax(0, 1fr);
+  height: calc(100vh - var(--mf-topbar-h));
+  transition: grid-template-columns var(--mf-base) var(--mf-ease-out);
+}
+.mf-shell.is-collapsed { grid-template-columns: var(--mf-rail-collapsed) minmax(0, 1fr); }
+
+.mf-rail {
+  position: relative; background: var(--mf-surface);
+  border-right: 1px solid var(--mf-border);
+  padding: var(--mf-s3) 0 var(--mf-s4);
+  display: flex; flex-direction: column; gap: 2px;
+  overflow-y: auto; overflow-x: hidden;
+}
+.mf-rail__toggle {
+  position: absolute; top: 12px; right: -11px; z-index: 5;
+  width: 22px; height: 22px; border-radius: var(--mf-r-pill);
+  background: var(--mf-surface); border: 1px solid var(--mf-border);
+  color: var(--mf-ink-3); font-family: var(--mf-mono); font-size: 11px; line-height: 1;
+  transition: all var(--mf-fast) var(--mf-ease);
+}
+.mf-rail__toggle:hover { color: var(--mf-accent); border-color: var(--mf-accent); }
+.is-collapsed .mf-rail__toggle { transform: rotate(180deg); }
+.mf-rail__label {
+  font-family: var(--mf-mono); font-size: 9px; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--mf-ink-4);
+  padding: var(--mf-s3) var(--mf-s5) 6px;
+}
+.mf-rail__rule { height: 1px; background: var(--mf-border); margin: var(--mf-s3) var(--mf-s5); }
+.mf-item {
+  display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+  padding: 8px var(--mf-s5); font-size: 13px; font-weight: 500;
+  color: var(--mf-ink-2); border-left: 3px solid transparent;
+  transition: all var(--mf-fast) var(--mf-ease);
+}
+.mf-item:hover { color: var(--mf-ink); background: var(--mf-surface-2); }
+.mf-item.is-active { color: var(--mf-accent); border-left-color: var(--mf-accent); background: var(--mf-surface-2); }
+.mf-item__icon { width: 18px; text-align: center; font-size: 13px; flex: none; }
+.mf-item__n { margin-left: auto; font-family: var(--mf-mono); font-size: 10px; color: var(--mf-ink-3); }
+.mf-item.is-active .mf-item__n { color: var(--mf-accent); }
+.mf-stat { display: flex; align-items: baseline; justify-content: space-between; padding: 5px var(--mf-s5); font-size: 12px; color: var(--mf-ink-3); }
+.mf-stat b { font-family: var(--mf-mono); font-size: 12px; font-weight: 500; color: var(--mf-ink); }
+.mf-rail__actions { padding: var(--mf-s2) var(--mf-s4) 0; display: grid; gap: 6px; }
+.mf-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 7px 12px; font-size: 12px; font-weight: 500;
+  background: var(--mf-surface-2); border: 1px solid var(--mf-border);
+  border-radius: var(--mf-r-sm); color: var(--mf-ink-2);
+  transition: all var(--mf-fast) var(--mf-ease);
+}
+.mf-btn:hover { color: var(--mf-accent); border-color: var(--mf-accent); }
+
+.is-collapsed .mf-rail__label,
+.is-collapsed .mf-rail__rule,
+.is-collapsed .mf-stat,
+.is-collapsed .mf-item__n,
+.is-collapsed .mf-rail__actions { display: none; }
+.is-collapsed .mf-item { font-size: 0; justify-content: center; padding: 11px 0; position: relative; }
+.is-collapsed .mf-item__icon { font-size: 16px; width: auto; }
+.is-collapsed .mf-item:hover::after {
+  content: attr(data-lane);
+  position: absolute; left: 58px; top: 50%; transform: translateY(-50%);
+  padding: 5px 10px; white-space: nowrap; text-transform: capitalize;
+  background: var(--mf-surface); border: 1px solid var(--mf-accent);
+  border-radius: var(--mf-r-sm); font-family: var(--mf-mono); font-size: 11px;
+  color: var(--mf-ink); box-shadow: var(--mf-shadow); z-index: 20;
+}
+
+/* ═══════════ MAIN ═══════════ */
+.mf-main { position: relative; overflow-y: auto; padding: var(--mf-s6) var(--mf-s7); }
+.mf-wrap { max-width: 1000px; margin: 0 auto; }
+
+.mf-masthead { position: relative; text-align: center; padding: var(--mf-s7) var(--mf-s5) var(--mf-s5); }
+.mf-masthead__corners { position: absolute; inset: 8px; pointer-events: none; color: var(--mf-accent); opacity: .5; }
+.mf-masthead__corners::before, .mf-masthead__corners::after,
+.mf-masthead__corners > span::before, .mf-masthead__corners > span::after {
+  content: ""; position: absolute; width: 26px; height: 26px;
+}
+.mf-masthead__corners::before { top: 0; left: 0; border-top: 1px solid; border-left: 1px solid; }
+.mf-masthead__corners::after { bottom: 0; right: 0; border-bottom: 1px solid; border-right: 1px solid; }
+.mf-masthead__corners > span::before { top: 0; right: 0; border-top: 1px solid; border-right: 1px solid; }
+.mf-masthead__corners > span::after { bottom: 0; left: 0; border-bottom: 1px solid; border-left: 1px solid; }
+.mf-kicker {
+  font-family: var(--mf-mono); font-size: 10px; letter-spacing: .26em;
+  text-transform: uppercase; color: var(--mf-accent); opacity: .9; margin-bottom: var(--mf-s3);
+}
+.mf-title { font-family: var(--mf-display); font-size: 46px; font-weight: 900; letter-spacing: -0.03em; line-height: 1; margin-bottom: var(--mf-s3); }
+.mf-title em { font-family: var(--mf-editorial); font-style: italic; font-weight: 600; color: var(--mf-accent); }
+.mf-lede { font-family: var(--mf-editorial); font-style: italic; font-size: 17px; line-height: 1.5; color: var(--mf-ink-2); max-width: 54ch; margin: 0 auto; }
+.mf-divider { display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--mf-accent); opacity: .7; margin: var(--mf-s5) auto; }
+.mf-divider::before, .mf-divider::after {
+  content: ""; flex: 1; max-width: 130px; height: 1px;
+  background: linear-gradient(to right, transparent, currentColor 30%, currentColor 70%, transparent);
+}
+.mf-status { font-family: var(--mf-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--mf-ink-3); margin-bottom: var(--mf-s4); }
+
+/* ═══════════ THE SHELF ═══════════ */
+.mf-shelf { display: grid; gap: var(--mf-s3); }
+.mf-piece {
+  position: relative;
+  background: var(--mf-surface); border: 1px solid var(--mf-border);
+  border-radius: var(--mf-r-md); padding: var(--mf-s4) var(--mf-s5);
+  transition: border-color var(--mf-fast) var(--mf-ease), box-shadow var(--mf-fast) var(--mf-ease);
+}
+.mf-piece::before {
+  content: ""; position: absolute; left: -1px; top: 12px; bottom: 12px; width: 2px;
+  background: var(--mf-accent); border-radius: var(--mf-r-pill);
+  opacity: 0; transition: opacity var(--mf-fast) var(--mf-ease);
+}
+.mf-piece:hover { border-color: var(--mf-accent-soft); box-shadow: 0 4px 18px var(--mf-glow); }
+.mf-piece:hover::before { opacity: .7; }
+.mf-piece[data-seen="false"]::before { opacity: 1; }
+.mf-piece__top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+.mf-tag {
+  font-family: var(--mf-mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase;
+  padding: 2px 7px; border: 1px solid var(--mf-border); border-radius: var(--mf-r-pill);
+  color: var(--mf-ink-3);
+}
+.mf-tag--from { color: var(--mf-accent); border-color: var(--mf-accent-soft); }
+.mf-tag--new { color: var(--mf-accent); border-color: var(--mf-accent); }
+.mf-piece__at { margin-left: auto; font-family: var(--mf-mono); font-size: 10px; color: var(--mf-ink-4); }
+.mf-piece__subject { font-family: var(--mf-display); font-size: 17px; font-weight: 600; line-height: 1.3; margin-bottom: 4px; }
+.mf-piece__body {
+  font-family: var(--mf-editorial); font-size: 15px; line-height: 1.55;
+  color: var(--mf-ink-2); white-space: pre-wrap; word-break: break-word;
+  max-height: 4.7em; overflow: hidden; position: relative;
+}
+.mf-piece.is-open .mf-piece__body { max-height: none; }
+.mf-piece__body::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1.6em;
+  background: linear-gradient(transparent, var(--mf-surface));
+}
+.mf-piece.is-open .mf-piece__body::after { display: none; }
+.mf-piece__acts { display: flex; gap: 6px; margin-top: var(--mf-s3); flex-wrap: wrap; }
+.mf-act {
+  padding: 3px 9px; font-family: var(--mf-mono); font-size: 10px; letter-spacing: .04em;
+  color: var(--mf-ink-3); border: 1px solid transparent; border-radius: var(--mf-r-xs);
+  transition: all var(--mf-fast) var(--mf-ease);
+}
+.mf-act:hover { color: var(--mf-accent); border-color: var(--mf-border); }
+
+/* ═══════════ EMPTY ═══════════ */
+.mf-empty {
+  border: 1px dashed var(--mf-border); border-radius: var(--mf-r-md);
+  padding: var(--mf-s8) var(--mf-s6); text-align: center; color: var(--mf-ink-3);
+}
+.mf-empty__title { font-family: var(--mf-display); font-size: 21px; font-weight: 700; font-style: italic; color: var(--mf-ink); margin-bottom: 6px; }
+.mf-empty__line { font-size: 13px; line-height: 1.6; max-width: 50ch; margin: 0 auto; }
+.mf-empty__how {
+  list-style: none; display: inline-grid; gap: 7px; text-align: left; margin-top: var(--mf-s5);
+  font-family: var(--mf-mono); font-size: 11px; letter-spacing: .05em; color: var(--mf-ink-3);
+}
+.mf-empty__how li::before { content: "— "; color: var(--mf-accent); }
+.mf-note {
+  margin-top: var(--mf-s6); padding-top: var(--mf-s4);
+  border-top: 1px solid var(--mf-hair);
+  font-family: var(--mf-editorial); font-style: italic;
+  font-size: 14px; color: var(--mf-ink-3); max-width: 56ch; margin-inline: auto; text-align: center;
+}
+
+/* ═══════════ TOAST ═══════════ */
+.mf-toast {
+  position: fixed; left: 50%; bottom: 26px; z-index: 60;
+  display: flex; align-items: center; gap: 12px; padding: 10px 18px;
+  background: var(--mf-surface); border: 1px solid var(--mf-accent);
+  border-radius: var(--mf-r-pill); box-shadow: var(--mf-shadow); font-size: 13px;
+  transform: translate(-50%, 22px); opacity: 0; pointer-events: none;
+  transition: opacity var(--mf-base) var(--mf-ease-out), transform var(--mf-base) var(--mf-ease-out);
+}
+.mf-toast[data-open="true"] { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.mf-toast button { font-family: var(--mf-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--mf-accent); }
+
+@media (max-width: 860px) {
+  .mf-shell { grid-template-columns: var(--mf-rail-collapsed) minmax(0, 1fr); }
+  .mf-main { padding: var(--mf-s4); }
+  .mf-title { font-size: 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="mf-topbar">
+  <div class="mf-brand">MirrorFlow <em>Bench</em></div>
+  <div class="mf-spacer"></div>
+  <div class="mf-skins" role="group" aria-label="Skin">
+    <button class="mf-skin" data-skin="pulse" type="button" title="Pulse" aria-label="Pulse skin" aria-pressed="true"></button>
+    <button class="mf-skin" data-skin="slate" type="button" title="Slate" aria-label="Slate skin" aria-pressed="false"></button>
+    <button class="mf-skin" data-skin="linen" type="button" title="Linen" aria-label="Linen skin" aria-pressed="false"></button>
+    <button class="mf-skin" data-skin="paper" type="button" title="Paper" aria-label="Paper skin" aria-pressed="false"></button>
+  </div>
+  <div class="mf-version">v1</div>
+</header>
+
+<div class="mf-shell" id="shell">
+  <nav class="mf-rail" aria-label="Lanes">
+    <button class="mf-rail__toggle" id="railToggle" type="button" title="Collapse rail" aria-label="Collapse rail">&lsaquo;</button>
+    <div class="mf-rail__label">Lanes</div>
+    <div id="railLanes"></div>
+    <div class="mf-rail__rule"></div>
+    <div class="mf-rail__label">The shelf</div>
+    <div class="mf-stat"><span>On the bench</span><b id="statTotal">0</b></div>
+    <div class="mf-stat"><span>Unseen</span><b id="statNew">0</b></div>
+    <div class="mf-stat"><span>Senders</span><b id="statFrom">0</b></div>
+    <div class="mf-rail__rule"></div>
+    <div class="mf-rail__actions">
+      <button class="mf-btn" id="markAll" type="button">Mark all seen</button>
+      <button class="mf-btn" id="clearSeen" type="button">Clear the seen</button>
+    </div>
+  </nav>
+
+  <main class="mf-main">
+    <div class="mf-wrap">
+      <div class="mf-masthead">
+        <div class="mf-masthead__corners" aria-hidden="true"><span></span></div>
+        <div class="mf-kicker">work laid down to be looked at</div>
+        <h1 class="mf-title">The <em>bench</em></h1>
+        <p class="mf-lede">Ping, Sync, Excelsior and Notes put things here when they want a
+          second look. Nothing arrives on its own &mdash; every piece waited in the inbox
+          until you let it through.</p>
+      </div>
+      <div class="mf-divider" aria-hidden="true">
+        <svg width="44" height="14" viewBox="0 0 44 14" fill="currentColor">
+          <path d="M22 1 L26 7 L22 13 L18 7 Z" opacity="0.9"/>
+          <circle cx="4" cy="7" r="1.6" opacity="0.7"/>
+          <circle cx="40" cy="7" r="1.6" opacity="0.7"/>
+        </svg>
+      </div>
+      <div class="mf-status" id="status">nothing on the bench</div>
+      <div class="mf-shelf" id="shelf"></div>
+    </div>
+  </main>
+</div>
+
+<div class="mf-toast" id="toast" role="status" aria-live="polite">
+  <span id="toastText"></span>
+  <button id="toastAction" type="button" hidden>Undo</button>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  const KEY = "mf-bench-v1";
+  const CAP = 500;                       /* oldest-first eviction · the shelf has an end */
+  const SKINS = ["pulse", "slate", "linen", "paper"];
+
+  /* Lanes are what the engine sorts into. `all` is a view, not a lane. */
+  const LANES = [
+    { id: "all",      label: "Everything", icon: "≡" },
+    { id: "message",  label: "Messages",   icon: "✉" },
+    { id: "schedule", label: "Schedules",  icon: "▤" },
+    { id: "draft",    label: "Drafts",     icon: "✎" },
+    { id: "note",     label: "Notes",      icon: "▢" },
+    { id: "session",  label: "Sessions",   icon: "★" },
+    { id: "other",    label: "Unsorted",   icon: "?" }
+  ];
+  const LANE_IDS = LANES.map(l => l.id).filter(id => id !== "all");
+
+  /* When a sender does not declare a facet, its identity is the next best guess. */
+  const BY_SENDER = { ping: "message", sync: "schedule", coach: "session", notes: "note" };
+
+  const root = document.documentElement;
+  const $ = id => document.getElementById(id);
+  const shell = $("shell"), shelfEl = $("shelf"), statusEl = $("status");
+  const toastEl = $("toast"), toastText = $("toastText"), toastAction = $("toastAction");
+
+  let state = loadState();
+  let lane = "all";
+  let saveTimer = 0, toastTimer = 0;
+  let lastCleared = null;
+
+  /* ══════════════════════════════════════════════════════════════
+     THE ENGINE
+     normalise → classify → shelve → render.
+     It sorts and it stamps. It does not judge; a rubric written
+     before any real traffic is a rubric that will be wrong.
+  ══════════════════════════════════════════════════════════════ */
+
+  const uid = () => "b-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8);
+
+  function normalise(packet) {
+    if (!packet || typeof packet !== "object") return null;
+    const subject = String(packet.subject || "").trim();
+    const body = String(packet.body || packet.coachSeed || "").trim();
+    if (!subject && !body) return null;
+    return {
+      id: uid(),
+      subject: subject || body.split("\n")[0].slice(0, 72),
+      body,
+      from: String(packet.from || "unknown").trim().toLowerCase(),
+      facet: String(packet.facet || "").trim().toLowerCase(),
+      privacy: packet.privacy === "redacted" ? "redacted" : "full",
+      at: Number(packet.at) || Date.now(),
+      seen: false,
+      lane: "other"
+    };
+  }
+
+  function classify(item) {
+    if (LANE_IDS.includes(item.facet)) return item.facet;
+    if (BY_SENDER[item.from]) return BY_SENDER[item.from];
+    return "other";
+  }
+
+  function shelve(item) {
+    item.lane = classify(item);
+    state.items.unshift(item);
+    if (state.items.length > CAP) state.items.length = CAP;   /* oldest fall off the end */
+    scheduleSave();
+    return item;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     STATE
+  ══════════════════════════════════════════════════════════════ */
+  function loadState() {
+    let stored = null;
+    try { stored = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (_) {}
+    return {
+      version: 1,
+      items: stored && Array.isArray(stored.items) ? stored.items.map(reheat).filter(Boolean) : [],
+      theme: stored && SKINS.includes(stored.theme) ? stored.theme : "pulse"
+    };
+  }
+
+  function reheat(raw) {
+    const item = normalise(raw);
+    if (!item) return null;
+    item.id = typeof raw.id === "string" && raw.id ? raw.id : item.id;
+    item.seen = Boolean(raw.seen);
+    item.lane = LANE_IDS.includes(raw.lane) ? raw.lane : classify(item);
+    return item;
+  }
+
+  function scheduleSave() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      try { localStorage.setItem(KEY, JSON.stringify(state)); }
+      catch (_) { showToast("Browser storage is unavailable"); }
+    }, 180);
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     RENDER
+  ══════════════════════════════════════════════════════════════ */
+  const esc = v => String(v)
+    .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+
+  function ago(ts) {
+    const s = Math.max(0, Math.floor((Date.now() - ts) / 1000));
+    if (s < 60) return "just now";
+    const m = Math.floor(s / 60); if (m < 60) return m + "m ago";
+    const h = Math.floor(m / 60); if (h < 24) return h + "h ago";
+    const d = Math.floor(h / 24); if (d < 30) return d + "d ago";
+    return new Date(ts).toISOString().slice(0, 10);
+  }
+
+  const inLane = id => id === "all" ? state.items : state.items.filter(i => i.lane === id);
+
+  function renderRail() {
+    $("railLanes").innerHTML = LANES.map(l => {
+      const n = inLane(l.id).length;
+      return `<button class="mf-item" type="button" data-lane="${l.id}">
+        <span class="mf-item__icon">${l.icon}</span>${l.label}
+        <span class="mf-item__n">${n || ""}</span>
+      </button>`;
+    }).join("");
+    $("railLanes").querySelectorAll("[data-lane]").forEach(el => {
+      el.classList.toggle("is-active", el.dataset.lane === lane);
+      el.addEventListener("click", () => { lane = el.dataset.lane; render(); });
+    });
+  }
+
+  function emptyState() {
+    if (lane !== "all" && state.items.length) return `
+      <div class="mf-empty">
+        <div class="mf-empty__title">This lane is empty</div>
+        <div class="mf-empty__line">Nothing has been sorted here yet. Other lanes still have
+          work on them.</div>
+      </div>`;
+    return `
+      <div class="mf-empty">
+        <div class="mf-empty__title">The bench is clear</div>
+        <div class="mf-empty__line">This is where work lands when another instrument wants a
+          second look at it. Send something and it waits in the shell's inbox until you accept
+          it &mdash; then it appears here, stamped with where it came from.</div>
+        <ul class="mf-empty__how">
+          <li>Ping &middot; a conversation worth reviewing</li>
+          <li>Sync &middot; a schedule that came out strange</li>
+          <li>Excelsior &middot; an analysis or a scorecard</li>
+          <li>Notes &middot; anything on the workbench</li>
+        </ul>
+        <div class="mf-note">The engine sorts and stamps. It does not score anything yet, and
+          it will not pretend to &mdash; a rubric written before any real traffic is a rubric
+          that will be wrong in an expensive way.</div>
+      </div>`;
+  }
+
+  function render() {
+    const list = inLane(lane).slice().sort((a, b) => b.at - a.at);
+    const unseen = state.items.filter(i => !i.seen).length;
+    const senders = new Set(state.items.map(i => i.from)).size;
+
+    $("statTotal").textContent = String(state.items.length);
+    $("statNew").textContent = String(unseen);
+    $("statFrom").textContent = String(senders);
+
+    statusEl.textContent = !state.items.length
+      ? "nothing on the bench"
+      : list.length + (list.length === 1 ? " piece · " : " pieces · ") + unseen + " unseen";
+
+    shelfEl.innerHTML = list.length ? list.map(i => `
+      <article class="mf-piece" data-id="${esc(i.id)}" data-seen="${i.seen}">
+        <div class="mf-piece__top">
+          <span class="mf-tag mf-tag--from">${esc(i.from)}</span>
+          <span class="mf-tag">${esc(i.lane)}</span>` +
+          (i.privacy === "redacted" ? `<span class="mf-tag">redacted</span>` : "") +
+          (i.seen ? "" : `<span class="mf-tag mf-tag--new">new</span>`) + `
+          <span class="mf-piece__at">${ago(i.at)}</span>
+        </div>
+        <div class="mf-piece__subject">${esc(i.subject)}</div>` +
+        (i.body ? `<div class="mf-piece__body">${esc(i.body)}</div>` : "") + `
+        <div class="mf-piece__acts">
+          <button class="mf-act" type="button" data-act="open">read</button>
+          <button class="mf-act" type="button" data-act="copy">copy</button>
+          <button class="mf-act" type="button" data-act="notes">hand to notes</button>
+          <button class="mf-act" type="button" data-act="seen">${i.seen ? "mark unseen" : "mark seen"}</button>
+          <button class="mf-act" type="button" data-act="drop">clear</button>
+        </div>
+      </article>`).join("") : emptyState();
+
+    renderRail();
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     THE EXCHANGE
+  ══════════════════════════════════════════════════════════════ */
+  if (typeof window.tgcOnMissive === "function") {
+    window.tgcOnMissive(packet => {
+      if (!packet) return;
+      if (packet.kind && packet.kind !== "handoff" && packet.kind !== "digest") return;
+      const item = normalise(packet);
+      if (!item) return;
+      shelve(item);
+      render();
+      showToast("Laid on the bench · from " + item.from);
+    });
+  }
+
+  /* the ledger replay · the shell hands over a recipient's backlog on mount */
+  window.addEventListener("message", e => {
+    const d = e.data;
+    if (!d || d.type !== "tgc.exchange.ledger" || !Array.isArray(d.packets)) return;
+    const known = new Set(state.items.map(i => i.subject + "|" + i.at));
+    let added = 0;
+    d.packets.forEach(p => {
+      const item = normalise(p);
+      if (!item || known.has(item.subject + "|" + item.at)) return;
+      shelve(item); added++;
+    });
+    if (added) { render(); showToast(added + (added === 1 ? " piece" : " pieces") + " from the ledger"); }
+  });
+
+  function handToNotes(item) {
+    if (typeof window.tgcSeal !== "function") return showToast("Notes is reachable from inside the house");
+    window.tgcSeal("handoff", {
+      to: "notes",
+      subject: item.subject,
+      body: item.body,
+      facet: "note",
+      privacy: item.privacy
+    });
+    showToast("Handed to Notes · waiting in the inbox");
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     WIRING
+  ══════════════════════════════════════════════════════════════ */
+  function showToast(msg, label = "", action = null) {
+    clearTimeout(toastTimer);
+    toastText.textContent = msg;
+    toastAction.hidden = !label;
+    toastAction.textContent = label;
+    toastAction.onclick = action;
+    toastEl.dataset.open = "true";
+    toastTimer = setTimeout(() => { toastEl.dataset.open = "false"; }, action ? 6500 : 2400);
+  }
+
+  function applySkin(skin, persist = true) {
+    const next = SKINS.includes(skin) ? skin : "pulse";
+    state.theme = next;
+    root.dataset.theme = next;
+    document.querySelectorAll("[data-skin]").forEach(b =>
+      b.setAttribute("aria-pressed", String(b.dataset.skin === next)));
+    if (persist) scheduleSave();
+  }
+
+  new MutationObserver(() => {
+    const skin = root.dataset.theme;
+    if (SKINS.includes(skin) && skin !== state.theme) {
+      state.theme = skin;
+      document.querySelectorAll("[data-skin]").forEach(b =>
+        b.setAttribute("aria-pressed", String(b.dataset.skin === skin)));
+    }
+  }).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+
+  shelfEl.addEventListener("click", async e => {
+    const btn = e.target.closest("[data-act]");
+    if (!btn) return;
+    const card = btn.closest("[data-id]");
+    const item = state.items.find(i => i.id === card.dataset.id);
+    if (!item) return;
+    const act = btn.dataset.act;
+    if (act === "open") {
+      card.classList.toggle("is-open");
+      btn.textContent = card.classList.contains("is-open") ? "collapse" : "read";
+      if (!item.seen) { item.seen = true; card.dataset.seen = "true"; scheduleSave(); render(); }
+    } else if (act === "copy") {
+      const text = [item.subject, item.body].filter(Boolean).join("\n\n");
+      try { await navigator.clipboard.writeText(text); showToast("Copied"); }
+      catch (_) { showToast("Copy failed"); }
+    } else if (act === "notes") {
+      handToNotes(item);
+    } else if (act === "seen") {
+      item.seen = !item.seen; scheduleSave(); render();
+    } else if (act === "drop") {
+      const i = state.items.findIndex(x => x.id === item.id);
+      lastCleared = { items: [item], at: [i] };
+      state.items.splice(i, 1);
+      scheduleSave(); render();
+      showToast("Cleared from the bench", "Undo", undoClear);
+    }
+  });
+
+  function undoClear() {
+    if (!lastCleared) return;
+    lastCleared.items.forEach((it, k) =>
+      state.items.splice(Math.min(lastCleared.at[k], state.items.length), 0, it));
+    lastCleared = null;
+    scheduleSave(); render();
+    toastEl.dataset.open = "false";
+  }
+
+  $("railToggle").addEventListener("click", () => {
+    shell.classList.toggle("is-collapsed");
+    $("railToggle").title = shell.classList.contains("is-collapsed") ? "Expand rail" : "Collapse rail";
+  });
+  $("markAll").addEventListener("click", () => {
+    const n = state.items.filter(i => !i.seen).length;
+    if (!n) return showToast("Nothing unseen");
+    state.items.forEach(i => { i.seen = true; });
+    scheduleSave(); render();
+    showToast(n + (n === 1 ? " piece marked seen" : " pieces marked seen"));
+  });
+  $("clearSeen").addEventListener("click", () => {
+    const keep = [], gone = [], at = [];
+    state.items.forEach((i, k) => { if (i.seen) { gone.push(i); at.push(k); } else keep.push(i); });
+    if (!gone.length) return showToast("Nothing seen yet");
+    lastCleared = { items: gone, at };
+    state.items = keep;
+    scheduleSave(); render();
+    showToast(gone.length + (gone.length === 1 ? " piece cleared" : " pieces cleared"), "Undo", undoClear);
+  });
+  document.querySelectorAll("[data-skin]").forEach(b =>
+    b.addEventListener("click", () => { applySkin(b.dataset.skin); showToast(b.dataset.skin); }));
+
+  setInterval(render, 60000);   /* the "ago" stamps go stale otherwise */
+
+  /* ══════════════════════════════════════════════════════════════
+     BOOT
+  ══════════════════════════════════════════════════════════════ */
+  applySkin(state.theme, false);
+  render();
+
+  if (typeof window.parent !== "undefined" && window.parent !== window) {
+    try { window.parent.postMessage({ type: "tgc.shell.hello", appId: "bench" }, "*"); } catch (_) {}
+  }
+})();
+</script>
+</body>
+</html>

@@ -5114,6 +5114,7 @@ mark.ex-saved-highlight {
         <input class="ex-input" id="assessName" placeholder="Participant name..." style="width:240px;"/>
         <button class="ex-btn ex-btn--primary" id="saveScoreBtn">Save Score</button>
         <button class="ex-btn" id="printScoreBtn">Print</button>
+        <button class="ex-btn" id="benchScoreBtn">Send to Bench</button>
         <button class="ex-btn" id="clearScoreBtn">Clear</button>
       </div>
       <div class="ex-assess-grid">
@@ -6079,6 +6080,28 @@ function analyzeCoverage(text) {
 }
 
 let _analyseTimer;
+/* ──────────────────────────────────────────────────────────────
+   THE EXCHANGE - handing work to the Bench
+   A handoff does not land in the Bench. It queues in the shell's
+   inbox and a person lets it through. That wait is the contract:
+   nothing reaches an app without someone saying yes.
+────────────────────────────────────────────────────────────── */
+function sendToBench(subject, body, facet) {
+  if (typeof window.tgcSeal !== 'function') {
+    toast('The Bench is reachable from inside the house', true);
+    return;
+  }
+  if (!String(body || '').trim()) { toast('Nothing to send', true); return; }
+  window.tgcSeal('handoff', {
+    to: 'bench',
+    subject: String(subject || 'From Excelsior').slice(0, 72),
+    body: String(body),
+    facet: facet || 'session',
+    privacy: 'full'
+  });
+  toast('Sent to the Bench · waiting in the inbox');
+}
+
 /* Print/export popups are about:blank, so a relative href is a coin flip.
    Resolve the house faces against this page once and interpolate. */
 const FONTS_CSS = new URL('../fonts/fonts.css', location.href).href;
@@ -6214,6 +6237,7 @@ function _runAnalyse(text) {
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
       <div class="ex-mirror__persona">${m.persona}</div>
       <button class="ex-copy-btn" id="copyMirrorBtn">⎘ Copy mirror</button>
+      <button class="ex-copy-btn" id="benchMirrorBtn">↗ Send to Bench</button>
     </div>
     <div class="ex-mirror__block">
       <div class="ex-mirror__block-title">First Read</div>
@@ -6238,6 +6262,9 @@ function _runAnalyse(text) {
   `;
   const cb = document.getElementById('copyMirrorBtn');
   if (cb) cb.addEventListener('click', () => copyText(mirrorSummary, cb));
+  const bb = document.getElementById('benchMirrorBtn');
+  if (bb) bb.addEventListener('click', () => sendToBench(
+    'Analysis · ' + (result.headline?.text || m.persona), mirrorSummary, 'draft'));
 }
 analyseInput.addEventListener('input', () => runAnalyse(analyseInput.value));
 if (!analyseInput.value.trim()) analyseFindings.innerHTML = EMPTY.analyse;
@@ -8778,6 +8805,25 @@ function printScore() {
 document.getElementById('saveScoreBtn').addEventListener('click', saveScore);
 document.getElementById('clearScoreBtn').addEventListener('click', clearScore);
 document.getElementById('printScoreBtn').addEventListener('click', printScore);
+document.getElementById('benchScoreBtn').addEventListener('click', () => {
+  const name = document.getElementById('assessName').value.trim();
+  const marked = Object.keys(scores).length;
+  if (!marked) { toast('Score the card first', true); return; }
+  const total = Object.values(scores).reduce((a, b) => a + b, 0);
+  const pct = Math.round((total / (marked * 5)) * 100);
+  /* scorecard keys are `<pillar name>_<criterion>` - ASSESS_CRITERIA's shape,
+     not CURRICULUM's ids - so the breakdown has to be built from the same list */
+  const lines = ASSESS_CRITERIA.map(p => {
+    const keys = p.criteria.map(c => p.pillar + '_' + c).filter(k => scores[k]);
+    if (!keys.length) return null;
+    const sum = keys.reduce((a, k) => a + scores[k], 0);
+    return p.pillar + ': ' + sum + '/' + (keys.length * 5) + '  (' + keys.length + ' of ' + p.criteria.length + ' marked)';
+  }).filter(Boolean);
+  sendToBench(
+    'Scorecard · ' + (name || 'unnamed') + ' · ' + pct + '%',
+    ['PARTICIPANT: ' + (name || 'unnamed'), 'OVERALL: ' + pct + '% (' + marked + ' of 20 criteria marked)', '', lines.join('\n')].join('\n'),
+    'session');
+});
 
 // Hydrate persisted state (Phase A.3)
 const savedScores = persistGet('current-scores', null);
