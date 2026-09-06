@@ -74,6 +74,59 @@ its done-condition. Update statuses as things land. Intent behind all of it:
       *exchange contract* rite self-tests the whole schema.
       *Done when: a receiver never has to guess what arrived, and a malformed packet is refused with a reason.* ✓
 
+## Phase F · MirrorFlow Ping
+
+Ping's own reference: [`PING.md`](PING.md).
+
+- [x] **F1 · Nothing preloaded, nothing expensive at boot** — the sample thread,
+      the letter to "Marcus", the idle fake conversation and the seeded side note
+      are gone; each surface carries a quiet waiting line instead. The spelling
+      ledger moved to `apps/lens/dict.js` and is fetched on first real prose; the
+      80-case rule self-test moved to first open of the diagnostics drawer.
+      *Measured: load 461→165 ms, payload 935→433 KB, invented messages 6→0.* ✓
+- [x] **F2 · Ping emits digests** — a completed send seals
+      `tgcSeal('digest', {to:'insight', …})`: word/sentence counts, reading grade,
+      writing and clarity scores, per-category rule hits, apology/hedge/robotic
+      counts, revisions and seconds-to-send. Fields the engine could not measure
+      are **omitted**, never zeroed. The shell routes digests past the human inbox
+      into a capped ledger (`tgc.shell2.digests`), replayed to the recipient on
+      mount via `tgc.exchange.ledger`. `insight` is declared in `APPS` as
+      `status:'soon'` so the packet has a valid door to arrive at.
+      *Verified: one send → 1 ledger entry, 0 inbox rows, no typed content in the
+      packet. QC 42/42.* ✓
+- [ ] **F3 · Fill the empty rule categories** — `style` and `punctuation` are
+      declared in the taxonomy with **zero rules**, so the engine promises
+      coverage it does not deliver. Populate both, with fixtures, keeping the
+      existing severity/confidence discipline.
+      *Done when: every declared category has rules and tests, and the diagnostics
+      drawer still reports all green.*
+- [ ] **F4 · Spelling honesty** — the bloom filter under-flags by design (false
+      positives wave real misspellings through) and caps at 8 flags per pass.
+      Neither is wrong, but neither is visible. Surface the cap when it bites, and
+      document the ceiling where a user can see it.
+      *Done when: a long draft says "8 shown of N" rather than silently stopping.*
+
+## Phase G · MirrorFlow Insight
+
+Design and digest contract: [`INSIGHT.md`](INSIGHT.md). F2 has landed, so digests
+now accumulate as Ping is used. G1 stays gated on there being enough of them to
+show something true — an Insight built against an empty ledger could only show
+fiction, which is the thing Phase B2 and F1 both existed to remove.
+
+- [ ] **G1 · `apps/insight.html`** — MirrorFlow's fourth instrument. Consumes
+      digests via `tgcOnMissive`, stores under `tgc.appstore.insight`, computes
+      the five signal families (trend · error profile · rhythm · load · drift).
+      *Done when: it shows only what the digests support, and says "not enough
+      yet — N of ~M" for everything they do not.*
+- [ ] **G2 · Ping's rail gains memory** — across-time cards beside the
+      in-the-moment ones, in the gap the source already marks as *"insight cards
+      removed — placeholder until rebuild"*. The error profile is the sharpest:
+      *"you've hit `its → it's` 14 times this month."*
+      *Done when: the rail tells you something a single message cannot.*
+- [ ] **G3 · Insight feeds the house** — the MirrorFlow door's pulse line and the
+      shell's `Pulse` carry real writing signal instead of instrument counts.
+      *Done when: the nave shows a true number that came from your own work.*
+
 ## Phase D · Rituals & tooling
 
 - [x] `build-portable.py` — regenerates the single-file offline edition from
@@ -85,7 +138,7 @@ its done-condition. Update statuses as things land. Intent behind all of it:
       from the Pages HTTP cache (the "pop looked like night" report)
 - [x] Deploy ritual documented: bump `version.json` per deploy; bump `VER` in
       `sw.js` when asset shape changes (see ARCHITECTURE.md)
-- [x] QC sweep automated — 39 checks across entry, pulse, all four skins, the
+- [x] QC sweep automated — 42 checks across entry, pulse, all four skins, the
       handshake, motifs, altar, exchange, rites, satchel, mobile and the
       portable build; it also guards the canon (fails on any external request)
 - [x] Canon repair: Coach and Sync fetched Google Fonts on every mount, which
@@ -105,8 +158,7 @@ its done-condition. Update statuses as things land. Intent behind all of it:
 
 ## Horizon (not scheduled, kept on purpose)
 
-- MirrorFlow Insight as the consumer of real Pulse data once apps report
-  activity over the bus (packets, still — never storage reads)
-- MirrorFlow Insight's first real feed: apps calling `tgcSeal('digest', …)` on
-  their own activity, so the Pulse widens beyond visit stamps (packets only)
+- Sync and Coach as digest producers too, once Ping proves the shape
+- Insight → Coach handoff: a period's error profile sent for coaching, closing
+  the MirrorFlow ↔ Excelsior loop
 - The Rift (Riftborn game) gets its bus only "when the rift opens"

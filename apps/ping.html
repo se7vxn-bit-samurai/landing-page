@@ -9119,8 +9119,14 @@ function refreshAll(options = {}) {
     renderPingAssistDebounced();
   }
 }
+/* Digest telemetry · counts only, reset on every send. Nothing here can hold
+   anything a person typed — see docs/INSIGHT.md for why that is load-bearing. */
+let tgcDraftStartedAt = null, tgcDraftRevisions = 0;
+
 editorEl.addEventListener('input', () => {
   lastEdit = Date.now();
+  if (tgcDraftStartedAt === null) tgcDraftStartedAt = Date.now();
+  tgcDraftRevisions++;
   captureEditorSelection();
   if (!mfAssistApplyingFix && !mfAssistRestoringUndo) mfAssistSetUndoState(null);
   if (!getDraftPlain().trim()) mfAssistClearDraftState();
@@ -9607,6 +9613,60 @@ function showHelp() {
 }
 
 /* ---------- SEND — appends agent bubble, no auto-reply ---------- */
+
+/* ═══════════ THE DIGEST · what Ping tells the house about a send ═══════════
+   Measurements only. No message text, no names, no matched strings — category
+   counts and scores. Contract and rationale: docs/INSIGHT.md. */
+function tgcBuildSendDigest(text) {
+  const eng = window.MirrorFlowAssistEngine;
+  if (!eng || typeof eng.analyzeText !== 'function') return null;
+  let a = null;
+  try { a = eng.analyzeText(text, { surface: 'ping_send' }); } catch (e) { return null; }
+  if (!a) return null;
+
+  const words = (text.match(/[A-Za-z0-9'’-]+/g) || []).length;
+  const sentences = (text.split(/[.!?]+(?:\s|$)/).filter(x => x.trim()).length) || 1;
+  const lower = text.toLowerCase();
+  const count = re => (lower.match(re) || []).length;
+
+  /* rule hits collapsed to category counts — the ids and matched text stay here */
+  const grammarHits = {};
+  let toneHits = 0;
+  (a.issues || []).forEach(i => {
+    if (i.category === 'tone') { toneHits++; return; }
+    const k = i.subtype || i.category || 'other';
+    grammarHits[k] = (grammarHits[k] || 0) + 1;
+  });
+
+  const d = {
+    to: 'insight', surface: 'reply',
+    words, sentences,
+    grammarHits, toneHits,
+    apologies: count(/\b(sorry|apologise|apologize)\b/g),
+    hedges:    count(/\b(just|maybe|perhaps|hopefully|kind of|sort of|i think)\b/g),
+    robotic:   count(/\b(as per|process|procedure|escalate internally|backend)\b/g),
+    revisions: tgcDraftRevisions
+  };
+  /* only report what the engine actually gave us · a guessed zero is a lie */
+  const grade = a.clarity && a.clarity.grade;
+  if (typeof grade === 'number') d.readingGrade = grade;
+  const score = a.quality && (a.quality.score ?? a.quality.value);
+  if (typeof score === 'number') d.writingScore = score;
+  const clarityScore = a.clarity && a.clarity.score;
+  if (typeof clarityScore === 'number') d.clarityScore = clarityScore;
+  if (a.tone && a.tone.primary) d.tonePrimary = a.tone.primary;
+  if (tgcDraftStartedAt) d.secondsToSend = Math.round((Date.now() - tgcDraftStartedAt) / 1000);
+  return d;
+}
+
+function tgcSealSendDigest(text) {
+  try {
+    if (typeof window.tgcSeal !== 'function') return;   // running outside the shell
+    const d = tgcBuildSendDigest(text);
+    if (d) window.tgcSeal('digest', d);
+  } catch (e) { /* a digest must never break a send */ }
+}
+
 function doSendV2() {
   const text = getDraftPlain();
   if (!text) { toast('Nothing to send'); return; }
@@ -9623,6 +9683,8 @@ function doSendV2() {
   phoneBody.scrollTop = phoneBody.scrollHeight;
   toast('Sent');
   save();
+  tgcSealSendDigest(text);
+  tgcDraftStartedAt = null; tgcDraftRevisions = 0;
 }
 
 /* re-bind Send button and Cmd+Enter to V2 */
