@@ -22,6 +22,10 @@ function setAssistDiagnosticsOpen(open) {
   if (!box) return;
   const nextOpen = Boolean(open);
   /* build the report on first open · boot stays free of it */
+  if (nextOpen) {
+    window.__tgcLensWantDiagnostics = true;
+    if (!window.MirrorFlowAssistEngine && window.__tgcLoadLensEngine) window.__tgcLoadLensEngine();
+  }
   if (nextOpen && !mfAssistLastTestReport) { try { renderPingAssistDiagnostics(); } catch (e) {} }
   box.dataset.open = nextOpen ? 'true' : 'false';
   if (toggle) toggle.setAttribute('aria-expanded', String(nextOpen));
@@ -199,6 +203,11 @@ function saveDebounced(delay = 220) {
 
 function refreshAll(options = {}) {
   const immediate = options && options.immediate === true;
+  /* the engine is not in the boot path · the first real prose pulls it in, and its
+     loader calls back through here once it lands (see ping.html) */
+  if (!window.MirrorFlowAssistEngine && window.__tgcLoadLensEngine) {
+    try { if (/[A-Za-z]{2,}/.test(getDraftPlain() || '')) window.__tgcLoadLensEngine(); } catch (e) {}
+  }
   syncEditorStatus();
   updatePhoneDraft();
   updateCustomerDraft();
@@ -972,3 +981,15 @@ requestAnimationFrame(() => {
     setTimeout(updatePhoneScale, 0);
   });
 });
+
+/* The engine is off the critical path, but the Profiles panel is open by default and
+   reports on the rules, so waiting for a keystroke would leave it visibly empty. Kick
+   the load as soon as the browser is idle: boot never blocks on the 114 KB, and by the
+   time anyone reaches for the rail it has landed. The prose and diagnostics triggers
+   above remain the guaranteed floor for browsers without requestIdleCallback. */
+(function () {
+  if (!window.__tgcLoadLensEngine) return;
+  var kick = function () { try { window.__tgcLoadLensEngine(); } catch (e) {} };
+  if (typeof requestIdleCallback === 'function') requestIdleCallback(kick, { timeout: 2000 });
+  else setTimeout(kick, 600);
+})();

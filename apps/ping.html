@@ -365,6 +365,30 @@ html[data-theme="paper"] .mf-atmosphere::after {
    reaches the spelling rule, and cached by the service worker from then on.
    Until it lands the other 100+ Lens rules run normally — spelling simply
    stays quiet rather than blocking anything. */
+/* The Lens rule engine is ~114 KB and an empty editor needs none of it. It is
+   wrapped in its own IIFE and exposes exactly one thing — window.MirrorFlowAssistEngine —
+   so nothing else in Ping can depend on its internals, and every consumer already
+   early-returns while it is absent. It therefore loads on the first thing that
+   actually needs it: real prose, or a panel that reports on the rules themselves.
+   Boot pays for the app, not for the engine. */
+window.__TGC_LENS_ENGINE_URL = 'ping/lens.js';
+window.__tgcLoadLensEngine = function () {
+  if (window.MirrorFlowAssistEngine || window.__tgcLensEnginePending) return window.__tgcLensEnginePending || null;
+  var s = document.createElement('script');
+  s.src = window.__TGC_LENS_ENGINE_URL;
+  window.__tgcLensEnginePending = new Promise(function (res) {
+    s.onload = function () { window.__tgcLensEnginePending = null; res(true);
+      /* the rail, the presets and the diagnostics all repaint from here */
+      try { if (typeof refreshAll === 'function') refreshAll({ immediate: true }); } catch (e) {}
+      try { if (typeof renderPingAssistProfilePresets === 'function') renderPingAssistProfilePresets(); } catch (e) {}
+      try { if (typeof renderPingAssistDiagnostics === 'function' && window.__tgcLensWantDiagnostics) renderPingAssistDiagnostics(); } catch (e) {}
+    };
+    s.onerror = function () { window.__tgcLensEnginePending = null; res(false); };
+  });
+  document.head.appendChild(s);
+  return window.__tgcLensEnginePending;
+};
+
 window.__TGC_LENS_DICT_URL = 'lens/dict.js';
 window.__tgcLoadLensDict = function () {
   if (window.__TGC_LENS_DICT || window.__tgcLensDictPending) return window.__tgcLensDictPending || null;
@@ -1088,7 +1112,6 @@ window.__tgcLoadLensDict = function () {
   <script src="ping/shell.js"></script>
   <script src="ping/insights.js"></script>
   <script src="ping/insights-render.js"></script>
-  <script src="ping/lens.js"></script>
   <script src="ping/assist-render.js"></script>
   <script src="ping/app.js"></script>
 <!-- TGC:EXCHANGE-CLIENT v1 · added by theguide-shell-v2 · Phase 2 -->

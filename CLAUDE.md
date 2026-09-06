@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is the landing page / shell for **TheGuide** (`sel.theguide.club`), described as "one roof, four worlds." It is a **multi-file static site** — no build step, no package manager, no test framework. The shell lives in `index.html` + `css/shell.css` + `js/shell.js` + `js/landing.js`; each hosted app is its own self-contained file under `apps/`; fonts are local woff2 under `fonts/`.
+This is the landing page / shell for **TheGuide** (`sel.theguide.club`), described as "one roof, four worlds." It is a **multi-file static site** — no build step, no package manager, no test framework. The shell lives in `index.html` + `css/shell.css` + `js/shell.js` + `js/landing.js`; each hosted app is its own self-contained file under `apps/` (Ping is split further into `apps/ping/` — classic scripts whose load order is the contract, see `docs/PING.md`); fonts are local woff2 under `fonts/`.
 
 Full architecture reference: `docs/ARCHITECTURE.md`. App contract & inventory: `docs/APPS.md`. Ping internals: `docs/PING.md`. Insight design + digest contract: `docs/INSIGHT.md`.
 
@@ -98,7 +98,7 @@ No CSS framework. Four skins via `:root[data-theme]` token overrides in `css/she
 
 ## Conventions
 
-- **Checks live in `tools/`** — `node tools/qc.mjs` (44 house checks) and `node tools/lens.mjs` (Ping's rule floor + a clean-prose ceiling). Both need a static server on `:8901` and Playwright installed locally; see `tools/README.md`. Run them before pushing anything that touches the shell or the Lens pack.
+- **Checks live in `tools/`** — `node tools/qc.mjs` (46 house checks) and `node tools/lens.mjs` (Ping's rule floor + a clean-prose ceiling). Both need a static server on `:8901` and Playwright installed locally; see `tools/README.md`. Run them before pushing anything that touches the shell or the Lens pack.
 - **No external runtime dependencies** — the shell and every app are self-contained. Fonts live in `fonts/`, Sync's spreadsheet libraries in `vendor/` (see `vendor/README.md` before touching them). The only outbound call in the whole house is opt-in weather (Open-Meteo); the QC suite fails on any other external request.
 - **Status values** are `'building'`, `'active'`, or `'open'`; rendered via the `pip()` helper.
 - **App URLs** are set via `localPath` in each `APPS` entry — update these if app files move. An app declared with `status:'soon'` and `localPath:null` is a promise, not a build; the rites count it as declared rather than broken.

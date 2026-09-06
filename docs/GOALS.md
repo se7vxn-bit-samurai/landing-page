@@ -117,6 +117,51 @@ Ping's own reference: [`PING.md`](PING.md).
       document the ceiling where a user can see it.
       *Done when: a long draft says "8 shown of N" rather than silently stopping.*
 
+## Phase H · Weight
+
+Measured across the house before any of this was written, cold mount through the
+shell (median of 6, fresh context each run). The finding redirected the work:
+**Ping was third**, and we had been optimising it because it was loud.
+
+| App | Mount | Transfer | DOM |
+|---|---:|---:|---:|
+| sync | 696 ms | 1 269 KB | 222 |
+| ping | 351 ms | 537 KB | 1 904 |
+| codex | 328 ms | 1 527 KB | 2 942 |
+| coach | 223 ms | 703 KB | 1 276 |
+| notes | 154 ms | 167 KB | 93 |
+| *shell* | *172 ms DCL* | *80 KB* | *732* |
+
+Fonts were checked and cleared: 19 `@font-face` rules, all with `font-display:swap`
+and `unicode-range`, so the browser fetches only the faces it paints. That
+mechanism is already right — no work needed there.
+
+- [x] **H1 · Split Ping, then get the engine off the boot path** — `apps/ping.html`
+      456 KB → 55 KB plus `apps/ping/` (seven parts, cut at the file's own section
+      banners). Classic scripts sharing top-level bindings, so **load order is the
+      contract** and each file's header says so.
+      `ping/lens.js` (114 KB) is wrapped in its own IIFE and exposes only
+      `window.MirrorFlowAssistEngine`; every consumer already early-returned while
+      it was absent, so it now has no script tag at all and loads on idle, on first
+      prose, or on the diagnostics drawer opening.
+      *Measured: mount 203 → 143 ms, DCL 186 → 131 ms, boot payload 462 → 353 KB.
+      The split alone was a wash (196 ms / 464 KB) — it is the enabler, not the win.*
+      *Caught in the act: the portable build shipped Ping with no engine, because the
+      engine no longer had a tag for the builder to rewrite. The builder now scans for
+      `window.__TGC_*_URL` and fails on a missing part; QC asserts both halves.* ✓
+- [ ] **H2 · Three.js out of `apps/codex.html`** — 654 KB of Three.js r150 is inlined
+      into a `<script id="weave-three-inline">`, 43% of Codex's payload, downloaded on
+      every mount whether or not The Weave is opened. Same class of problem as Sync's
+      CDN libraries in Phase D, just hidden inside the file. Move to `vendor/`, load on
+      first Weave open.
+      *Done when: mounting Codex without opening The Weave costs 654 KB less.*
+- [ ] **H3 · Sync's 1.35 MB single script** — nine labelled sections in one
+      undivided block, `SHIFT NOTES` (239 KB) and `OT PLANNER UI` (231 KB) the
+      largest. Split at the existing banners first; assess deferral after.
+      *Done when: Sync is a directory, and its slowest-in-the-house mount is not.*
+- [ ] **H4 · Codex's other on-demand surfaces** — `weave-atlas` (129 KB) and
+      `reader-editor` (24 KB) behind their own openers.
+
 ## Phase G · MirrorFlow Insight
 
 Design and digest contract: [`INSIGHT.md`](INSIGHT.md). F2 has landed, so digests
@@ -149,7 +194,7 @@ fiction, which is the thing Phase B2 and F1 both existed to remove.
       from the Pages HTTP cache (the "pop looked like night" report)
 - [x] Deploy ritual documented: bump `version.json` per deploy; bump `VER` in
       `sw.js` when asset shape changes (see ARCHITECTURE.md)
-- [x] QC sweep automated — 44 checks across entry, pulse, all four skins, the
+- [x] QC sweep automated — 46 checks across entry, pulse, all four skins, the
       handshake, motifs, altar, exchange, rites, satchel, mobile and the
       portable build; it also guards the canon (fails on any external request)
 - [x] The checks live in the repo — `tools/qc.mjs` and `tools/lens.mjs`, with
