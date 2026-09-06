@@ -49,6 +49,22 @@ for f in sorted((ROOT / 'apps').glob('*.html')):
         js = (ROOT / 'vendor' / m.group(1)).read_text(encoding='utf-8')
         return '<scr' + 'ipt>' + js.replace('</script', '<\\/script') + '</scr' + 'ipt>'
     app = re.sub(r'<script[^>]*src="\.\./vendor/([^"]+)"[^>]*>\s*</script>', inline_vendor, app)
+    # an app split into its own directory (apps/ping/*) is served as separate files, but a
+    # blob URL cannot resolve them either — inline each in place so LOAD ORDER survives,
+    # which for classic scripts sharing top-level bindings is the whole contract
+    def inline_part(m):
+        part = ROOT / 'apps' / m.group(1)
+        if not part.exists():
+            raise SystemExit('portable build: missing app part ' + str(part))
+        js = part.read_text(encoding='utf-8')
+        return '<scr' + 'ipt>' + js.replace('</script', '<\\/script') + '</scr' + 'ipt>'
+    app = re.sub(r'<script[^>]*src="((?!\.\./)[^"]+/[^"]+\.js)"[^>]*>\s*</script>', inline_part, app)
+    def inline_part_css(m):
+        part = ROOT / 'apps' / m.group(1)
+        if not part.exists():
+            raise SystemExit('portable build: missing app stylesheet ' + str(part))
+        return '<style>' + part.read_text(encoding='utf-8') + '</style>'
+    app = re.sub(r'<link rel="stylesheet" href="((?!\.\./)[^"]+/[^"]+\.css)">', inline_part_css, app)
     # the Lens spelling dictionary is fetched on demand in the served build; a blob
     # URL cannot resolve lens/dict.js, so the portable edition carries it inline
     dict_js = ROOT / 'apps' / 'lens' / 'dict.js'
