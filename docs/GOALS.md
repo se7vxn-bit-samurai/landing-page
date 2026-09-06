@@ -165,10 +165,13 @@ mechanism is already right — no work needed there.
       relocation of code already running — no new trust, but no upstream verification
       either, and claiming an `integrity` would imply a check that never happened. The
       extracted copy's hash is recorded instead, so a change stays visible.* ✓
-- [ ] **H3 · Sync's 1.35 MB single script** — nine labelled sections in one
-      undivided block, `SHIFT NOTES` (239 KB) and `OT PLANNER UI` (231 KB) the
-      largest. Split at the existing banners first; assess deferral after.
-      *Done when: Sync is a directory, and its slowest-in-the-house mount is not.*
+- [ ] **H3 · Sync's 1.35 MB single script** — **owned elsewhere · do not touch.**
+      Sel is working on Sync outside this repo and will integrate the result here.
+      Recorded so the measurement is not lost: it is now the heaviest app in the
+      house (696 ms, 1 269 KB), one undivided `<script>` with nine labelled
+      sections, `SHIFT NOTES` (239 KB) and `OT PLANNER UI` (231 KB) the largest.
+      When the external work lands, the H1 playbook applies — split at the
+      existing banners, then look for the deferral seams.
 - [ ] **H4 · Codex's other on-demand surfaces** — `weave-atlas` (129 KB) and
       `reader-editor` (24 KB) behind their own openers.
 
