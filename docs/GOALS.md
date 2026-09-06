@@ -128,6 +128,9 @@ shell (median of 6, fresh context each run). The finding redirected the work:
 | sync | 696 ms | 1 269 KB | 222 |
 | ping | 351 ms | 537 KB | 1 904 |
 | codex | 328 ms | 1 527 KB | 2 942 |
+
+After H1 and H2, on the same measurement: ping **143 ms / 353 KB to DCL**,
+codex **219 ms / 749 KB**. Sync is now the worst by a wide margin.
 | coach | 223 ms | 703 KB | 1 276 |
 | notes | 154 ms | 167 KB | 93 |
 | *shell* | *172 ms DCL* | *80 KB* | *732* |
@@ -149,12 +152,19 @@ mechanism is already right — no work needed there.
       *Caught in the act: the portable build shipped Ping with no engine, because the
       engine no longer had a tag for the builder to rewrite. The builder now scans for
       `window.__TGC_*_URL` and fails on a missing part; QC asserts both halves.* ✓
-- [ ] **H2 · Three.js out of `apps/codex.html`** — 654 KB of Three.js r150 is inlined
-      into a `<script id="weave-three-inline">`, 43% of Codex's payload, downloaded on
-      every mount whether or not The Weave is opened. Same class of problem as Sync's
-      CDN libraries in Phase D, just hidden inside the file. Move to `vendor/`, load on
-      first Weave open.
-      *Done when: mounting Codex without opening The Weave costs 654 KB less.*
+- [x] **H2 · Three.js out of `apps/codex.html`** — 654 KB of Three.js was inlined into
+      a `<script id="weave-three-inline">`, 43% of Codex's payload, executing on every
+      mount whether or not anyone opened the globe. Now `vendor/three.min.js`, loaded by
+      `window.__tgcLoadThree` on first open of the globe view.
+      `initGlobe()` already had a `if (!THREE)` branch that showed a dead-end message —
+      that branch became the trigger, so the change is a loader plus six lines.
+      *Measured: mount 303 → 219 ms, DCL 292 → 210 ms, payload 1411 → 749 KB (−47%).*
+      *Unlike Sync's four libraries this carries **no** `integrity` attribute, and
+      `vendor/README.md` says why: those came from a CDN with a published SRI hash to
+      verify against, this came from inside our own file. It is a byte-for-byte
+      relocation of code already running — no new trust, but no upstream verification
+      either, and claiming an `integrity` would imply a check that never happened. The
+      extracted copy's hash is recorded instead, so a change stays visible.* ✓
 - [ ] **H3 · Sync's 1.35 MB single script** — nine labelled sections in one
       undivided block, `SHIFT NOTES` (239 KB) and `OT PLANNER UI` (231 KB) the
       largest. Split at the existing banners first; assess deferral after.
@@ -194,7 +204,7 @@ fiction, which is the thing Phase B2 and F1 both existed to remove.
       from the Pages HTTP cache (the "pop looked like night" report)
 - [x] Deploy ritual documented: bump `version.json` per deploy; bump `VER` in
       `sw.js` when asset shape changes (see ARCHITECTURE.md)
-- [x] QC sweep automated — 46 checks across entry, pulse, all four skins, the
+- [x] QC sweep automated — 48 checks across entry, pulse, all four skins, the
       handshake, motifs, altar, exchange, rites, satchel, mobile and the
       portable build; it also guards the canon (fails on any external request)
 - [x] The checks live in the repo — `tools/qc.mjs` and `tools/lens.mjs`, with

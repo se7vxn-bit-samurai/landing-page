@@ -200,6 +200,28 @@ check('tgcSeal from a live app produces a valid packet',
 check('notes wears the house type stack',
   (await page.evaluate(() => { const d = document.querySelector('iframe[data-shell-app="notes"]').contentDocument; return getComputedStyle(d.body).fontFamily; })).startsWith('"DM Sans"'));
 
+// ─── CODEX · Three.js is behind the globe, not in the boot path ───
+await page.evaluate(() => Frame.enter('codex'));
+await page.waitForFunction(() => !document.getElementById('veil').classList.contains('on'), null, { timeout: 45000 });
+await page.waitForTimeout(2500);
+const codexBoot = await page.evaluate(() => {
+  const w = document.querySelector('iframe[data-shell-app="codex"]').contentWindow;
+  return { three: typeof w.THREE,
+           fetched: w.performance.getEntriesByType('resource').some(r => r.name.includes('three.min.js')) };
+});
+check('codex mounts without loading Three.js', codexBoot.three === 'undefined' && !codexBoot.fetched,
+  'THREE ' + codexBoot.three + ' · fetched ' + codexBoot.fetched);
+await page.evaluate(() => { const d = document.querySelector('iframe[data-shell-app="codex"]').contentDocument;
+  const btn = [...d.querySelectorAll('.mode')].find(b => b.dataset.view === 'globe'); if (btn) btn.click(); });
+await page.waitForTimeout(5000);
+const codexGlobe = await page.evaluate(() => {
+  const f = document.querySelector('iframe[data-shell-app="codex"]');
+  return { three: typeof f.contentWindow.THREE,
+           canvas: Boolean(f.contentDocument.querySelector('#globeCanvas canvas')) };
+});
+check('opening the globe loads Three.js and renders', codexGlobe.three === 'object' && codexGlobe.canvas,
+  'THREE ' + codexGlobe.three + ' · canvas ' + codexGlobe.canvas);
+
 // ─── SYNC · vendored libraries ───
 await page.evaluate(() => Frame.enter('sync'));
 await page.waitForFunction(() => !document.getElementById('veil').classList.contains('on'), null, { timeout: 45000 });
