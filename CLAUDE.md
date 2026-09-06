@@ -98,6 +98,7 @@ No CSS framework. Four skins via `:root[data-theme]` token overrides in `css/she
 
 ## Conventions
 
+- **Checks live in `tools/`** — `node tools/qc.mjs` (44 house checks) and `node tools/lens.mjs` (Ping's rule floor + a clean-prose ceiling). Both need a static server on `:8901` and Playwright installed locally; see `tools/README.md`. Run them before pushing anything that touches the shell or the Lens pack.
 - **No external runtime dependencies** — the shell and every app are self-contained. Fonts live in `fonts/`, Sync's spreadsheet libraries in `vendor/` (see `vendor/README.md` before touching them). The only outbound call in the whole house is opt-in weather (Open-Meteo); the QC suite fails on any other external request.
 - **Status values** are `'building'`, `'active'`, or `'open'`; rendered via the `pip()` helper.
 - **App URLs** are set via `localPath` in each `APPS` entry — update these if app files move. An app declared with `status:'soon'` and `localPath:null` is a promise, not a build; the rites count it as declared rather than broken.

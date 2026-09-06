@@ -152,6 +152,11 @@ fiction, which is the thing Phase B2 and F1 both existed to remove.
 - [x] QC sweep automated — 44 checks across entry, pulse, all four skins, the
       handshake, motifs, altar, exchange, rites, satchel, mobile and the
       portable build; it also guards the canon (fails on any external request)
+- [x] The checks live in the repo — `tools/qc.mjs` and `tools/lens.mjs`, with
+      `tools/README.md`. They had been running from a scratch directory, so the
+      "44 checks" line above was a claim the repo could not back and the suite
+      died with the container. `lens.mjs` carries both halves of the rule check:
+      the 111 fixtures, and the clean-prose corpus that must produce zero flags
 - [x] Canon repair: Coach and Sync fetched Google Fonts on every mount, which
       broke the offline promise and leaked a request per open. Both now use the
       self-hosted faces; Cinzel falls back to the hosted Playfair
