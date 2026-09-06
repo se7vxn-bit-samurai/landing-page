@@ -6952,8 +6952,176 @@ window.MF_exportTheGuideExchangePacket = mfExportTheGuideExchangePacket;
     { id:"lens.informal.pls",   category:"tone", subtype:"informal", label:"Shorthand", severity:"low", confidence:0.9, pattern:/\b(pls|plz)\b/gi, replacement:"please",  message:"Chat shorthand." },
     { id:"lens.informal.thx",   category:"tone", subtype:"informal", label:"Shorthand", severity:"low", confidence:0.9, pattern:/\b(thx|tnx|ty)\b/gi, replacement:"thanks", message:"Chat shorthand." }
   ];
+
+  /* ═══ TGC:LENS-PUNCT · punctuation beyond spacing ═══
+     The pack shipped six punctuation rules, all of them about whitespace around a
+     mark. These are about the mark itself: the ones that change how a sentence is
+     read, not how it is typeset. */
+  const TGC_LENS_PUNCT = [
+    { id:"lens.punct.question_mark_missing", category:"grammar", subtype:"punctuation", label:"Missing question mark", severity:"medium", confidence:0.82,
+      pattern:/((?:^|[.!?]\s+|\n)(?:Can|Could|Would|Will|Should|Do|Does|Did|Are|Is|Was|Were|Have|Has|May|Shall) (?:you|I|we|they|he|she|it)[^.!?\n,]{2,80})\./g,
+      replacement:"$1?", message:"This reads as a question · end it with “?”." },
+    { id:"lens.punct.intro_adverb_comma", category:"grammar", subtype:"punctuation", label:"Missing comma", severity:"low", confidence:0.84,
+      pattern:/((?:^|[.!?]\s+|\n)(?:However|Therefore|Unfortunately|Fortunately|Additionally|Furthermore|Moreover|Meanwhile|Otherwise|Alternatively|Nevertheless|Consequently|Firstly|Secondly)) (?![,\s])/g,
+      replacement:"$1, ", message:"An opening adverb takes a comma." },
+    { id:"lens.punct.greeting_comma", category:"grammar", subtype:"punctuation", label:"Missing comma", severity:"low", confidence:0.8,
+      pattern:/\b(Hi|Hello|Hey|Morning|Afternoon) ([A-Z][a-z]+) (I|We|Thanks|Thank|Just|Sorry|Apologies|Your|Happy|Hope|Please)\b/g,
+      replacement:"$1 $2, $3", message:"A greeting takes a comma before the message." },
+    { id:"lens.punct.decade_apostrophe", category:"grammar", subtype:"punctuation", label:"Stray apostrophe", severity:"low", confidence:0.9,
+      pattern:/\b((?:19|20)\d0)'s\b/g, replacement:"$1s", message:"A decade is a plural, not a possessive." },
+    { id:"lens.punct.thanks_apostrophe", category:"grammar", subtype:"punctuation", label:"Stray apostrophe", severity:"medium", confidence:0.94,
+      pattern:/\b(thank|regard|cheer)'s\b/gi, replacement:"$1s", message:"Plural, not possessive." },
+    { id:"lens.punct.double_hyphen", category:"grammar", subtype:"punctuation", label:"Double hyphen", severity:"low", confidence:0.88,
+      /* the span is the dashes only · swallowing the neighbouring letters as context
+         would block whatever fix sits immediately before it in a rewrite */
+      pattern:/[ \t]*--[ \t]*/g, replacement:" — ", message:"Use an em dash." },
+    { id:"lens.punct.long_ellipsis", category:"grammar", subtype:"punctuation", label:"Long ellipsis", severity:"low", confidence:0.9,
+      pattern:/\.{4,}/g, replacement:"…", message:"An ellipsis is three dots." },
+    { id:"lens.punct.repeated_comma", category:"grammar", subtype:"punctuation", label:"Repeated comma", severity:"low", confidence:0.92,
+      pattern:/,{2,}/g, replacement:",", message:"One comma is enough." },
+    { id:"lens.punct.mixed_terminal", category:"grammar", subtype:"punctuation", label:"Mixed end marks", severity:"low", confidence:0.85,
+      pattern:/\?!+|!\?+/g, replacement:"?", message:"Pick one end mark." },
+    { id:"lens.punct.colon_spacing", category:"grammar", subtype:"punctuation", label:"Colon spacing", severity:"low", confidence:0.9,
+      pattern:/([a-z]):([A-Za-z])/g, replacement:"$1: $2", message:"Add a space after the colon." },
+    { id:"lens.punct.semicolon_spacing", category:"grammar", subtype:"punctuation", label:"Semicolon spacing", severity:"low", confidence:0.9,
+      pattern:/;([A-Za-z])/g, replacement:"; $1", message:"Add a space after the semicolon." }
+  ];
+
+  /* ═══ TGC:LENS-STYLE · how the sentence is built ═══
+     Style is a subtype of clarity, not a category of its own. A passive clause or a
+     buried verb is not incorrect — it is harder to read, which is what clarity
+     already measures. Keeping it here means the score, the presets and the digest
+     need no new axis to understand it. */
+  const TGC_LENS_STYLE = [
+    /* — buried verbs — */
+    { id:"lens.style.nominal.make_decision", category:"clarity", subtype:"style", label:"Buried verb", severity:"low", confidence:0.86, pattern:/\bmake a decision\b/gi, replacement:"decide", message:"The verb is buried in a noun." },
+    { id:"lens.style.nominal.make_recommendation", category:"clarity", subtype:"style", label:"Buried verb", severity:"low", confidence:0.86, pattern:/\bmake a recommendation\b/gi, replacement:"recommend", message:"The verb is buried in a noun." },
+    { id:"lens.style.nominal.provide_explanation", category:"clarity", subtype:"style", label:"Buried verb", severity:"low", confidence:0.86, pattern:/\bprovide an explanation\b/gi, replacement:"explain", message:"The verb is buried in a noun." },
+    { id:"lens.style.nominal.provide_confirmation", category:"clarity", subtype:"style", label:"Buried verb", severity:"low", confidence:0.86, pattern:/\bprovide confirmation\b/gi, replacement:"confirm", message:"The verb is buried in a noun." },
+    { id:"lens.style.nominal.conduct_investigation", category:"clarity", subtype:"style", label:"Buried verb", severity:"low", confidence:0.86, pattern:/\bconduct an investigation\b/gi, replacement:"investigate", message:"The verb is buried in a noun." },
+    { id:"lens.style.nominal.carry_out_assessment", category:"clarity", subtype:"style", label:"Buried verb", severity:"low", confidence:0.84, pattern:/\bcarry out an assessment\b/gi, replacement:"assess", message:"The verb is buried in a noun." },
+    { id:"lens.style.nominal.give_consideration", category:"clarity", subtype:"style", label:"Buried verb", severity:"low", confidence:0.86, pattern:/\bgive consideration to\b/gi, replacement:"consider", message:"The verb is buried in a noun." },
+    { id:"lens.style.nominal.take_into_consideration", category:"clarity", subtype:"style", label:"Buried verb", severity:"low", confidence:0.86, pattern:/\btake into consideration\b/gi, replacement:"consider", message:"The verb is buried in a noun." },
+    { id:"lens.style.nominal.make_adjustment", category:"clarity", subtype:"style", label:"Buried verb", severity:"low", confidence:0.84, pattern:/\bmake an adjustment\b/gi, replacement:"adjust", message:"The verb is buried in a noun." },
+    { id:"lens.style.nominal.reach_conclusion", category:"clarity", subtype:"style", label:"Buried verb", severity:"low", confidence:0.84, pattern:/\breach a conclusion\b/gi, replacement:"conclude", message:"The verb is buried in a noun." },
+    /* — saying it twice — */
+    { id:"lens.style.redundant.absolutely_essential", category:"clarity", subtype:"style", label:"Says it twice", severity:"low", confidence:0.9, pattern:/\babsolutely essential\b/gi, replacement:"essential", message:"“Essential” already means this." },
+    { id:"lens.style.redundant.advance_planning", category:"clarity", subtype:"style", label:"Says it twice", severity:"low", confidence:0.88, pattern:/\badvance planning\b/gi, replacement:"planning", message:"Planning is always in advance." },
+    { id:"lens.style.redundant.basic_fundamentals", category:"clarity", subtype:"style", label:"Says it twice", severity:"low", confidence:0.9, pattern:/\bbasic fundamentals\b/gi, replacement:"fundamentals", message:"Fundamentals are basic." },
+    { id:"lens.style.redundant.close_proximity", category:"clarity", subtype:"style", label:"Says it twice", severity:"low", confidence:0.88, pattern:/\bin close proximity to\b/gi, replacement:"near", message:"Shorter and plainer." },
+    { id:"lens.style.redundant.end_result", category:"clarity", subtype:"style", label:"Says it twice", severity:"low", confidence:0.88, pattern:/\bend result\b/gi, replacement:"result", message:"A result is already the end." },
+    { id:"lens.style.redundant.final_outcome", category:"clarity", subtype:"style", label:"Says it twice", severity:"low", confidence:0.88, pattern:/\bfinal outcome\b/gi, replacement:"outcome", message:"An outcome is already final." },
+    { id:"lens.style.redundant.exact_same", category:"clarity", subtype:"style", label:"Says it twice", severity:"low", confidence:0.86, pattern:/\bexact same\b/gi, replacement:"same", message:"“Same” carries it." },
+    { id:"lens.style.redundant.each_and_every", category:"clarity", subtype:"style", label:"Says it twice", severity:"low", confidence:0.88, pattern:/\beach and every\b/gi, replacement:"every", message:"One of the two is enough." },
+    { id:"lens.style.redundant.past_history", category:"clarity", subtype:"style", label:"Says it twice", severity:"low", confidence:0.9, pattern:/\bpast history\b/gi, replacement:"history", message:"History is already past." },
+    { id:"lens.style.redundant.future_plans", category:"clarity", subtype:"style", label:"Says it twice", severity:"low", confidence:0.86, pattern:/\bfuture plans\b/gi, replacement:"plans", message:"Plans are already future." },
+    { id:"lens.style.redundant.revert_back", category:"clarity", subtype:"style", label:"Says it twice", severity:"low", confidence:0.92, pattern:/\brevert back\b/gi, replacement:"revert", message:"“Revert” already means back." },
+    { id:"lens.style.redundant.return_back", category:"clarity", subtype:"style", label:"Says it twice", severity:"low", confidence:0.92, pattern:/\breturn back\b/gi, replacement:"return", message:"“Return” already means back." },
+    { id:"lens.style.redundant.repeat_again", category:"clarity", subtype:"style", label:"Says it twice", severity:"low", confidence:0.88, pattern:/\brepeat (it )?again\b/gi, replacement:"repeat $1", message:"“Repeat” already means again." },
+    { id:"lens.style.redundant.plan_ahead", category:"clarity", subtype:"style", label:"Says it twice", severity:"low", confidence:0.84, pattern:/\bplan ahead\b/gi, replacement:"plan", message:"Planning is always ahead." },
+    { id:"lens.style.redundant.join_together", category:"clarity", subtype:"style", label:"Says it twice", severity:"low", confidence:0.86, pattern:/\b(join|combine|merge) together\b/gi, replacement:"$1", message:"“Together” is already in the verb." },
+    { id:"lens.style.redundant.period_of_time", category:"clarity", subtype:"style", label:"Says it twice", severity:"low", confidence:0.84, pattern:/\ba period of time\b/gi, replacement:"a period", message:"A period is a length of time." },
+    { id:"lens.style.redundant.actual_fact", category:"clarity", subtype:"style", label:"Says it twice", severity:"low", confidence:0.9, pattern:/\b(actual|true) fact\b/gi, replacement:"fact", message:"A fact is already true." },
+    { id:"lens.style.redundant.added_bonus", category:"clarity", subtype:"style", label:"Says it twice", severity:"low", confidence:0.88, pattern:/\badded bonus\b/gi, replacement:"bonus", message:"A bonus is already added." },
+    { id:"lens.style.redundant.brief_summary", category:"clarity", subtype:"style", label:"Says it twice", severity:"low", confidence:0.84, pattern:/\bbrief summary\b/gi, replacement:"summary", message:"A summary is already brief." },
+    /* — padding — */
+    { id:"lens.style.intensifier", category:"clarity", subtype:"style", label:"Empty intensifier", severity:"low", confidence:0.62,
+      pattern:/\b(?:very|really|extremely|incredibly) ([a-z]+)\b/gi, replacement:"$1", message:"The adjective is stronger on its own." },
+    { id:"lens.style.filler_opener", category:"clarity", subtype:"style", label:"Filler opener", severity:"low", confidence:0.7,
+      pattern:/((?:^|[.!?]\s+|\n))(?:Basically|Actually|Obviously|Essentially|Honestly),? /g, replacement:"$1", message:"This opener adds nothing." },
+    { id:"lens.style.expletive_there", category:"clarity", subtype:"style", label:"Empty subject", severity:"low", confidence:0.6,
+      pattern:/(?:^|[.!?]\s+|\n)There (?:is|are|was|were) (?!(?:no|nothing|nobody|none|any|little|much)\b)/g, replacement:null, message:"“There is” hides the real subject · name it." }
+  ];
+
   const TGC_LENS_STRUCT = [
 
+    {
+      /* Two complete clauses welded by a comma. Only the classic shape is flagged —
+         both halves opening with a pronoun subject — because the general case
+         cannot be told from a legitimate dependent clause without a parser. */
+      id:"lens.punct.comma_splice", category:"grammar", subtype:"punctuation", label:"Comma splice", severity:"medium", confidence:0.72,
+      run({ text, protectedSpans, push }) {
+        const re = /(?:^|[.!?]\s+|\n)(?:I|We|You|They|He|She|It)\s+([^.!?\n,]{6,70}),\s+(?:i|we|you|they|he|she|it|I)\s+(?:will|can|could|would|should|have|has|had|am|is|are|was|were|do|does|did|need|want|think|know)\b/g;
+        let m;
+        while ((m = re.exec(text)) !== null) {
+          const comma = text.indexOf(",", m.index);
+          if (comma < 0) continue;
+          push({ ruleId:this.id, category:this.category, subtype:this.subtype, label:this.label,
+            severity:this.severity, confidence:this.confidence,
+            start:comma, end:comma+1, excerpt:",", replacement:null,
+            message:"Comma splice · use a full stop, a semicolon, or add “and”." }, protectedSpans);
+        }
+      }
+    },
+    {
+      /* A bracket or quote opened and never closed reads as a dropped thought. */
+      id:"lens.punct.unbalanced_pair", category:"grammar", subtype:"punctuation", label:"Unclosed pair", severity:"medium", confidence:0.9,
+      run({ text, protectedSpans, push }) {
+        const say = (idx, msg) => {
+          if (idx < 0) return;
+          push({ ruleId:this.id, category:this.category, subtype:this.subtype, label:this.label,
+            severity:this.severity, confidence:this.confidence,
+            start:idx, end:idx+1, excerpt:text[idx], replacement:null, message:msg }, protectedSpans);
+        };
+        [["(", ")", "bracket"], ["[", "]", "square bracket"], ["“", "”", "quote"]].forEach(([open, close, name]) => {
+          const o = text.split(open).length - 1, c = text.split(close).length - 1;
+          if (o === c) return;
+          say(text.lastIndexOf(o > c ? open : close), o > c ? ("This " + name + " is never closed.") : ("This " + name + " is never opened."));
+        });
+        if ((text.match(/"/g) || []).length % 2 === 1) say(text.lastIndexOf('"'), "Odd number of quotation marks.");
+      }
+    },
+    {
+      /* Passive voice hides who acted. In a reply that is often the whole problem:
+         “your booking was cancelled” never says by whom. Flag only — turning a
+         passive into an active needs the missing actor, which the text does not have.
+
+         Present tense is deliberately excluded. “The report is attached” and “the
+         slot is confirmed” are states, not hidden actions, and they are how normal
+         business writing describes a settled fact — flagging them was the pack's
+         loudest false positive. Past, perfect and progressive forms stay in, and an
+         explicit “… by …” pulls the present tense back in because that one really
+         is a passive. */
+      id:"lens.style.passive_voice", category:"clarity", subtype:"style", label:"Passive voice", severity:"low", confidence:0.68,
+      run({ text, protectedSpans, push }) {
+        const ADJ = /^(interested|excited|pleased|delighted|tired|involved|related|located|based|committed|dedicated|experienced|limited|closed|open|prepared|used|supposed|allowed)$/;
+        const re = /\b(is|are|was|were|been|being|be)\s+((?:[a-z]+ly\s+)?)([a-z]+(?:ed|en)|done|sent|made|taken|given|seen|written|held|kept|paid|built|found|shown|told|put|set|lost|left|dealt)\b( by\b)?/gi;
+        let m, flagged = 0;
+        while ((m = re.exec(text)) !== null && flagged < 5) {
+          if (ADJ.test(m[3].toLowerCase())) continue;
+          if (/^(?:is|are)$/i.test(m[1]) && !m[4]) continue;   /* a state, not a hidden actor */
+          flagged++;
+          push({ ruleId:this.id, category:this.category, subtype:this.subtype, label:this.label,
+            severity:this.severity, confidence:this.confidence,
+            start:m.index, end:m.index+m[0].length, excerpt:m[0], replacement:null,
+            message:"Passive · say who did it." }, protectedSpans);
+        }
+      }
+    },
+    {
+      /* Three sentences in a row opening with the same word — usually “I” — reads
+         as a list of the writer's own actions rather than an answer. */
+      id:"lens.style.opener_repeat", category:"clarity", subtype:"style", label:"Repeated opener", severity:"low", confidence:0.78,
+      run({ text, protectedSpans, push }) {
+        const sentences = sentenceList(text);
+        if (sentences.length < 3) return;
+        const first = s => (String(s).trim().match(/^[A-Za-z']+/) || [""])[0].toLowerCase();
+        let run = 1;
+        for (let i = 1; i < sentences.length; i++) {
+          const w = first(sentences[i]);
+          if (w && w === first(sentences[i-1])) run++; else run = 1;
+          if (run === 3) {
+            const start = text.indexOf(sentences[i-2]);
+            if (start < 0) continue;
+            push({ ruleId:this.id, category:this.category, subtype:this.subtype, label:this.label,
+              severity:this.severity, confidence:this.confidence,
+              start, end:start + sentences[i-2].length, excerpt:sentences[i-2].slice(0,50),
+              replacement:null, message:"Three sentences in a row open with “" + w + "” · vary the entry." }, protectedSpans);
+            run = 1;
+          }
+        }
+      }
+    },
     {
       id:"lens.spelling.unknown_word", category:"grammar", subtype:"spelling", label:"Possible misspelling", severity:"medium", confidence:0.72,
       run({ text, protectedSpans, push }) {
@@ -7064,6 +7232,8 @@ window.MF_exportTheGuideExchangePacket = mfExportTheGuideExchangePacket;
 
   const REGEX_RULES = [
     ...TGC_LENS_PACK,
+    ...TGC_LENS_PUNCT,
+    ...TGC_LENS_STYLE,
     { id:"grammar.agreement.we_has", category:"grammar", subtype:"agreement", label:"Subject-verb agreement", severity:"high", confidence:0.96, pattern:/\bwe has\b/gi, replacement:"we have", message:"Subject and verb disagree." },
     { id:"grammar.article.an_update", category:"grammar", subtype:"article", label:"Article before vowel sound", severity:"high", confidence:0.94, pattern:/\bthere is a update\b/gi, replacement:"there is an update", message:"Use 'an' before a vowel sound." },
     { id:"grammar.agreement.team_responds", category:"grammar", subtype:"agreement", label:"Collective noun agreement", severity:"medium", confidence:0.78, pattern:/\bteam respond\b/gi, replacement:"team responds", message:"Singular collective noun needs a matching verb here." },
@@ -7201,6 +7371,36 @@ window.MF_exportTheGuideExchangePacket = mfExportTheGuideExchangePacket;
     { id:"tone_guard", name:"Tone guard", note:"Grammar plus tone", disableCategories:["clarity"] }
   ];
   const RULE_TESTS = [
+    /* — P · punctuation beyond spacing (F3) — */
+    { id: "P-001", ruleId: "lens.punct.question_mark_missing", input: "Can you send the reference number.", expectedReplacement: "Can you send the reference number?" },
+    { id: "P-002", ruleId: "lens.punct.intro_adverb_comma", input: "However I can check the booking today.", expectedReplacement: "However, " },
+    { id: "P-003", ruleId: "lens.punct.greeting_comma", input: "Hi Marcus I have checked the booking.", expectedReplacement: "Hi Marcus, I" },
+    { id: "P-004", ruleId: "lens.punct.decade_apostrophe", input: "The system dates from the 1990's and still runs.", expectedReplacement: "1990s" },
+    { id: "P-005", ruleId: "lens.punct.thanks_apostrophe", input: "Thank's for waiting on this.", expectedReplacement: "Thanks" },
+    { id: "P-006", ruleId: "lens.punct.double_hyphen", input: "The slot moved -- the team confirmed it.", expectedReplacement: " — " },
+    { id: "P-007", ruleId: "lens.punct.long_ellipsis", input: "I will check this....", expectedReplacement: "…" },
+    { id: "P-008", ruleId: "lens.punct.repeated_comma", input: "I checked the file,, and it is fine.", expectedReplacement: "," },
+    { id: "P-009", ruleId: "lens.punct.mixed_terminal", input: "Can you confirm the slot?!", expectedReplacement: "?" },
+    { id: "P-010", ruleId: "lens.punct.colon_spacing", input: "Please note:the slot has moved.", expectedReplacement: "e: t" },
+    { id: "P-011", ruleId: "lens.punct.semicolon_spacing", input: "I checked the file;it is fine.", expectedReplacement: "; i" },
+    { id: "P-012", ruleId: "lens.punct.comma_splice", input: "I checked the booking today, I will send the confirmation.", expectedReplacement: null },
+    { id: "P-013", ruleId: "lens.punct.unbalanced_pair", input: "I checked the booking (the second one and it is confirmed.", expectedReplacement: null },
+    /* — S · style, a subtype of clarity (F3) — */
+    { id: "S-001", ruleId: "lens.style.nominal.make_decision", input: "We will make a decision tomorrow.", expectedReplacement: "decide" },
+    { id: "S-002", ruleId: "lens.style.nominal.provide_explanation", input: "I can provide an explanation for the delay.", expectedReplacement: "explain" },
+    { id: "S-003", ruleId: "lens.style.nominal.take_into_consideration", input: "I will take into consideration your notes.", expectedReplacement: "consider" },
+    { id: "S-004", ruleId: "lens.style.nominal.conduct_investigation", input: "The team will conduct an investigation today.", expectedReplacement: "investigate" },
+    { id: "S-005", ruleId: "lens.style.redundant.end_result", input: "The end result is the same either way.", expectedReplacement: "result" },
+    { id: "S-006", ruleId: "lens.style.redundant.revert_back", input: "I will revert back to you shortly.", expectedReplacement: "revert" },
+    { id: "S-007", ruleId: "lens.style.redundant.each_and_every", input: "I check each and every booking myself.", expectedReplacement: "every" },
+    { id: "S-008", ruleId: "lens.style.redundant.past_history", input: "The past history of this account is clean.", expectedReplacement: "history" },
+    { id: "S-009", ruleId: "lens.style.redundant.actual_fact", input: "The actual fact is the slot moved.", expectedReplacement: "fact" },
+    { id: "S-010", ruleId: "lens.style.redundant.exact_same", input: "This is the exact same booking reference.", expectedReplacement: "same" },
+    { id: "S-011", ruleId: "lens.style.intensifier", input: "This is very important for the customer.", expectedReplacement: "important" },
+    { id: "S-012", ruleId: "lens.style.filler_opener", input: "Basically the slot moved to Thursday.", expectedReplacement: "" },
+    { id: "S-013", ruleId: "lens.style.expletive_there", input: "There are two options open to you now.", expectedReplacement: null },
+    { id: "S-014", ruleId: "lens.style.passive_voice", input: "Your booking was cancelled by the system overnight.", expectedReplacement: null },
+    { id: "S-015", ruleId: "lens.style.opener_repeat", input: "I checked the booking. I called the team. I will send the file.", expectedReplacement: null },
     { id: "G-001", ruleId: "grammar.agreement.we_has", input: "We has checked the booking.", expectedReplacement: "we have" },
     { id: "G-002", ruleId: "grammar.article.an_update", input: "There is a update on your account.", expectedReplacement: "there is an update" },
     { id: "G-003", ruleId: "grammar.agreement.team_responds", input: "The team respond today.", expectedReplacement: "team responds" },
@@ -7562,7 +7762,7 @@ window.MF_exportTheGuideExchangePacket = mfExportTheGuideExchangePacket;
         title:"Shorter",
         intent:"Cut wordiness and removable softeners.",
         test:issue => issue.category === "grammar" ||
-          (issue.category === "clarity" && ["wordiness", "hedging"].includes(issue.subtype))
+          (issue.category === "clarity" && ["wordiness", "hedging", "style"].includes(issue.subtype))
       },
       {
         id:"softer",

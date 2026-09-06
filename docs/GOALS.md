@@ -94,12 +94,23 @@ Ping's own reference: [`PING.md`](PING.md).
       `status:'soon'` so the packet has a valid door to arrive at.
       *Verified: one send → 1 ledger entry, 0 inbox rows, no typed content in the
       packet. QC 42/42.* ✓
-- [ ] **F3 · Fill the empty rule categories** — `style` and `punctuation` are
-      declared in the taxonomy with **zero rules**, so the engine promises
-      coverage it does not deliver. Populate both, with fixtures, keeping the
-      existing severity/confidence discipline.
-      *Done when: every declared category has rules and tests, and the diagnostics
-      drawer still reports all green.*
+- [x] **F3 · Punctuation and style** — the premise this item was written on was
+      wrong: `style` and `punctuation` were never *declared* categories. There are
+      three categories (`grammar` · `clarity` · `tone`), all populated;
+      `punctuation` was a thin subtype (6 rules, all about whitespace) and `style`
+      did not exist. Corrected in [`PING.md`](PING.md), then filled.
+      **+47 rules, +28 fixtures.** Punctuation gained the marks that change how a
+      sentence reads — missing question marks, opening-adverb and greeting commas,
+      stray apostrophes, em dashes, comma splices, unclosed brackets and quotes.
+      Style arrived as a subtype of clarity — passive voice, buried verbs
+      (`make a decision` → `decide`), redundant pairs (`revert back` → `revert`),
+      empty intensifiers, filler openers, the `There is` empty subject, and three
+      sentences in a row opening with the same word.
+      Style stays a **subtype**, not a category: a passive clause is not a fourth
+      axis, it is harder to read, which is what clarity already measures — so the
+      score, the presets, the rewrites and the digest need no new dimension.
+      *191 → 238 rules · 83 → 111 fixtures, all passing · 0 false positives on a
+      clean 15-sentence corpus · 0.21 ms per analysis pass · boot unchanged.* ✓
 - [ ] **F4 · Spelling honesty** — the bloom filter under-flags by design (false
       positives wave real misspellings through) and caps at 8 flags per pass.
       Neither is wrong, but neither is visible. Surface the cap when it bites, and
@@ -138,7 +149,7 @@ fiction, which is the thing Phase B2 and F1 both existed to remove.
       from the Pages HTTP cache (the "pop looked like night" report)
 - [x] Deploy ritual documented: bump `version.json` per deploy; bump `VER` in
       `sw.js` when asset shape changes (see ARCHITECTURE.md)
-- [x] QC sweep automated — 42 checks across entry, pulse, all four skins, the
+- [x] QC sweep automated — 44 checks across entry, pulse, all four skins, the
       handshake, motifs, altar, exchange, rites, satchel, mobile and the
       portable build; it also guards the canon (fails on any external request)
 - [x] Canon repair: Coach and Sync fetched Google Fonts on every mount, which

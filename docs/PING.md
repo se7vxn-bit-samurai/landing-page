@@ -55,21 +55,55 @@ regex cannot express (spelling, sentence length, repetition):
 ```
 
 Both are collected into `RULE_REGISTRY` and executed by `runRuleRegistry(text,
-protectedSpans, ruleState)`. **191 rules** are active, covered by **83 fixture
+protectedSpans, ruleState)`. **238 rules** are active, covered by **111 fixture
 tests** (see the diagnostics drawer).
 
 ### Rule categories
 
-| Category | Rules | Note |
-|---|---|---|
-| `grammar` | 133 | articles, confusables, agreement, spelling |
-| `tone` | 30 | informal, shorthand, apology load, robotic phrasing |
-| `clarity` | 28 | hedging, vagueness, missing specifics |
-| `style` | 0 | **declared, unpopulated** |
-| `punctuation` | 0 | **declared, unpopulated** |
+There are exactly three, and they are the three questions a writer actually asks:
 
-The last two are a real gap: the taxonomy promises coverage the engine does not
-deliver. Tracked as Phase F3 in `GOALS.md`.
+| Category | Rules | The question |
+|---|---|---|
+| `grammar` | 146 | is it **correct**? |
+| `clarity` | 62 | is it **clear**? |
+| `tone` | 30 | does it **land right**? |
+
+Style and punctuation are **subtypes, not categories** — and that is deliberate.
+A passive clause is not a fourth axis; it is harder to read, which is what
+`clarity` already measures. A comma splice is not a fifth; it is wrong, which is
+`grammar`. Keeping them as subtypes means the writing score, the profile presets,
+the rewrite variants and the Insight digest all understand them without a new
+dimension. Subtypes are where the real detail lives:
+
+| Subtype | Rules | Covers |
+|---|---|---|
+| `grammar/spelling` | 54 | fixed misspellings + the bloom-filter ledger |
+| `grammar/contraction` | 31 | `dont` → `don't` and the rest |
+| `grammar/confusion` | 19 | its/it's, then/than, bare/bear |
+| `grammar/punctuation` | 19 | spacing, apostrophes, end marks, comma splices, unclosed pairs |
+| `clarity/style` | 34 | passive voice, buried verbs, redundant pairs, padding, repeated openers |
+| `clarity/wordiness` | 22 | the long way of saying a short thing |
+| `tone/*` | 30 | informal, shorthand, apology load, robotic phrasing |
+
+### Where the new rules draw the line
+
+Both F3 packs are written to **under-flag**, matching the spelling ledger's bias:
+
+- **Comma splice** fires only on the classic shape — both halves opening with a
+  pronoun subject. `"If it helps, I will send it"` is a dependent clause and must
+  not be flagged, and telling the two apart in general needs a parser.
+- **Passive voice** excludes the present tense. `"The report is attached"` and
+  `"the slot is confirmed"` are states, not hidden actors — flagging them was the
+  pack's loudest false positive. Past, perfect and progressive forms stay in, and
+  an explicit `… by …` pulls the present tense back.
+- **`There is`** skips `there is no/nothing/none` — there is no real subject to name.
+- **Every replacement is safe to apply blind.** Anything that needs information the
+  text does not contain — the missing actor in a passive, which side of a splice to
+  cut — is flagged with `replacement: null` and left to a person.
+
+A 15-sentence corpus of ordinary professional writing produces **zero** hits from
+the F3 rules; the fixture suite is the floor, that corpus is the ceiling, and both
+run before any change to this pack ships.
 
 ### The spelling ledger
 
@@ -169,7 +203,6 @@ Full contract and consumer design: `docs/INSIGHT.md`.
 
 ## Where Ping is going
 
-- **F3 · style & punctuation rules** — populate the two empty categories.
 - **F4 · spelling honesty** — surface the 8-flag cap when it bites.
 - **G · the rail gains memory** — across-time cards beside the in-the-moment ones,
   fed by the digests F2 now produces.
