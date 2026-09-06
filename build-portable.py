@@ -49,6 +49,13 @@ for f in sorted((ROOT / 'apps').glob('*.html')):
         js = (ROOT / 'vendor' / m.group(1)).read_text(encoding='utf-8')
         return '<scr' + 'ipt>' + js.replace('</script', '<\\/script') + '</scr' + 'ipt>'
     app = re.sub(r'<script[^>]*src="\.\./vendor/([^"]+)"[^>]*>\s*</script>', inline_vendor, app)
+    # the Lens spelling dictionary is fetched on demand in the served build; a blob
+    # URL cannot resolve lens/dict.js, so the portable edition carries it inline
+    dict_js = ROOT / 'apps' / 'lens' / 'dict.js'
+    if 'lens/dict.js' in app and dict_js.exists():
+        app = app.replace('</head>',
+            '<scr' + 'ipt>' + dict_js.read_text(encoding='utf-8').replace('</script', '<\\/script')
+            + '</scr' + 'ipt>\n</head>', 1)
     b64[app_id] = base64.b64encode(app.encode('utf-8')).decode()
 
 bootstrap = """<script data-src="v2-bootstrap">

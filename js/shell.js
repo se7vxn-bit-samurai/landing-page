@@ -41,6 +41,9 @@ const APPS = {
   coach:{id:'coach',short:'Coach',name:'Excelsior Coach',world:'excelsior',glyph:'E',accent:'#d4a832',status:'active',version:'v2.7',
     kind:'Editorial sales coach',localPath:'apps/coach.html',
     desc:'Coaching for sellers who think in arguments.'},
+  insight:{id:'insight',short:'Insight',name:'MirrorFlow Insight',world:'mirrorflow',glyph:'I',accent:'#7df9e8',status:'soon',version:'—',
+    kind:'Pattern & signal layer',localPath:null,
+    desc:'The memory of the mirror. Reads digests, shows the arc.'},
   codex:{id:'codex',short:'Codex',name:'the Codex',world:'riftborn',glyph:'C',accent:'#b98bff',status:'active',version:'v2.0',
     kind:'Riftborn terminal',localPath:'apps/codex.html',
     desc:'Rituals, bibles, lore: sealed and canon.'}
@@ -89,7 +92,7 @@ const IDEAS = [
 /* demo packet retired · the exchange carries real missives only (Ping → hand to Coach) */
 const KEYS = {session:'tgc.shell2.session',inbox:'tgc.shell2.inbox',demo:'tgc.shell2.demoDone',
   altar:'tgc.shell2.altar',gate:'tgc.shell2.gate',last:'tgc.shell2.last',settings:'tgc.shell2.settings',
-  visits:'tgc.shell2.visits'};
+  visits:'tgc.shell2.visits', digests:'tgc.shell2.digests'};
 const BUILD_RAW = '3 Jul 2026 · v2.0';                       // the builder stamps the real date here · qol pass
 const QOL = 'satchel·relay·inbox·stamp·rites·vestry';     // sync marker
 const BUILD = BUILD_RAW.charAt(0)==='@' ? 'workshop build' : BUILD_RAW;
@@ -187,7 +190,7 @@ const Bus = {
   init(){
     window.addEventListener('message',e=>{
       const d = e.data; if(!d || typeof d!=='object') return;
-      if(d.type==='tgc.shell.hello' && typeof d.appId==='string'){ Bus.flush(d.appId, e.source); broadcastTheme(e.source); }
+      if(d.type==='tgc.shell.hello' && typeof d.appId==='string'){ Bus.flush(d.appId, e.source); Bus.flushLedger(d.appId, e.source); broadcastTheme(e.source); }
       if(d.type==='tgc.exchange.send' && d.packet) Bus.receive(d.packet);
     });
     Bus.queue = Bus.queue.filter(p=>!p.demo);   // demo missive (Hartley & Co.) retired · inbox starts clean
@@ -196,6 +199,7 @@ const Bus = {
   receive(p){
     const v = readPacket(p);
     if(!v.ok){ toast('packet refused · '+v.why); return; }
+    if(v.kind==='digest'){ Bus.ledger(p); return; }   /* telemetry never asks a human to decide */
     Bus.queue.push(p); Bus.save();
     renderMissive(); updateBadge();
     toast('a '+KINDS[v.kind].label+' arrives · '+(p.from||'?')+(p.to?' → '+p.to:''));
@@ -210,6 +214,23 @@ const Bus = {
     toast(KINDS[kindOf(p)].label+' delivered into '+(APPS[target]?APPS[target].short:target));
     Frame.enter(target);
     Bus.flush(target);
+  },
+  /* The digest ledger · digests accumulate here until their instrument exists and
+     mounts, then they are handed over in one go. Capped; oldest fall off first.
+     Contract and intent: docs/INSIGHT.md. */
+  ledger(p){
+    const L = lsGet(KEYS.digests,[]);
+    L.push(p);
+    while(L.length > 2000) L.shift();
+    lsSet(KEYS.digests,L);
+    const fr = Frame.iframes[p.to];
+    if(fr && fr.contentWindow){ try{ fr.contentWindow.postMessage({type:'tgc.exchange.deliver',packet:p},'*'); }catch(e){} }
+  },
+  /* hand an instrument its whole backlog when it announces itself */
+  flushLedger(id, win){
+    const L = lsGet(KEYS.digests,[]).filter(d => d.to === id);
+    if(!L.length || !win) return;
+    try{ win.postMessage({type:'tgc.exchange.ledger', packets:L},'*'); }catch(e){}
   },
   acknowledge(p){
     const i = Bus.queue.indexOf(p); if(i>-1) Bus.queue.splice(i,1);
@@ -475,8 +496,12 @@ function runRites(){
   let fontOk=true; try{ fontOk = document.fonts ? document.fonts.check('600 12px "Playfair Display"') : true; }catch(e){}   /* 600 = the weight the shell actually uses · faces load lazily per weight */
   rites.push(['fonts','display family loaded',fontOk]);
   // app payloads resolvable
-  const appsReady = Object.keys(APPS).filter(id=>{ try{ return !!APPS[id].localPath; }catch(e){ return false; } }).length;
-  rites.push(['apps mounted',appsReady+' of '+Object.keys(APPS).length+' resolve a source',appsReady===Object.keys(APPS).length]);
+  /* an instrument declared but not yet built (status 'soon') has no frame by design —
+     the rite checks that everything claiming to be enterable actually is */
+  const enterable = Object.keys(APPS).filter(id=>APPS[id].status!=='soon');
+  const appsReady = enterable.filter(id=>{ try{ return !!APPS[id].localPath; }catch(e){ return false; } }).length;
+  const declared  = Object.keys(APPS).length - enterable.length;
+  rites.push(['apps mounted',appsReady+' of '+enterable.length+' resolve a source'+(declared?' · '+declared+' declared, not yet built':''),appsReady===enterable.length]);
   // bus echo (async)
   const token = 'rite-'+Date.now();
   let busOk=false;

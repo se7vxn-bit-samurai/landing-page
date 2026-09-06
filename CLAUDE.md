@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is the landing page / shell for **TheGuide** (`sel.theguide.club`), described as "one roof, four worlds." It is a **multi-file static site** — no build step, no package manager, no test framework. The shell lives in `index.html` + `css/shell.css` + `js/shell.js` + `js/landing.js`; each hosted app is its own self-contained file under `apps/`; fonts are local woff2 under `fonts/`.
 
-Full architecture reference: `docs/ARCHITECTURE.md`. App contract & inventory: `docs/APPS.md`.
+Full architecture reference: `docs/ARCHITECTURE.md`. App contract & inventory: `docs/APPS.md`. Ping internals: `docs/PING.md`. Insight design + digest contract: `docs/INSIGHT.md`.
 
 ## Development Workflow
 
@@ -30,7 +30,7 @@ First-run entry is owned by the **scroll landing** (`js/landing.js`, 3 snap sect
 ### Key Data Structures (top of `js/shell.js`)
 
 - **`WORLDS`** — The four worlds: `mirrorflow`, `excelsior`, `riftborn`, `altar`. Each has `name`, `motto`, `tagline`, `status`, `accent`, `palette`, `flagship`, and optionally `app` (the default app to launch for that world).
-- **`APPS`** — Individual apps (`ping`, `sync`, `coach`, `codex`, `notes`). Each has `id`, `world`, `glyph`, `accent`, `status`, `version`, `localPath` (the iframe URL, `apps/<id>.html`), and `kind`.
+- **`APPS`** — Individual apps (`ping`, `sync`, `coach`, `codex`, `notes`, `insight`). Each has `id`, `world`, `glyph`, `accent`, `status`, `version`, `localPath` (the iframe URL, `apps/<id>.html`), and `kind`.
 - **`DOCK`** — Ordered list of app IDs shown in the topbar braziers: `['ping','sync','coach','codex']`.
 - **`ORDER`** — Display order of worlds in the nave: `['mirrorflow','excelsior','riftborn','altar']`.
 - **`STATUS`** — Maps status strings (`building`, `active`, `open`, `soon`, `archived`) to display label and dot color.
@@ -50,6 +50,7 @@ First-run entry is owned by the **scroll landing** (`js/landing.js`, 3 snap sect
 - Listens for `postMessage` from iframes. Apps announce themselves with `tgc.shell.hello` and receive packets via `tgc.exchange.deliver`.
 - Incoming packets use `tgc.exchange.send` and are validated by `readPacket()`: contract `theguide.exchange.v2` (v1 accepted, read as a handoff), a known `kind` (`handoff` · `digest` · `receipt`), and an existing recipient for handoffs and digests. Refusals toast the reason. Apps produce with `tgcSeal(kind, packet)` and consume with `tgcOnMissive(fn)` — both from `apps/bridge.js`. Full contract: `docs/APPS.md`.
 - `Bus.queue` persists to localStorage (`KEYS.inbox`) as the draggable "missive" envelope shown in the sky; the full queue lives in the Inbox drawer.
+- **Digests never queue.** A `digest` is telemetry, not correspondence — it bypasses the human inbox entirely and appends to the capped ledger at `KEYS.digests` (`tgc.shell2.digests`, 2000 entries, oldest-first eviction). `Bus.flushLedger(id, win)` replays a recipient's backlog as `tgc.exchange.ledger` when it mounts and says hello.
 - `Bus.deliver(packet)` / `Bus.dismiss(packet)` route or discard missives.
 
 ### The app bridge (`apps/bridge.js`)
@@ -99,7 +100,7 @@ No CSS framework. Four skins via `:root[data-theme]` token overrides in `css/she
 
 - **No external runtime dependencies** — the shell and every app are self-contained. Fonts live in `fonts/`, Sync's spreadsheet libraries in `vendor/` (see `vendor/README.md` before touching them). The only outbound call in the whole house is opt-in weather (Open-Meteo); the QC suite fails on any other external request.
 - **Status values** are `'building'`, `'active'`, or `'open'`; rendered via the `pip()` helper.
-- **App URLs** are set via `localPath` in each `APPS` entry — update these if app files move.
+- **App URLs** are set via `localPath` in each `APPS` entry — update these if app files move. An app declared with `status:'soon'` and `localPath:null` is a promise, not a build; the rites count it as declared rather than broken.
 - **Braziers** (`.brz`) are the 4-slot frame indicators in the topbar that track mounted iframes.
 - The `$` helper is `document.querySelector`; `$$` is `querySelectorAll` as an array.
 - Canon: **apps never read each other's storage — explicit exchange packets only.**
