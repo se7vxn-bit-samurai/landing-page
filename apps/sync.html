@@ -2333,7 +2333,7 @@ button,.btn,.bi,.bp,.ei,.an-mode-btn,.pl-btn,.agent-status-btn,.qef-type-btn,.ot
   <div class="wv-body" id="wvBody"></div>
 </div>
 <!-- Export menu overlay — fixed, positioned by togExpRail() -->
-<div class="em" id="exm" style="display:none;position:fixed;z-index:900"><div class="em-section">Quick</div><button class="ei" onclick="expSavePlus('month')">💾 Save session</button><button class="ei" onclick="genEmail()">✉ Share today's roster</button><div class="em-section">Export</div><button class="ei" onclick="expCurrentMonth()">📋 Styled Report</button><button class="ei" onclick="expSavePlus('all')">📦 Full dataset</button><button class="ei" onclick="expPNG()">🖼 Save as image</button><div class="em-section">Advanced</div><button class="ei" onclick="expAIcsv()">🤖 AI-Ready Data</button><button class="ei" onclick="genWeeklyDigest()">📋 Weekly digest</button><button class="ei" onclick="expTLDayPack()">📋 TL Day Pack</button><button class="ei" onclick="copyEOD()">📋 Copy EOD report</button></div>
+<div class="em" id="exm" style="display:none;position:fixed;z-index:900"><div class="em-section">Quick</div><button class="ei" onclick="expSavePlus('month')">💾 Save session</button><button class="ei" onclick="genEmail()">✉ Share today's roster</button><div class="em-section">Export</div><button class="ei" onclick="expCurrentMonth()">📋 Styled Report</button><button class="ei" onclick="expSavePlus('all')">📦 Full dataset</button><button class="ei" onclick="expPNG()">🖼 Save as image</button><div class="em-section">Advanced</div><button class="ei" onclick="expAIcsv()">🤖 AI-Ready Data</button><button class="ei" onclick="genWeeklyDigest()">📋 Weekly digest</button><button class="ei" onclick="expTLDayPack()">📋 TL Day Pack</button><button class="ei" onclick="copyEOD()">📋 Copy EOD report</button><button class="ei" onclick="benchEOD()">↗ Send EOD to the Bench</button></div>
 <div class="kb-hint" id="kbh" style="display:none"><span><kbd>←</kbd><kbd>→</kbd> month <kbd>↑</kbd><kbd>↓</kbd> person <kbd>T</kbd> today <kbd>C</kbd> calendar <kbd>W</kbd> digest <kbd>?</kbd> help</span><span class="wm-inline">© theGuide.Club · Sel K. Naicker · 2026</span></div>
 <div class="wm-print">© theGuide.Club · Sel K. Naicker · 2026 · All rights reserved</div>
 <!-- Agent Drawer — Phase A -->
@@ -27531,7 +27531,7 @@ document.addEventListener("keydown",function _peopleKeyHandler(e){
 });
 
 // ── Export: TL Day Pack (Phase C foundation) ──
-function copyEOD(){
+function buildEOD(){
   const targetDate=S.calDay||new Date();
   const dateISO=excKey(targetDate);
   const names=S.selectedTL?[S.selectedTL]:gN();
@@ -27592,7 +27592,11 @@ function copyEOD(){
   }
   lines.push('');
   lines.push(`Logged by: ${author} · ${ts}`);
-  const text=lines.join('\n');
+  return {text:lines.join('\n'),dateISO};
+}
+
+function copyEOD(){
+  const {text}=buildEOD();
   if(navigator.clipboard&&navigator.clipboard.writeText){
     navigator.clipboard.writeText(text).then(()=>toast('EOD report copied ✓','ok')).catch(()=>{
       prompt('Copy EOD report:',text);
@@ -27600,6 +27604,18 @@ function copyEOD(){
   }else{
     prompt('Copy EOD report:',text);
   }
+}
+
+/* ── the exchange · handing a day to the Bench ──────────────────────
+   A handoff queues in the shell's inbox; a person lets it through. That
+   wait is the contract - nothing reaches an app without someone saying yes. */
+function benchEOD(){
+  if(typeof window.tgcSeal!=='function'){toast('The Bench is reachable from inside the house','err');return;}
+  const {text,dateISO}=buildEOD();
+  if(!text||!text.trim()){toast('Nothing to send','err');return;}
+  const who=S.selectedTL?S.selectedTL+' · ':'';
+  window.tgcSeal('handoff',{to:'bench',subject:'EOD · '+who+dateISO,body:text,facet:'schedule',privacy:'full'});
+  toast('Sent to the Bench · waiting in the inbox','ok');
 }
 async function expTLDayPack(){
   if(!hasExportData())return;
