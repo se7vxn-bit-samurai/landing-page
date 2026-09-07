@@ -86,6 +86,19 @@ const lens = await page.evaluate(() => {
   return { rules: e.rules.length, total: rep.total, failed: rep.failed,
            fails: rep.results.filter(r => !r.passed).map(r => r.id).join(',') };
 });
+const lensDeferred = await page.evaluate(() => {
+  const w = document.querySelector('iframe[data-shell-app="ping"]').contentWindow;
+  const nav = w.performance.getEntriesByType('navigation')[0] || {};
+  const r = w.performance.getEntriesByType('resource').find(x => x.name.includes('ping/lens.js'));
+  return { dcl: Math.round(nav.domContentLoadedEventEnd || 0), at: r ? Math.round(r.startTime) : null };
+});
+// Assert the deterministic fact, not the race: a parser-blocking <script src> for the
+// engine is what would put it back in the boot path. The fetch timing sits only a few ms
+// after DCL by design (an idle kick), so asserting on that alone would be a flaky test.
+const pingSrc = await (await fetch(B + '/apps/ping.html')).text();
+check('the Lens engine stays out of Ping\'s boot path',
+  !/<script[^>]+src=["']ping\/lens\.js["']/.test(pingSrc) && /__TGC_LENS_ENGINE_URL/.test(pingSrc),
+  'no parser-blocking tag · fetched at ' + lensDeferred.at + ' ms vs DCL ' + lensDeferred.dcl + ' ms');
 check('ping rule suite green in-frame', lens.failed === 0,
   lens.rules + ' rules · ' + lens.total + ' fixtures' + (lens.failed ? ' · failing ' + lens.fails : ''));
 // every declared category and subtype must actually carry rules — no promised coverage
@@ -187,6 +200,50 @@ check('tgcSeal from a live app produces a valid packet',
 check('notes wears the house type stack',
   (await page.evaluate(() => { const d = document.querySelector('iframe[data-shell-app="notes"]').contentDocument; return getComputedStyle(d.body).fontFamily; })).startsWith('"DM Sans"'));
 
+// ─── PING → BENCH · a cross-app handoff, guarded because splitting Ping nearly lost it ───
+// The Bench button and tgcSendToBench() arrived on main while Ping was being split into
+// apps/ping/, so they had to be hand-ported into the new app.js. Nothing would have caught
+// their loss. This does.
+await page.evaluate(() => Frame.enter('ping'));
+await page.waitForFunction(() => !document.getElementById('veil').classList.contains('on'), null, { timeout: 45000 });
+await page.waitForTimeout(1500);
+const benchQ0 = await page.evaluate(() => Bus.queue.length);
+await page.evaluate(() => {
+  const f = document.querySelector('iframe[data-shell-app="ping"]');
+  const d = f.contentDocument, ed = d.getElementById('editorSurface');
+  ed.focus(); ed.textContent = 'QC draft for the bench.';
+  ed.dispatchEvent(new d.defaultView.Event('input', { bubbles: true }));
+  d.querySelector('.mf-tb-btn[data-action="bench"]').click();
+});
+await page.waitForTimeout(1000);
+const benchPkt = await page.evaluate(() => Bus.queue[Bus.queue.length - 1] || null);
+check('ping hands a draft to the bench', Boolean(benchPkt) &&
+  benchPkt.kind === 'handoff' && benchPkt.to === 'bench' && benchPkt.from === 'ping' && Boolean(benchPkt.body),
+  benchPkt ? benchPkt.kind + ' → ' + benchPkt.to : 'no packet · inbox stayed at ' + benchQ0);
+await page.evaluate(() => { Bus.queue.pop(); Bus.save(); });
+
+// ─── CODEX · Three.js is behind the globe, not in the boot path ───
+await page.evaluate(() => Frame.enter('codex'));
+await page.waitForFunction(() => !document.getElementById('veil').classList.contains('on'), null, { timeout: 45000 });
+await page.waitForTimeout(2500);
+const codexBoot = await page.evaluate(() => {
+  const w = document.querySelector('iframe[data-shell-app="codex"]').contentWindow;
+  return { three: typeof w.THREE,
+           fetched: w.performance.getEntriesByType('resource').some(r => r.name.includes('three.min.js')) };
+});
+check('codex mounts without loading Three.js', codexBoot.three === 'undefined' && !codexBoot.fetched,
+  'THREE ' + codexBoot.three + ' · fetched ' + codexBoot.fetched);
+await page.evaluate(() => { const d = document.querySelector('iframe[data-shell-app="codex"]').contentDocument;
+  const btn = [...d.querySelectorAll('.mode')].find(b => b.dataset.view === 'globe'); if (btn) btn.click(); });
+await page.waitForTimeout(5000);
+const codexGlobe = await page.evaluate(() => {
+  const f = document.querySelector('iframe[data-shell-app="codex"]');
+  return { three: typeof f.contentWindow.THREE,
+           canvas: Boolean(f.contentDocument.querySelector('#globeCanvas canvas')) };
+});
+check('opening the globe loads Three.js and renders', codexGlobe.three === 'object' && codexGlobe.canvas,
+  'THREE ' + codexGlobe.three + ' · canvas ' + codexGlobe.canvas);
+
 // ─── SYNC · vendored libraries ───
 await page.evaluate(() => Frame.enter('sync'));
 await page.waitForFunction(() => !document.getElementById('veil').classList.contains('on'), null, { timeout: 45000 });
@@ -237,6 +294,17 @@ await pf.click('#lp-enter'); await pf.waitForTimeout(900);
 await pf.evaluate(() => Frame.enter('ping'));
 await pf.waitForFunction(() => !document.getElementById('veil').classList.contains('on'), null, { timeout: 30000 });
 check('portable mounts an app via blob url', await pf.evaluate(() => document.querySelector('#frame iframe.active').src.startsWith('blob:')));
+// a part fetched on demand in the served build must be inlined in the portable one:
+// the Lens engine shipped missing from the portable edition the day it left the boot path
+await pf.waitForTimeout(2500);
+// a blob frame under file:// is cross-origin, so reach it as a frame, not through contentWindow
+const pFrame = pf.frames().find(f => f.url().startsWith('blob:'));
+const pLens = pFrame ? await pFrame.evaluate(() => ({
+  engine: typeof window.MirrorFlowAssistEngine,
+  rules: window.MirrorFlowAssistEngine ? window.MirrorFlowAssistEngine.rules.length : 0
+})) : { engine: 'no blob frame', rules: 0 };
+check('portable carries Ping\'s rule engine', pLens.engine === 'object' && pLens.rules > 200,
+  pLens.engine + ' · ' + pLens.rules + ' rules');
 check('portable has no console errors', perrs.length === 0, perrs.slice(0,2).join(' | '));
 await pf.close();
 

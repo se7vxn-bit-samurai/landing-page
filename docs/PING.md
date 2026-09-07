@@ -3,8 +3,32 @@
 The communication mirror: one surface where you write a reply, and the house
 tells you what you actually wrote before you send it.
 
-`apps/ping.html` · the largest app in the repo. Read `docs/APPS.md` for the
-shell contract every app shares; this file covers what is particular to Ping.
+`apps/ping.html` + `apps/ping/`. Read `docs/APPS.md` for the shell contract every
+app shares; this file covers what is particular to Ping.
+
+## The files
+
+Ping was one 456 KB file until the split. It is now markup plus seven parts:
+
+| File | Size | Holds |
+|---|---:|---|
+| `apps/ping.html` | 55 KB | markup, the 18 KB token layer, the on-demand loaders |
+| `ping/ping.css` | 105 KB | component styles |
+| `ping/shell.js` | 26 KB | theme, variant, rails, live wiring |
+| `ping/insights.js` | 51 KB | the scoring engine |
+| `ping/insights-render.js` | 26 KB | insight cards, exchange export |
+| `ping/lens.js` | 114 KB | the Lens rule engine — **not in the boot path** |
+| `ping/assist-render.js` | 47 KB | assist state and render |
+| `ping/app.js` | 33 KB | persistence, threads, send, init |
+
+**These are classic scripts, not modules, and load order is the contract.** The
+original script had no IIFE wrapper, so its top-level `const` and `function`
+bindings live in the shared global lexical scope; separate classic scripts keep
+sharing them *provided the order in `ping.html` is preserved*. Do not reorder the
+tags, and do not convert one file to a module without converting all of them.
+
+The 18 KB token layer stays inline in the HTML: it must land before first paint or
+the theme flashes.
 
 ## The shape of the app
 
@@ -123,11 +147,15 @@ coverage is a floor, not a guarantee.
 
 **Loading:** the ledger is *not* part of `ping.html`. It is fetched once, the
 first time real prose reaches the spelling rule, then cached by the service
-worker. The other 190 rules run regardless; spelling simply stays quiet until it
+worker. The other 237 rules run regardless; spelling simply stays quiet until it
 lands. See `window.__tgcLoadLensDict` in the head of `ping.html`.
 
 The portable build inlines it (a blob URL cannot resolve a relative path) — see
-`build-portable.py`.
+`build-portable.py`. The builder finds every on-demand part by scanning for
+`window.__TGC_*_URL` constants and fails the build if one names a missing file.
+That check exists because the Lens engine shipped **missing** from the portable
+edition the day it left the boot path: it no longer had a script tag for the
+builder's tag-rewriting to catch, and nothing noticed.
 
 ### Rule profiles
 
@@ -148,7 +176,35 @@ the hard way in Phase F1:
    open of the diagnostics drawer, not at mount. The spelling ledger downloads on
    first real prose, not at mount.
 
-Measured effect of holding both (cold boot, nothing typed):
+3. **The engine itself is not in the boot path.** `ping/lens.js` is 114 KB wrapped
+   in its own IIFE, exposing exactly one thing — `window.MirrorFlowAssistEngine`.
+   Nothing in Ping can reach its internals, and every consumer already early-returns
+   while it is absent, so it loads *after* the app rather than before it.
+
+   It has no `<script src>` tag. `window.__tgcLoadLensEngine` (in the head, beside
+   the dictionary's loader) injects it on whichever comes first:
+   - the browser going idle (`requestIdleCallback`, 2 s timeout, 600 ms fallback);
+   - the first real prose reaching `refreshAll()`;
+   - the diagnostics drawer opening, since it reports on the rules themselves.
+
+   The idle kick exists because the Profiles panel is open by default and would
+   otherwise render visibly empty. Boot never blocks on the engine; it simply lands
+   a few hundred milliseconds later, before anyone can reach the rail. The loader
+   repaints the rail, the presets and the diagnostics when it arrives.
+
+Measured, 6 runs each, median, cold context per run:
+
+| | one file | split | split + deferred |
+|---|---:|---:|---:|
+| mount | 203 ms | 196 ms | **143 ms** |
+| DCL | 186 ms | 184 ms | **131 ms** |
+| payload to DCL | 462 KB | 464 KB | **353 KB** |
+
+Note the middle column. **Splitting alone is a wash** — same bytes, and HTTP/2
+makes the extra requests near-free. The split is not the optimisation; it is what
+makes the deferral possible. The win is entirely in the third column.
+
+Earlier, from Phase F1 (removing preloaded content and the boot-time self-test):
 
 ```
 load             461 ms → 165 ms
@@ -159,7 +215,8 @@ ledger fetched  at 158ms → not at all
 ```
 
 Any future change that reintroduces boot-time work should be weighed against
-these numbers.
+these numbers. Two QC checks hold the line: the engine must have no
+parser-blocking `<script src>` tag, and the portable build must still carry it.
 
 ## Themes
 

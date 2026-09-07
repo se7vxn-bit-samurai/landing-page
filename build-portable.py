@@ -49,12 +49,34 @@ for f in sorted((ROOT / 'apps').glob('*.html')):
         js = (ROOT / 'vendor' / m.group(1)).read_text(encoding='utf-8')
         return '<scr' + 'ipt>' + js.replace('</script', '<\\/script') + '</scr' + 'ipt>'
     app = re.sub(r'<script[^>]*src="\.\./vendor/([^"]+)"[^>]*>\s*</script>', inline_vendor, app)
-    # the Lens spelling dictionary is fetched on demand in the served build; a blob
-    # URL cannot resolve lens/dict.js, so the portable edition carries it inline
-    dict_js = ROOT / 'apps' / 'lens' / 'dict.js'
-    if 'lens/dict.js' in app and dict_js.exists():
+    # an app split into its own directory (apps/ping/*) is served as separate files, but a
+    # blob URL cannot resolve them either — inline each in place so LOAD ORDER survives,
+    # which for classic scripts sharing top-level bindings is the whole contract
+    def inline_part(m):
+        part = ROOT / 'apps' / m.group(1)
+        if not part.exists():
+            raise SystemExit('portable build: missing app part ' + str(part))
+        js = part.read_text(encoding='utf-8')
+        return '<scr' + 'ipt>' + js.replace('</script', '<\\/script') + '</scr' + 'ipt>'
+    app = re.sub(r'<script[^>]*src="((?!\.\./)[^"]+/[^"]+\.js)"[^>]*>\s*</script>', inline_part, app)
+    def inline_part_css(m):
+        part = ROOT / 'apps' / m.group(1)
+        if not part.exists():
+            raise SystemExit('portable build: missing app stylesheet ' + str(part))
+        return '<style>' + part.read_text(encoding='utf-8') + '</style>'
+    app = re.sub(r'<link rel="stylesheet" href="((?!\.\./)[^"]+/[^"]+\.css)">', inline_part_css, app)
+    # Parts the served build fetches on demand are declared as window.__TGC_*_URL
+    # constants rather than script tags, so the tag-rewriting above cannot see them.
+    # A blob URL resolves neither, so the portable edition carries each one inline and
+    # the on-demand loader finds its work already done. Declaring a URL whose file is
+    # missing is a build failure, not a silently engine-less app — that hole shipped
+    # once already when the Lens engine moved out of the boot path.
+    for m in re.finditer(r"""window\.__TGC_[A-Z_]+_URL\s*=\s*['"]([^'"]+)['"]""", app):
+        part = ROOT / 'apps' / m.group(1)
+        if not part.exists():
+            raise SystemExit('portable build: missing on-demand part ' + str(part))
         app = app.replace('</head>',
-            '<scr' + 'ipt>' + dict_js.read_text(encoding='utf-8').replace('</script', '<\\/script')
+            '<scr' + 'ipt>' + part.read_text(encoding='utf-8').replace('</script', '<\\/script')
             + '</scr' + 'ipt>\n</head>', 1)
     b64[app_id] = base64.b64encode(app.encode('utf-8')).decode()
 
