@@ -11,11 +11,11 @@ and the no-external-dependencies rule applies to what ships, not to what checks 
 
 ## Running them
 
-Playwright is the only dependency and it is deliberately **not** vendored or
-committed — installing it is a one-off on a developer machine:
+Playwright is the only dependency. It is declared in `package.json` but never
+vendored — `node_modules/` is ignored, and nothing here ships to the site:
 
 ```sh
-npm i playwright && npx playwright install chromium
+npm install && npx playwright install chromium
 python3 -m http.server 8901          # from the repo root, in another shell
 python3 build-portable.py            # qc.mjs reads its output
 node tools/qc.mjs
