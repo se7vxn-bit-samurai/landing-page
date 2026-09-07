@@ -120,6 +120,30 @@ await page.evaluate(() => Frame.enter('coach'));
 await page.waitForFunction(() => !document.getElementById('veil').classList.contains('on'), null, { timeout: 25000 });
 await page.waitForTimeout(1300);
 check('handshake: coach wears night → press', await page.evaluate(() => document.querySelector('iframe[data-shell-app="coach"]').contentDocument.documentElement.dataset.theme) === 'press');
+
+// Reading Mode and the Assess cohort tab both got miscaptured into the Slides/Doc move
+// to Notes (I2) and had to be found and moved back by hand — the kind of drift a check
+// should own, not a person re-discovering it on the next reshuffle.
+const coachFrame = page.frames().find(f => f.url().includes('coach.html'));
+const readingMode = await coachFrame.evaluate(() => {
+  const shell = document.querySelector('.ex-shell');
+  document.getElementById('readingModeBtn').click();
+  const opened = shell.classList.contains('is-reading-mode');
+  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+  return { opened, closedByEscape: !shell.classList.contains('is-reading-mode') };
+});
+check('coach reading mode opens and closes on Escape', readingMode.opened && readingMode.closedByEscape,
+  JSON.stringify(readingMode));
+await coachFrame.evaluate(() => document.querySelector('[data-mode="assess"]')?.click());
+await page.waitForTimeout(400);
+const cohortTab = await coachFrame.evaluate(() => {
+  document.querySelector('[data-assess-tab="cohort"]').click();
+  return { cohortVisible: getComputedStyle(document.getElementById('assessCohort')).display !== 'none',
+           singleHidden: getComputedStyle(document.getElementById('assessSingle')).display === 'none' };
+});
+check('coach assess cohort tab switches panels', cohortTab.cohortVisible && cohortTab.singleHidden,
+  JSON.stringify(cohortTab));
+
 await page.evaluate(() => Frame.ascend());
 check('visit stamps recorded', await page.evaluate(() => Object.keys(JSON.parse(localStorage.getItem('tgc.shell2.visits')||'{}')).length >= 2));
 
@@ -384,6 +408,23 @@ const pLens = pFrame ? await pFrame.evaluate(() => ({
 })) : { engine: 'no blob frame', rules: 0 };
 check('portable carries Ping\'s rule engine', pLens.engine === 'object' && pLens.rules > 200,
   pLens.engine + ' · ' + pLens.rules + ' rules');
+
+// The studio (Notes' Slides/Doc) is the second on-demand JS part in the house, and it
+// found a real hole the first one never could: build-portable.py inlined on-demand JS
+// into <head>, which runs before <body> exists. The served build never notices, because
+// the loader injects the script long after DOMContentLoaded — but studio.js's own
+// top-level `document.getElementById('undoBtn').addEventListener(...)` ran against a
+// DOM that was not there yet, and NotesStudio silently never got assigned. This asserts
+// the fix (.js on-demand parts inline at the end of <body>) rather than trusting it.
+await pf.evaluate(() => Frame.enter('notes'));
+await pf.waitForFunction(() => !document.getElementById('veil').classList.contains('on'), null, { timeout: 30000 });
+await pf.waitForTimeout(1200);
+const pNotesFrame = pf.frames().find(f => f.url().startsWith('blob:') && f !== pFrame);
+if (pNotesFrame) await pNotesFrame.evaluate(() => document.querySelector('[data-pane="slides"]')?.click());
+await pf.waitForTimeout(2000);
+const pStudio = pNotesFrame ? await pNotesFrame.evaluate(() => typeof window.NotesStudio) : 'no blob frame';
+check('portable carries the Notes studio', pStudio === 'object', pStudio);
+
 check('portable has no console errors', perrs.length === 0, perrs.slice(0,2).join(' | '));
 await pf.close();
 

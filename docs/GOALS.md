@@ -230,7 +230,7 @@ fiction, which is the thing Phase B2 and F1 both existed to remove.
       from the Pages HTTP cache (the "pop looked like night" report)
 - [x] Deploy ritual documented: bump `version.json` per deploy; bump `VER` in
       `sw.js` when asset shape changes (see ARCHITECTURE.md)
-- [x] QC sweep automated — 55 checks across entry, pulse, all four skins, the
+- [x] QC sweep automated — 58 checks across entry, pulse, all four skins, the
       handshake, motifs, altar, exchange, rites, satchel, mobile and the
       portable build; it also guards the canon (fails on any external request)
 - [x] The checks live in the repo — `tools/qc.mjs` and `tools/lens.mjs`, with
@@ -292,23 +292,59 @@ Notes is the workbench. Moving them is a product correction, not a refactor.
       | `TEXT_TYPES`, `SLIDE_TEMPLATES` | — | already inside the studio |
       | `MFEngine`, `CURRICULUM`, `MODULE_LIBRARY` | 0 | **no coupling at all** |
       | `ASSESS_CRITERIA` | 6 | **the one real question — see I1** |
-- [ ] **I1 · Decide what happens to the assessment deck.** The studio's six
-      `ASSESS_CRITERIA` uses render *Coach's assessment scores as slides* — pillar
-      totals out of max. That is Coach reading its own data through the builder, and
-      a general authoring tool in Notes has no assessment scores to read.
-      Recommended: the generic builder moves; Coach keeps the assessment-deck
-      layouts and its own small renderer for them. Coach loses nothing a user can
-      see; Notes gains no concept it cannot explain.
-- [ ] **I2 · Move the 94 KB as deferred modules, not as bulk.** Notes is 45 KB today.
-      Grafting 94 KB inline would triple its boot cost for two panes most sessions
-      never open — the exact mistake H1 and H2 existed to undo. So: `apps/notes/`
-      with `studio.js` + `studio.css`, loaded on first switch to the Slides or Doc
-      pane, the way Three.js loads on first globe open.
-      *Done when: Notes boots at today's weight, and opening Slides brings the
-      builder with it.*
-- [ ] **I3 · Strip Coach back.** Remove the two build tabs, both panels, the studio
-      JS and its ~104 CSS rules. Coach should get materially lighter — it is 604 KB
-      and was never examined for why.
+- [x] **I1 · The assessment deck stayed put.** The recommendation held: the six
+      `ASSESS_CRITERIA` uses (`getCohort`, `saveCohort`, `renderCohort` — the cohort
+      scorecard) were never studio code, they were Coach's own Assess feature that
+      had drifted inside the "Slides" section banner by accident. They stayed in
+      `apps/coach.html`, in Assess, where the data they read actually lives.
+- [x] **I2 · Moved as a deferred module.** `apps/notes/studio.js` (113 KB) +
+      `studio.css` (23 KB), loaded the first time a session switches to the Slides
+      or Doc pane — nothing in Notes' own boot path. `NotesStudio.init()` is the one
+      seam the host calls; nothing inside runs a side effect before that.
+      **Two infrastructure bugs surfaced building this, both fixed at the root:**
+      - `new URL('../fonts/fonts.css', location.href)` throws under a `blob:`
+        origin (opaque, no path hierarchy). It sat at module scope, uncaught, in
+        both `coach.html` and the new `studio.js` — an uncaught throw there aborted
+        the *entire module* before anything later in it ran. **Coach's whole
+        portable build has been silently dead since before this phase**; nobody
+        had opened it under `file://` to notice. Now wrapped, degrading to no
+        custom font in a print popup instead of killing the app.
+      - `build-portable.py` inlined on-demand JS into `<head>`, which executes
+        *before* `<body>` exists. The served build's dynamic-injection loader
+        never hits this, because it runs long after `DOMContentLoaded` — but
+        `studio.js`'s own top-level `document.getElementById('undoBtn')
+        .addEventListener(...)` ran against a DOM that was not there yet, and
+        `NotesStudio` silently never got assigned. On-demand `.js` parts now
+        inline at the end of `<body>`; `.css` parts stay in `<head>` (declarative,
+        no DOM dependency, and it matches where the served loader's own `<link>`
+        lands). Verified against all three on-demand modules in the house (Lens
+        engine, Three.js, the studio) — none touch the DOM at parse time, so
+        nothing else needed to move.
+      A third, narrower bug was mine alone: the line-range extraction swept up
+      Coach's **Reading Mode** (an unrelated Library feature, physically adjacent
+      to the presenter overlay in the source) and the Assess **Single/Cohort tab
+      wiring**, stranding both in `studio.js` where their target elements do not
+      exist. Found by an exhaustive cross-reference sweep — every id, `data-`
+      attribute and bare function call `studio.js` still touches, checked against
+      what actually exists in each file — and both restored to Coach, correctly
+      wired, inside the module's own closure (not after it — the same mistake,
+      caught the second time before it shipped).
+      *Verified live, not assumed: Notes boots without the studio; opening Slides
+      loads it and Add Slide grows the deck; Coach's reading mode opens/closes on
+      Escape; the Assess cohort tab switches panels — all four in both the served
+      and the portable build, zero console errors.*
+- [x] **I3 · Coach stripped back.** The two build tabs, both panels, the 94 KB
+      studio script, and 126 verified CSS rules (22 KB) — removed as the exact
+      text already confirmed present in `studio.css`, not by a fresh pattern
+      match, after a fuzzy first attempt nearly deleted `.ex-finding` (Analyse
+      mode's own findings list) by matching an unrelated `ex-find*` prefix.
+      *Measured, median of 5, cold context per run:*
+      | | before | after |
+      |---|---:|---:|
+      | mount | 191 ms | 165 ms |
+      | DCL | 171 ms | 138 ms |
+      | payload | 936 KB | 782 KB |
+      `coach.html` itself: 604 KB → 456 KB on disk.
 
 ## Horizon (not scheduled, kept on purpose)
 
