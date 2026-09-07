@@ -200,6 +200,42 @@ check('tgcSeal from a live app produces a valid packet',
 check('notes wears the house type stack',
   (await page.evaluate(() => { const d = document.querySelector('iframe[data-shell-app="notes"]').contentDocument; return getComputedStyle(d.body).fontFamily; })).startsWith('"DM Sans"'));
 
+// ─── PING · the spelling cap says its own number, and never leaks into a digest ───
+await page.evaluate(() => Frame.enter('ping'));
+await page.waitForFunction(() => !document.getElementById('veil').classList.contains('on'), null, { timeout: 45000 });
+await page.waitForTimeout(1500);
+const capped = await page.evaluate(async () => {
+  const w = document.querySelector('iframe[data-shell-app="ping"]').contentWindow;
+  if (w.__tgcLoadLensEngine) await w.__tgcLoadLensEngine();
+  if (w.__tgcLoadLensDict) await w.__tgcLoadLensDict();
+  await new Promise(r => setTimeout(r, 1200));
+  const e = w.MirrorFlowAssistEngine;
+  const many = "I recieve teh mesage and definately wil chek it. Ther are alot of thngs I shoud hav donne befor sendng this, incuding a propper reviw of the atachment and the schedual, wich I beleive is stil rong.";
+  const a = e.analyzeText(many, { source: 'qc' });
+  const b = e.analyzeText("This sentence is entirely correct.", { source: 'qc' });
+  const cap = (a.notes || [])[0] || null;
+  return { note: cap ? cap.message : null, shown: cap ? cap.shown : null, total: cap ? cap.total : null,
+           cleanNotes: (b.notes || []).length,
+           noteIsNotAnIssue: !(a.issues || []).some(i => /unknown words shown/.test(i.message || '')) };
+});
+check('the spelling cap says how many it hid',
+  Boolean(capped.note) && capped.total > capped.shown && capped.shown === 8,
+  capped.note || 'no note produced');
+check('a cap note is not counted as an issue', capped.noteIsNotAnIssue && capped.cleanNotes === 0,
+  'clean draft notes: ' + capped.cleanNotes);
+// the canon: a digest carries measurements, never content. The note names a typed word,
+// so it must never reach one — this asserts the boundary rather than trusting it.
+const digestClean = await page.evaluate(() => {
+  const w = document.querySelector('iframe[data-shell-app="ping"]').contentWindow;
+  if (typeof w.tgcBuildSendDigest !== 'function') return { skipped: true };
+  const d = w.tgcBuildSendDigest("I recieve teh mesage and definately wil chek it. Ther are alot of thngs I shoud hav donne befor sendng this, incuding a propper reviw of the atachment.");
+  const json = JSON.stringify(d || {});
+  return { leaked: /incuding|recieve|mesage|unknown words/.test(json), keys: Object.keys(d || {}).length };
+});
+check('a cap note never reaches a digest',
+  digestClean.skipped || (!digestClean.leaked && digestClean.keys > 5),
+  digestClean.skipped ? 'builder not exposed' : 'fields ' + digestClean.keys + ' · leaked ' + digestClean.leaked);
+
 // ─── PING → BENCH · a cross-app handoff, guarded because splitting Ping nearly lost it ───
 // The Bench button and tgcSendToBench() arrived on main while Ping was being split into
 // apps/ping/, so they had to be hand-ported into the new app.js. Nothing would have caught

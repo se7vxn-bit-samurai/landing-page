@@ -111,11 +111,22 @@ Ping's own reference: [`PING.md`](PING.md).
       score, the presets, the rewrites and the digest need no new dimension.
       *191 → 238 rules · 83 → 111 fixtures, all passing · 0 false positives on a
       clean 15-sentence corpus · 0.21 ms per analysis pass · boot unchanged.* ✓
-- [ ] **F4 · Spelling honesty** — the bloom filter under-flags by design (false
-      positives wave real misspellings through) and caps at 8 flags per pass.
-      Neither is wrong, but neither is visible. Surface the cap when it bites, and
-      document the ceiling where a user can see it.
-      *Done when: a long draft says "8 shown of N" rather than silently stopping.*
+- [x] **F4 · Spelling honesty** — both limits now state themselves inside the app.
+      The cap counts every unknown word and flags eight; when it bites, the rail
+      carries *"Dictionary check · 8 of 15 unknown words shown · next is 'incuding'"*
+      instead of stopping quietly and letting a long draft read as clean below the
+      eighth typo. Past the cap the candidate search is skipped, so the honest total
+      is free. The bloom filter's under-flagging ceiling is written into the
+      diagnostics drawer, beside the other engine numbers — it had only ever been in
+      `PING.md`, which nobody affected by it opens.
+      This needed a new engine seam: **notes**, a second channel beside `push()` for
+      reporting a limit rather than a finding. A limit is not an issue — it has no
+      fix, and counting it as one would inflate the digest's `grammarHits` and lie to
+      Insight. Notes render as a quiet line, never a card, and sit outside
+      `analysis.issues`, so a note may name a word the user typed without it ever
+      reaching a digest.
+      *QC 49 → 52: the cap reports its own number, a note is never counted as an
+      issue, and a note never reaches a digest.* ✓
 
 ## Phase H · Weight
 
@@ -207,7 +218,7 @@ fiction, which is the thing Phase B2 and F1 both existed to remove.
       from the Pages HTTP cache (the "pop looked like night" report)
 - [x] Deploy ritual documented: bump `version.json` per deploy; bump `VER` in
       `sw.js` when asset shape changes (see ARCHITECTURE.md)
-- [x] QC sweep automated — 49 checks across entry, pulse, all four skins, the
+- [x] QC sweep automated — 52 checks across entry, pulse, all four skins, the
       handshake, motifs, altar, exchange, rites, satchel, mobile and the
       portable build; it also guards the canon (fails on any external request)
 - [x] The checks live in the repo — `tools/qc.mjs` and `tools/lens.mjs`, with
