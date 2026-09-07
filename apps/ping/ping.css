@@ -3350,3 +3350,27 @@ html[data-theme="paper"] .phone-wrap {
   background: var(--mf-accent);
   box-shadow: 0 0 8px var(--mf-glow-1);
 }
+
+/* A note is the engine reporting a ceiling it hit — "8 of 15 shown". Quieter than a
+   card because there is nothing to apply, louder than nothing because the old
+   behaviour was to stop at eight and say so nowhere. */
+.mf-assist-note-line {
+  font: 500 11px/1.5 var(--mf-font-ui);
+  color: var(--mf-ink-2);
+  background: color-mix(in srgb, var(--mf-accent) 8%, transparent);
+  border-left: 2px solid var(--mf-accent);
+  border-radius: 0 6px 6px 0;
+  padding: 7px 10px;
+  margin-bottom: 10px;
+  opacity: .92;
+}
+
+/* The spelling ceiling in the diagnostics drawer · a stated limit, not a warning */
+.mf-assist-diag-ceiling {
+  font: 400 10.5px/1.55 var(--mf-font-ui);
+  color: var(--mf-ink-3, var(--mf-ink-2));
+  border-top: 1px dashed color-mix(in srgb, var(--mf-ink-2) 25%, transparent);
+  margin-top: 8px;
+  padding-top: 8px;
+  opacity: .85;
+}

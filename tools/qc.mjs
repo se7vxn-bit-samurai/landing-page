@@ -120,6 +120,30 @@ await page.evaluate(() => Frame.enter('coach'));
 await page.waitForFunction(() => !document.getElementById('veil').classList.contains('on'), null, { timeout: 25000 });
 await page.waitForTimeout(1300);
 check('handshake: coach wears night → press', await page.evaluate(() => document.querySelector('iframe[data-shell-app="coach"]').contentDocument.documentElement.dataset.theme) === 'press');
+
+// Reading Mode and the Assess cohort tab both got miscaptured into the Slides/Doc move
+// to Notes (I2) and had to be found and moved back by hand — the kind of drift a check
+// should own, not a person re-discovering it on the next reshuffle.
+const coachFrame = page.frames().find(f => f.url().includes('coach.html'));
+const readingMode = await coachFrame.evaluate(() => {
+  const shell = document.querySelector('.ex-shell');
+  document.getElementById('readingModeBtn').click();
+  const opened = shell.classList.contains('is-reading-mode');
+  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+  return { opened, closedByEscape: !shell.classList.contains('is-reading-mode') };
+});
+check('coach reading mode opens and closes on Escape', readingMode.opened && readingMode.closedByEscape,
+  JSON.stringify(readingMode));
+await coachFrame.evaluate(() => document.querySelector('[data-mode="assess"]')?.click());
+await page.waitForTimeout(400);
+const cohortTab = await coachFrame.evaluate(() => {
+  document.querySelector('[data-assess-tab="cohort"]').click();
+  return { cohortVisible: getComputedStyle(document.getElementById('assessCohort')).display !== 'none',
+           singleHidden: getComputedStyle(document.getElementById('assessSingle')).display === 'none' };
+});
+check('coach assess cohort tab switches panels', cohortTab.cohortVisible && cohortTab.singleHidden,
+  JSON.stringify(cohortTab));
+
 await page.evaluate(() => Frame.ascend());
 check('visit stamps recorded', await page.evaluate(() => Object.keys(JSON.parse(localStorage.getItem('tgc.shell2.visits')||'{}')).length >= 2));
 
@@ -199,6 +223,85 @@ check('tgcSeal from a live app produces a valid packet',
     return p.contract==='theguide.exchange.v2' && p.kind==='digest' && p.from==='notes' && p.to==='insight' && !!p.at; }));
 check('notes wears the house type stack',
   (await page.evaluate(() => { const d = document.querySelector('iframe[data-shell-app="notes"]').contentDocument; return getComputedStyle(d.body).fontFamily; })).startsWith('"DM Sans"'));
+
+// ─── NOTES · the desk, and Esc belonging to the app that owns a layer ───
+await page.evaluate(() => Frame.enter('notes'));
+await page.waitForFunction(() => !document.getElementById('veil').classList.contains('on'), null, { timeout: 45000 });
+await page.waitForTimeout(1200);
+const nf = () => page.frames().find(f => f.url().includes('notes.html'));
+await nf().evaluate(() => {
+  document.querySelector('[data-empty="new"]')?.click();
+});
+await page.waitForTimeout(400);
+await nf().evaluate(() => {
+  const t = document.querySelector('.mf-note__text');
+  t.value = 'QC note for the desk.'; t.dispatchEvent(new Event('input', { bubbles: true }));
+});
+await page.waitForTimeout(300);
+await nf().evaluate(() => document.querySelector('[data-act="open"]').click());
+await page.waitForTimeout(600);
+const deskOpen = await nf().evaluate(() => ({
+  shown: !document.getElementById('desk').hidden,
+  carries: document.getElementById('deskText').value,
+  ground: Boolean(document.querySelector('.mf-ground'))
+}));
+check('notes opens a note at full size', deskOpen.shown && deskOpen.carries === 'QC note for the desk.' && deskOpen.ground,
+  'desk ' + deskOpen.shown + ' · ground ' + deskOpen.ground);
+// editing at the desk writes back to the same note, and Esc must NOT ascend
+await nf().evaluate(() => {
+  const d = document.getElementById('deskText');
+  d.value = 'QC note, edited at the desk.'; d.dispatchEvent(new Event('input', { bubbles: true }));
+});
+await page.waitForTimeout(300);
+await page.keyboard.press('Escape');
+await page.waitForTimeout(700);
+const afterEsc = await page.evaluate(() => document.body.dataset.view);
+const cardText = await nf().evaluate(() => document.querySelector('.mf-note__text').value);
+check('Esc closes the desk without ascending out of the house',
+  afterEsc === 'frame' && cardText === 'QC note, edited at the desk.',
+  'view ' + afterEsc + ' · card "' + cardText + '"');
+// and with no layer open, Esc still means ascend
+await page.keyboard.press('Escape');
+await page.waitForTimeout(700);
+check('with no layer open, Esc still ascends',
+  await page.evaluate(() => document.body.dataset.view) === 'nave');
+await page.evaluate(() => Frame.ascend());
+
+// ─── PING · the spelling cap says its own number, and never leaks into a digest ───
+await page.evaluate(() => Frame.enter('ping'));
+await page.waitForFunction(() => !document.getElementById('veil').classList.contains('on'), null, { timeout: 45000 });
+await page.waitForTimeout(1500);
+const capped = await page.evaluate(async () => {
+  const w = document.querySelector('iframe[data-shell-app="ping"]').contentWindow;
+  if (w.__tgcLoadLensEngine) await w.__tgcLoadLensEngine();
+  if (w.__tgcLoadLensDict) await w.__tgcLoadLensDict();
+  await new Promise(r => setTimeout(r, 1200));
+  const e = w.MirrorFlowAssistEngine;
+  const many = "I recieve teh mesage and definately wil chek it. Ther are alot of thngs I shoud hav donne befor sendng this, incuding a propper reviw of the atachment and the schedual, wich I beleive is stil rong.";
+  const a = e.analyzeText(many, { source: 'qc' });
+  const b = e.analyzeText("This sentence is entirely correct.", { source: 'qc' });
+  const cap = (a.notes || [])[0] || null;
+  return { note: cap ? cap.message : null, shown: cap ? cap.shown : null, total: cap ? cap.total : null,
+           cleanNotes: (b.notes || []).length,
+           noteIsNotAnIssue: !(a.issues || []).some(i => /unknown words shown/.test(i.message || '')) };
+});
+check('the spelling cap says how many it hid',
+  Boolean(capped.note) && capped.total > capped.shown && capped.shown === 8,
+  capped.note || 'no note produced');
+check('a cap note is not counted as an issue', capped.noteIsNotAnIssue && capped.cleanNotes === 0,
+  'clean draft notes: ' + capped.cleanNotes);
+// the canon: a digest carries measurements, never content. The note names a typed word,
+// so it must never reach one — this asserts the boundary rather than trusting it.
+const digestClean = await page.evaluate(() => {
+  const w = document.querySelector('iframe[data-shell-app="ping"]').contentWindow;
+  if (typeof w.tgcBuildSendDigest !== 'function') return { skipped: true };
+  const d = w.tgcBuildSendDigest("I recieve teh mesage and definately wil chek it. Ther are alot of thngs I shoud hav donne befor sendng this, incuding a propper reviw of the atachment.");
+  const json = JSON.stringify(d || {});
+  return { leaked: /incuding|recieve|mesage|unknown words/.test(json), keys: Object.keys(d || {}).length };
+});
+check('a cap note never reaches a digest',
+  digestClean.skipped || (!digestClean.leaked && digestClean.keys > 5),
+  digestClean.skipped ? 'builder not exposed' : 'fields ' + digestClean.keys + ' · leaked ' + digestClean.leaked);
 
 // ─── PING → BENCH · a cross-app handoff, guarded because splitting Ping nearly lost it ───
 // The Bench button and tgcSendToBench() arrived on main while Ping was being split into
@@ -305,6 +408,23 @@ const pLens = pFrame ? await pFrame.evaluate(() => ({
 })) : { engine: 'no blob frame', rules: 0 };
 check('portable carries Ping\'s rule engine', pLens.engine === 'object' && pLens.rules > 200,
   pLens.engine + ' · ' + pLens.rules + ' rules');
+
+// The studio (Notes' Slides/Doc) is the second on-demand JS part in the house, and it
+// found a real hole the first one never could: build-portable.py inlined on-demand JS
+// into <head>, which runs before <body> exists. The served build never notices, because
+// the loader injects the script long after DOMContentLoaded — but studio.js's own
+// top-level `document.getElementById('undoBtn').addEventListener(...)` ran against a
+// DOM that was not there yet, and NotesStudio silently never got assigned. This asserts
+// the fix (.js on-demand parts inline at the end of <body>) rather than trusting it.
+await pf.evaluate(() => Frame.enter('notes'));
+await pf.waitForFunction(() => !document.getElementById('veil').classList.contains('on'), null, { timeout: 30000 });
+await pf.waitForTimeout(1200);
+const pNotesFrame = pf.frames().find(f => f.url().startsWith('blob:') && f !== pFrame);
+if (pNotesFrame) await pNotesFrame.evaluate(() => document.querySelector('[data-pane="slides"]')?.click());
+await pf.waitForTimeout(2000);
+const pStudio = pNotesFrame ? await pNotesFrame.evaluate(() => typeof window.NotesStudio) : 'no blob frame';
+check('portable carries the Notes studio', pStudio === 'object', pStudio);
+
 check('portable has no console errors', perrs.length === 0, perrs.slice(0,2).join(' | '));
 await pf.close();
 
