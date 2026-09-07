@@ -270,6 +270,46 @@ is the next place a real finding could be, and the H1/H2 playbook (find the thin
 that loads for everyone and is used by few) is the way to look. Not scheduled —
 it needs a look before it needs a plan.
 
+## Phase I · The workbench takes the authoring tools
+
+Slides and Doc live in Excelsior Coach's Build mode. They do not belong there:
+Coach analyses, facilitates and assesses; authoring an artefact is bench work.
+Notes is the workbench. Moving them is a product correction, not a refactor.
+
+- [x] **I0 · Measured the real footprint before promising anything.** The obvious
+      read was ~250 KB, because Coach's sections are banner-labelled and one banner
+      lies. `SLIDE BUILDER ENHANCEMENTS (v0.7.4)` is 134 KB and contains **15
+      library/reading functions** (`MODULE_CONTENT`, `MODULE_LEDES`, bookmarks,
+      highlights, read-progress) against **4 slide functions**. It is Coach's
+      Library module wearing a slide-builder name, and it stays.
+      **The true Slides + Doc core is 94 KB**: `BUILD MODE - Slides` (73), `DOC MODE`
+      (6), `ELEMENT PRESETS` (15).
+- [x] **I0b · Mapped what it actually needs from Coach.** Clean, with one exception:
+      | Constant | Uses | Verdict |
+      |---|---|---|
+      | `FONTS_CSS` | 4 | portable, comes along |
+      | `THEME_VARIANTS` | 2 | portable, comes along |
+      | `TEXT_TYPES`, `SLIDE_TEMPLATES` | — | already inside the studio |
+      | `MFEngine`, `CURRICULUM`, `MODULE_LIBRARY` | 0 | **no coupling at all** |
+      | `ASSESS_CRITERIA` | 6 | **the one real question — see I1** |
+- [ ] **I1 · Decide what happens to the assessment deck.** The studio's six
+      `ASSESS_CRITERIA` uses render *Coach's assessment scores as slides* — pillar
+      totals out of max. That is Coach reading its own data through the builder, and
+      a general authoring tool in Notes has no assessment scores to read.
+      Recommended: the generic builder moves; Coach keeps the assessment-deck
+      layouts and its own small renderer for them. Coach loses nothing a user can
+      see; Notes gains no concept it cannot explain.
+- [ ] **I2 · Move the 94 KB as deferred modules, not as bulk.** Notes is 45 KB today.
+      Grafting 94 KB inline would triple its boot cost for two panes most sessions
+      never open — the exact mistake H1 and H2 existed to undo. So: `apps/notes/`
+      with `studio.js` + `studio.css`, loaded on first switch to the Slides or Doc
+      pane, the way Three.js loads on first globe open.
+      *Done when: Notes boots at today's weight, and opening Slides brings the
+      builder with it.*
+- [ ] **I3 · Strip Coach back.** Remove the two build tabs, both panels, the studio
+      JS and its ~104 CSS rules. Coach should get materially lighter — it is 604 KB
+      and was never examined for why.
+
 ## Horizon (not scheduled, kept on purpose)
 
 - Sync and Coach as digest producers too, once Ping proves the shape
