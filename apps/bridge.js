@@ -4,6 +4,7 @@
    2 · storage shim · engages ONLY where localStorage is blocked;
        persists to the shell via tgc.ls.persist postMessage
    3 · key relay · Esc / Ctrl+K / Ctrl+1-6 reach the shell
+       (an app may hold Esc back with window.__tgcEscGuard)
    ═══════════════════════════════════════════ */
 /* the portable build presets __TGC_APP_ID before inlining this file (blob URLs have no filename) */
 window.__TGC_APP_ID = window.__TGC_APP_ID || (location.pathname.split('/').pop() || 'app').replace(/\.html$/, '');
@@ -96,7 +97,17 @@ try {
 (function () {
   function send(c){ try{ parent.postMessage({ type:'tgc.keys', combo:c }, '*'); }catch(e){} }
   window.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') { send('esc'); return; }
+    if (e.key === 'Escape') {
+      /* An app with its own dismissible layer open - a desk, a drawer, a modal -
+         needs Esc for itself. This listener is on window capture, so it sees the
+         key before any handler the app could register: without a way to say "mine",
+         pressing Esc to close a panel also ascends to the nave and throws the
+         person out of the house. An app opts in by setting __tgcEscGuard to a
+         function returning true while it owns the key. Apps that never set it are
+         unaffected. */
+      try { if (window.__tgcEscGuard && window.__tgcEscGuard()) return; } catch (err) {}
+      send('esc'); return;
+    }
     if (e.ctrlKey || e.metaKey) {
       var k = (e.key || '').toLowerCase();
       if (k === 'k') { e.preventDefault(); send('ctrlk'); }

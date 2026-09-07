@@ -200,6 +200,49 @@ check('tgcSeal from a live app produces a valid packet',
 check('notes wears the house type stack',
   (await page.evaluate(() => { const d = document.querySelector('iframe[data-shell-app="notes"]').contentDocument; return getComputedStyle(d.body).fontFamily; })).startsWith('"DM Sans"'));
 
+// ─── NOTES · the desk, and Esc belonging to the app that owns a layer ───
+await page.evaluate(() => Frame.enter('notes'));
+await page.waitForFunction(() => !document.getElementById('veil').classList.contains('on'), null, { timeout: 45000 });
+await page.waitForTimeout(1200);
+const nf = () => page.frames().find(f => f.url().includes('notes.html'));
+await nf().evaluate(() => {
+  document.querySelector('[data-empty="new"]')?.click();
+});
+await page.waitForTimeout(400);
+await nf().evaluate(() => {
+  const t = document.querySelector('.mf-note__text');
+  t.value = 'QC note for the desk.'; t.dispatchEvent(new Event('input', { bubbles: true }));
+});
+await page.waitForTimeout(300);
+await nf().evaluate(() => document.querySelector('[data-act="open"]').click());
+await page.waitForTimeout(600);
+const deskOpen = await nf().evaluate(() => ({
+  shown: !document.getElementById('desk').hidden,
+  carries: document.getElementById('deskText').value,
+  ground: Boolean(document.querySelector('.mf-ground'))
+}));
+check('notes opens a note at full size', deskOpen.shown && deskOpen.carries === 'QC note for the desk.' && deskOpen.ground,
+  'desk ' + deskOpen.shown + ' · ground ' + deskOpen.ground);
+// editing at the desk writes back to the same note, and Esc must NOT ascend
+await nf().evaluate(() => {
+  const d = document.getElementById('deskText');
+  d.value = 'QC note, edited at the desk.'; d.dispatchEvent(new Event('input', { bubbles: true }));
+});
+await page.waitForTimeout(300);
+await page.keyboard.press('Escape');
+await page.waitForTimeout(700);
+const afterEsc = await page.evaluate(() => document.body.dataset.view);
+const cardText = await nf().evaluate(() => document.querySelector('.mf-note__text').value);
+check('Esc closes the desk without ascending out of the house',
+  afterEsc === 'frame' && cardText === 'QC note, edited at the desk.',
+  'view ' + afterEsc + ' · card "' + cardText + '"');
+// and with no layer open, Esc still means ascend
+await page.keyboard.press('Escape');
+await page.waitForTimeout(700);
+check('with no layer open, Esc still ascends',
+  await page.evaluate(() => document.body.dataset.view) === 'nave');
+await page.evaluate(() => Frame.ascend());
+
 // ─── PING · the spelling cap says its own number, and never leaks into a digest ───
 await page.evaluate(() => Frame.enter('ping'));
 await page.waitForFunction(() => !document.getElementById('veil').classList.contains('on'), null, { timeout: 45000 });
