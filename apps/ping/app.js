@@ -595,7 +595,7 @@ editorEl.addEventListener('keydown', (e) => {
   }
 });
 
-/* ---------- TOOLBAR ACTIONS (clean / clear / copy / paste / more) ---------- */
+/* ---------- TOOLBAR ACTIONS (clean / clear / copy / paste / bench / more) ---------- */
 document.querySelectorAll('.mf-tb-btn[data-action]').forEach(btn => {
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -605,6 +605,7 @@ document.querySelectorAll('.mf-tb-btn[data-action]').forEach(btn => {
     else if (a === 'copy')  copyDraft();
     else if (a === 'paste') pasteDraft();
     else if (a === 'softbreak') insertSoftBreak();
+    else if (a === 'bench') tgcSendToBench();
     else if (a === 'more')  openMore(btn);
   });
 });
@@ -760,6 +761,19 @@ function tgcBuildSendDigest(text) {
   if (a.tone && a.tone.primary) d.tonePrimary = a.tone.primary;
   if (tgcDraftStartedAt) d.secondsToSend = Math.round((Date.now() - tgcDraftStartedAt) / 1000);
   return d;
+}
+
+/* A draft worth a second look goes to the Bench as a handoff. It queues in
+   the shell's inbox first - nothing reaches an app without a person saying
+   yes - which is why this is a separate gesture from Send. */
+function tgcSendToBench() {
+  const text = getDraftPlain();
+  if (!text) { toast('Nothing to send'); return; }
+  if (typeof window.tgcSeal !== 'function') { toast('The Bench is reachable from inside the house'); return; }
+  const who = (typeof customerEl !== 'undefined' && customerEl && customerEl.value.trim()) || '';
+  const subject = (who ? who + ' · ' : '') + text.split('\n')[0].slice(0, 60);
+  window.tgcSeal('handoff', { to: 'bench', subject, body: text, facet: 'message', privacy: 'full' });
+  toast('Sent to the Bench · waiting in the inbox');
 }
 
 function tgcSealSendDigest(text) {

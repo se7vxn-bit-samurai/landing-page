@@ -200,6 +200,28 @@ check('tgcSeal from a live app produces a valid packet',
 check('notes wears the house type stack',
   (await page.evaluate(() => { const d = document.querySelector('iframe[data-shell-app="notes"]').contentDocument; return getComputedStyle(d.body).fontFamily; })).startsWith('"DM Sans"'));
 
+// ─── PING → BENCH · a cross-app handoff, guarded because splitting Ping nearly lost it ───
+// The Bench button and tgcSendToBench() arrived on main while Ping was being split into
+// apps/ping/, so they had to be hand-ported into the new app.js. Nothing would have caught
+// their loss. This does.
+await page.evaluate(() => Frame.enter('ping'));
+await page.waitForFunction(() => !document.getElementById('veil').classList.contains('on'), null, { timeout: 45000 });
+await page.waitForTimeout(1500);
+const benchQ0 = await page.evaluate(() => Bus.queue.length);
+await page.evaluate(() => {
+  const f = document.querySelector('iframe[data-shell-app="ping"]');
+  const d = f.contentDocument, ed = d.getElementById('editorSurface');
+  ed.focus(); ed.textContent = 'QC draft for the bench.';
+  ed.dispatchEvent(new d.defaultView.Event('input', { bubbles: true }));
+  d.querySelector('.mf-tb-btn[data-action="bench"]').click();
+});
+await page.waitForTimeout(1000);
+const benchPkt = await page.evaluate(() => Bus.queue[Bus.queue.length - 1] || null);
+check('ping hands a draft to the bench', Boolean(benchPkt) &&
+  benchPkt.kind === 'handoff' && benchPkt.to === 'bench' && benchPkt.from === 'ping' && Boolean(benchPkt.body),
+  benchPkt ? benchPkt.kind + ' → ' + benchPkt.to : 'no packet · inbox stayed at ' + benchQ0);
+await page.evaluate(() => { Bus.queue.pop(); Bus.save(); });
+
 // ─── CODEX · Three.js is behind the globe, not in the boot path ───
 await page.evaluate(() => Frame.enter('codex'));
 await page.waitForFunction(() => !document.getElementById('veil').classList.contains('on'), null, { timeout: 45000 });

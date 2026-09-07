@@ -8,7 +8,7 @@ Manifest entries live in `APPS` inside `js/shell.js`.
 |---|---|---|---|---|
 | **MirrorFlow Ping** | `apps/ping.html` | mirrorflow | active · v6 | Message mirror. The deepest build: theme system (pulse/slate/linen/paper + variants), workspace-mode dock, insights rail, editor + phone preview, Assist integration. |
 | **MirrorFlow Sync** | `apps/sync.html` | mirrorflow | building · v64 | Schedules & continuity — parsing, cleaning and visualising schedule data. |
-| **MirrorFlow Notes** | `apps/notes.html` | mirrorflow | active · v3 | Fast capture surface. Small and deliberately scoped. |
+| **MirrorFlow Notes** | `apps/notes.html` | mirrorflow | active · v4 | The workbench. Modes: Capture / Compose. Rebuilt on Excelsior's structure under the shell's own four grounds; first app to both seal and receive missives. |
 | **Excelsior Coach** | `apps/coach.html` | excelsior | active · v2.7 | Editorial sales coach. Modes: Home / Library / Facilitate / Build / Assess. Cream editorial default theme. |
 | **the Codex** | `apps/codex.html` | riftborn | active · v2.0 | Riftborn terminal — rituals, design bibles, lore. |
 

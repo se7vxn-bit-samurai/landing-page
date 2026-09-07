@@ -4,7 +4,8 @@
 <script src="bridge.js"></script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Excelsior Coach v0.1</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2317120b'/%3E%3Cpath d='M16 5 L23 16 L16 27 L9 16 Z' fill='%23d4a832'/%3E%3Cpath d='M16 11 L19.5 16 L16 21 L12.5 16 Z' fill='%23e05c24'/%3E%3C/svg%3E"/>
+<title>Excelsior Coach</title>
 <style>
 /* ============================================================
    EXCELSIOR COACH - Design Token System
@@ -31,7 +32,7 @@
   --ex-font-body:   'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --ex-font-sans:   'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --ex-font-mono:   'JetBrains Mono', 'DM Mono', 'Fira Code', monospace;
-  --ex-font-editorial: 'Crimson Pro', Georgia, serif;
+  --ex-font-editorial: 'Cormorant Garamond', Georgia, serif;
 }
 [data-theme="cream"] {
   /* Editorial paper - default */
@@ -49,7 +50,7 @@
   --ex-hold:        #b8901c;
   --ex-alert:       #8b2c0e;
   --ex-ready:       #4a7c4f;
-  --ex-font-body:   'Crimson Pro', Georgia, serif;
+  --ex-font-body:   'Cormorant Garamond', Georgia, serif;
 }
 
 /* ============================================================
@@ -1347,7 +1348,7 @@ textarea.ex-input:focus, input.ex-input:focus, select.ex-input:focus {
   .ex-topbar__brand { font-size: 16px; }
   .ex-topbar__brand span { font-size: 16px; }
   .ex-topbar__version { display: none; }
-  .ex-topbar__demo-btn, .ex-launcher__btn {
+  .ex-topbar__demo-btn {
     font-size: 10px; padding: 4px 7px; margin-right: 4px;
     min-height: 32px;
   }
@@ -1431,53 +1432,25 @@ textarea.ex-input:focus, input.ex-input:focus, select.ex-input:focus {
   .ex-cohort-table th, .ex-cohort-table td { padding: 5px 6px; }
 }
 
-/* Cross-app launcher (v1.3.9) */
-.ex-launcher {
-  position: relative;
-  display: inline-block;
-}
-.ex-launcher__btn {
-  padding: 4px 10px;
-  font-size: 11px; font-family: var(--ex-font-mono);
-  background: transparent;
-  border: 1px solid var(--ex-border);
-  border-radius: 3px;
-  color: var(--ex-text-muted);
-  cursor: pointer; margin-right: 8px;
-  transition: all 0.15s;
-}
-.ex-launcher__btn:hover { border-color: var(--ex-gold); color: var(--ex-gold); }
-.ex-launcher__menu {
-  position: absolute;
-  top: 100%; right: 0;
-  margin-top: 4px;
-  width: 240px;
-  background: var(--ex-surface);
-  border: 1px solid var(--ex-fire);
+/* ── Empty states · what this is, what to do first ──────────── */
+.ex-empty {
+  border: 1px dashed color-mix(in srgb, var(--ex-border) 90%, transparent);
   border-radius: var(--ex-radius);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-  padding: 6px;
-  display: none;
-  z-index: 10000;
+  padding: 22px 20px; text-align: center; color: var(--ex-text-muted);
 }
-.ex-launcher__menu.is-open { display: block; }
-.ex-launcher__item {
-  display: block; width: 100%;
-  padding: 8px 12px;
-  text-align: left;
-  background: transparent;
-  border: none;
-  border-radius: 3px;
-  font-family: var(--ex-font-sans);
-  font-size: 12px;
-  color: var(--ex-text);
-  cursor: pointer;
-  text-decoration: none;
+.ex-empty__kicker {
+  font-family: var(--ex-font-mono); font-size: 10px;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ex-fire); opacity: .85; margin-bottom: 8px;
 }
-.ex-launcher__item:hover { background: color-mix(in srgb, var(--ex-fire) 8%, transparent); color: var(--ex-fire); }
-.ex-launcher__item__name { font-weight: 600; }
-.ex-launcher__item__desc { font-size: 10px; color: var(--ex-text-muted); margin-top: 2px; }
-.ex-launcher__sep { height: 1px; background: var(--ex-border); margin: 4px 0; }
+.ex-empty__title {
+  font-family: var(--ex-font-serif); font-size: 19px;
+  font-weight: 700; font-style: italic;
+  color: var(--ex-text); margin-bottom: 6px;
+}
+.ex-empty__line { font-size: 12.5px; line-height: 1.55; max-width: 46ch; margin: 0 auto; }
+.ex-empty--tight { padding: 14px 12px; text-align: left; }
+.ex-empty--tight .ex-empty__line { margin: 0; max-width: none; }
 
 /* Brand kit editor modal (v1.3.7) */
 .ex-brandkit-modal {
@@ -3442,7 +3415,7 @@ mark.ex-saved-highlight {
   .ex-content-area {
     background: #fff !important; border: none !important;
     padding: 0 !important; overflow: visible !important;
-    color: #000 !important; font-family: 'Crimson Pro', Georgia, serif !important;
+    color: #000 !important; font-family: 'Cormorant Garamond', Georgia, serif !important;
     font-size: 12pt !important; line-height: 1.5 !important;
   }
   .ex-content-area h2 { color: #000 !important; font-size: 28pt !important; page-break-after: avoid; }
@@ -4131,7 +4104,6 @@ mark.ex-saved-highlight {
   cursor: pointer; margin-right: 8px; transition: all 0.15s;
 }
 .ex-topbar__demo-btn:hover { border-color: var(--ex-gold); color: var(--ex-gold); }
-.ex-topbar__demo-btn.is-on { border-color: var(--ex-gold); color: var(--ex-gold); background: color-mix(in srgb, var(--ex-gold) 8%, transparent); }
 .ex-shortcuts-hint {
   font-family: var(--ex-font-mono);
   font-size: 10px; color: var(--ex-text-muted); opacity: 0.6; margin-left: 6px;
@@ -4247,32 +4219,9 @@ mark.ex-saved-highlight {
   <header class="ex-topbar">
     <div class="ex-topbar__brand">Excelsior <span>Coach</span></div>
     <div class="ex-topbar__spacer"></div>
-    <div class="ex-launcher">
-      <button class="ex-launcher__btn" id="launcherBtn" title="Sister apps">▦ Suite</button>
-      <div class="ex-launcher__menu" id="launcherMenu">
-        <button class="ex-launcher__item" data-launcher="excelsior">
-          <div class="ex-launcher__item__name">Excelsior Coach</div>
-          <div class="ex-launcher__item__desc">You are here · theGuide curriculum + analysis</div>
-        </button>
-        <div class="ex-launcher__sep"></div>
-        <button class="ex-launcher__item" data-launcher="mfcoach">
-          <div class="ex-launcher__item__name">MirrorFlow Coach</div>
-          <div class="ex-launcher__item__desc">Draft analysis + mirror reader simulation</div>
-        </button>
-        <button class="ex-launcher__item" data-launcher="mfping">
-          <div class="ex-launcher__item__name">MirrorFlow Ping (Lite)</div>
-          <div class="ex-launcher__item__desc">Lightweight chat-based coaching feedback</div>
-        </button>
-        <button class="ex-launcher__item" data-launcher="mfsync">
-          <div class="ex-launcher__item__name">MirrorFlow Sync</div>
-          <div class="ex-launcher__item__desc">Spreadsheet parsing &amp; structured-data extraction</div>
-        </button>
-      </div>
-    </div>
     <button class="ex-topbar__demo-btn" id="cmdOpenBtn" title="Command Palette (Ctrl+K)">⌘ K</button>
     <button class="ex-topbar__demo-btn" id="notesOpenBtn" title="Notes Drawer (Ctrl+/)">NOTES</button>
     <button class="ex-topbar__demo-btn" id="brandKitBtn" title="Brand kit editor">BRAND</button>
-    <button class="ex-topbar__demo-btn" id="demoBtn" title="Toggle demo content (pre-fills sample data)">DEMO</button>
     <div class="ex-topbar__themes">
       <button class="ex-topbar__theme-btn" data-t="press" title="Press (dark editorial)"></button>
       <button class="ex-topbar__theme-btn is-active" data-t="cream" title="Cream (paper editorial)"></button>
@@ -4285,26 +4234,10 @@ mark.ex-saved-highlight {
   <nav class="ex-sidebar">
     <button class="ex-sidebar__toggle" id="sidebarToggleBtn" title="Collapse sidebar">‹</button>
     <div class="ex-sidebar__label">Modes</div>
-    <div class="ex-sidebar__item is-active" data-mode="landing">
-      <span class="ex-sidebar__icon">&#8962;</span> Home <span class="ex-shortcuts-hint">^0</span>
-    </div>
-    <div class="ex-sidebar__item" data-mode="library">
-      <span class="ex-sidebar__icon">&#128218;</span> Library <span class="ex-shortcuts-hint">^1</span>
-    </div>
-    <div class="ex-sidebar__item" data-mode="facilitate">
-      <span class="ex-sidebar__icon">&#9654;</span> Facilitate <span class="ex-shortcuts-hint">^2</span>
-    </div>
-    <div class="ex-sidebar__item" data-mode="build">
-      <span class="ex-sidebar__icon">&#9998;</span> Build <span class="ex-shortcuts-hint">^3</span>
-    </div>
-    <div class="ex-sidebar__item" data-mode="assess">
-      <span class="ex-sidebar__icon">&#9733;</span> Assess <span class="ex-shortcuts-hint">^4</span>
-    </div>
+    <div id="sidebarModes"></div>
     <div class="ex-sidebar__divider"></div>
     <div class="ex-sidebar__label">Excelsior Suite</div>
-    <div class="ex-sidebar__item" data-mode="about">
-      <span class="ex-sidebar__icon">&#9826;</span> About
-    </div>
+    <div id="sidebarSuite"></div>
   </nav>
 
   <!-- ═══════════════ MAIN ═══════════════ -->
@@ -4365,7 +4298,7 @@ mark.ex-saved-highlight {
         </p>
         <div class="ex-landing-hero__cta">
           <button class="ex-btn ex-btn--primary" id="landingStartBtn">Start Analysing →</button>
-          <button class="ex-btn" id="landingDemoBtn">Try with Demo Content</button>
+          <button class="ex-btn" id="landingLibraryBtn">Browse the Library</button>
         </div>
         <div class="ex-landing-hero__byline" style="margin-top:24px;">
           curated &amp; presented by Selvan K. Naicker · theGuide.club
@@ -4401,45 +4334,12 @@ mark.ex-saved-highlight {
             <circle cx="110" cy="8" r="2" opacity="0.7"/>
           </svg>
         </div>
-        <h2 class="ex-landing-modes__title">Four Modes</h2>
-        <div class="ex-landing-modes__grid">
-          <div class="ex-landing-mode-card" data-mode-jump="analyse">
-            <div class="ex-landing-mode-card__icon">⚙ <span class="ex-landing-mode-card__shortcut">^1</span></div>
-            <div class="ex-landing-mode-card__name">Analyse</div>
-            <div class="ex-landing-mode-card__desc">
-              Paste a draft message. Heuristic engine reads it for urgency, passive voice, jargon, CTA placement -
-              then shows you a Mirror of how a busy reader sees it.
-            </div>
-          </div>
-          <div class="ex-landing-mode-card" data-mode-jump="build">
-            <div class="ex-landing-mode-card__icon">✎ <span class="ex-landing-mode-card__shortcut">^2</span></div>
-            <div class="ex-landing-mode-card__name">Build</div>
-            <div class="ex-landing-mode-card__desc">
-              Generate Call Scripts, Coaching Debriefs, Session Plans, Email briefs and Feedback forms.
-              Or build printable 16:9 slide decks with 6 layouts.
-            </div>
-          </div>
-          <div class="ex-landing-mode-card" data-mode-jump="facilitate">
-            <div class="ex-landing-mode-card__icon">▶ <span class="ex-landing-mode-card__shortcut">^3</span></div>
-            <div class="ex-landing-mode-card__name">Facilitate</div>
-            <div class="ex-landing-mode-card__desc">
-              Deliver any of the 5 pillars or dive into a specific module from the library.
-              Built-in session timer, facilitator notes, and a live role-play sandbox.
-            </div>
-          </div>
-          <div class="ex-landing-mode-card" data-mode-jump="assess">
-            <div class="ex-landing-mode-card__icon">★ <span class="ex-landing-mode-card__shortcut">^4</span></div>
-            <div class="ex-landing-mode-card__name">Assess</div>
-            <div class="ex-landing-mode-card__desc">
-              Score performance across 20 criteria (4 per pillar). Calculates overall score,
-              saves history per participant, copy or print summary.
-            </div>
-          </div>
-        </div>
+        <h2 class="ex-landing-modes__title" id="landingModesTitle"></h2>
+        <div class="ex-landing-modes__grid" id="landingModesGrid"></div>
       </section>
 
       <div class="ex-landing-footer">
-        Excelsior Coach v1.3 · presenter mode · animations · reading mode · mobile · brand kit · cohort · launcher · 60+ glossary
+        Excelsior Coach v2.7 · presenter mode · animations · reading mode · mobile · brand kit · cohort · 60+ glossary
       </div>
     </div>
 
@@ -4733,7 +4633,7 @@ mark.ex-saved-highlight {
                 <select id="tcFont">
                   <option value="">Default</option>
                   <option value="playfair">Playfair (serif)</option>
-                  <option value="crimson">Crimson (editorial)</option>
+                  <option value="crimson">Cormorant (editorial)</option>
                   <option value="dmsans">DM Sans</option>
                   <option value="dmmono">DM Mono</option>
                 </select>
@@ -5214,6 +5114,7 @@ mark.ex-saved-highlight {
         <input class="ex-input" id="assessName" placeholder="Participant name..." style="width:240px;"/>
         <button class="ex-btn ex-btn--primary" id="saveScoreBtn">Save Score</button>
         <button class="ex-btn" id="printScoreBtn">Print</button>
+        <button class="ex-btn" id="benchScoreBtn">Send to Bench</button>
         <button class="ex-btn" id="clearScoreBtn">Clear</button>
       </div>
       <div class="ex-assess-grid">
@@ -5955,7 +5856,6 @@ let timerInterval = null;
 let timerSeconds = 0;
 let timerRunning = false;
 let scores = {}; // { pillar_criterion: rating }
-let demoOn = localStorage.getItem('ex-coach-demo') === '1';
 
 /* ──────────────────────────────────────────────────────────────
    TOAST (Phase A) - ported from MirrorFlow Lite
@@ -6056,6 +5956,53 @@ const savedTheme = localStorage.getItem('ex-coach-theme');
 if (savedTheme) setTheme(savedTheme); else setTheme('cream');
 
 /* ──────────────────────────────────────────────────────────────
+   THE MODES - one list, rendered twice
+   The sidebar rail and the landing cards are both generated from this
+   array, so they cannot drift apart again. `alt` is the shortcut digit:
+   Coach owns Alt+N because the shell owns Ctrl+N.
+────────────────────────────────────────────────────────────── */
+const MODES = [
+  { id:'landing', label:'Home', icon:'&#8962;', alt:'0', group:'modes' },
+  { id:'analyse', label:'Analyse', icon:'&#9881;', alt:'1', group:'modes', card:true,
+    desc:'Paste a draft message. Heuristic engine reads it for urgency, passive voice, jargon, CTA placement - then shows you a Mirror of how a busy reader sees it.' },
+  { id:'facilitate', label:'Facilitate', icon:'&#9654;', alt:'2', group:'modes', card:true,
+    desc:'Deliver any of the 5 pillars or dive into a specific module from the library. Built-in session timer, facilitator notes, and a live role-play sandbox.' },
+  { id:'build', label:'Build', icon:'&#9998;', alt:'3', group:'modes', card:true,
+    desc:'Generate Call Scripts, Coaching Debriefs, Session Plans, Email briefs and Feedback forms. Or build printable 16:9 slide decks with 6 layouts.' },
+  { id:'assess', label:'Assess', icon:'&#9733;', alt:'4', group:'modes', card:true,
+    desc:'Score performance across 20 criteria (4 per pillar). Calculates overall score, saves history per participant, copy or print summary.' },
+  { id:'library', label:'Library', icon:'&#128218;', alt:'5', group:'modes' },
+  { id:'about', label:'About', icon:'&#9826;', group:'suite' }
+];
+const MODE_LABEL = {};
+MODES.forEach(m => { MODE_LABEL[m.id] = m.label; });
+const COUNT_WORD = ['No','One','Two','Three','Four','Five','Six','Seven','Eight'];
+
+function renderSidebarModes() {
+  const row = m => `<div class="ex-sidebar__item" data-mode="${m.id}">
+      <span class="ex-sidebar__icon">${m.icon}</span> ${m.label}` +
+      (m.alt ? ` <span class="ex-shortcuts-hint">&#8997;${m.alt}</span>` : '') + `
+    </div>`;
+  const modes = document.getElementById('sidebarModes');
+  const suite = document.getElementById('sidebarSuite');
+  if (modes) modes.innerHTML = MODES.filter(m => m.group === 'modes').map(row).join('');
+  if (suite) suite.innerHTML = MODES.filter(m => m.group === 'suite').map(row).join('');
+}
+
+function renderLandingModes() {
+  const cards = MODES.filter(m => m.card);
+  const title = document.getElementById('landingModesTitle');
+  const grid = document.getElementById('landingModesGrid');
+  if (title) title.textContent = (COUNT_WORD[cards.length] || cards.length) + ' Modes';
+  if (grid) grid.innerHTML = cards.map(m => `
+    <div class="ex-landing-mode-card" data-mode-jump="${m.id}">
+      <div class="ex-landing-mode-card__icon">${m.icon} <span class="ex-landing-mode-card__shortcut">&#8997;${m.alt}</span></div>
+      <div class="ex-landing-mode-card__name">${m.label}</div>
+      <div class="ex-landing-mode-card__desc">${m.desc}</div>
+    </div>`).join('');
+}
+
+/* ──────────────────────────────────────────────────────────────
    MODE SWITCHING
 ────────────────────────────────────────────────────────────── */
 function switchMode(mode) {
@@ -6071,23 +6018,31 @@ function switchMode(mode) {
     setLibView(typeof _libView !== 'undefined' ? _libView : 'catalog');
   }
 }
+renderSidebarModes();
+renderLandingModes();
 document.querySelectorAll('.ex-sidebar__item[data-mode]').forEach(el => {
   el.addEventListener('click', () => switchMode(el.dataset.mode));
 });
+switchMode(currentMode);
 
-/* Keyboard shortcuts - Ctrl+0/1/2/3/4 to switch modes (v2.4 restructured) */
-const MODE_MAP = { '0':'landing', '1':'library', '2':'facilitate', '3':'build', '4':'assess' };
+/* Mode shortcuts live on Alt, not Ctrl.
+   The shell owns Ctrl+1-6 for switching apps and apps/bridge.js relays them
+   upward on capture without stopping propagation - so a Ctrl chord here fired
+   twice: once in the shell, once in a frame the user could no longer see. */
+const ALT_MODE = {};
+MODES.forEach(m => { if (m.alt) ALT_MODE[m.alt] = m.id; });
 document.addEventListener('keydown', (e) => {
-  const useCtrl = e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey;
-  if (!useCtrl) return;
-  const target = MODE_MAP[e.key];
+  if (!e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+  // read the physical digit: Alt+N yields a symbol, not a number, on some layouts
+  const code = /^Digit(\d)$/.exec(e.code || '');
+  const target = ALT_MODE[code ? code[1] : e.key];
   if (!target) return;
   // Don't intercept if focused in a contentEditable element
   const ae = document.activeElement;
   if (ae && ae.isContentEditable) return;
   e.preventDefault();
   switchMode(target);
-  toast('Mode: ' + target.charAt(0).toUpperCase() + target.slice(1));
+  toast('Mode: ' + (MODE_LABEL[target] || target));
 });
 
 /* ──────────────────────────────────────────────────────────────
@@ -6125,6 +6080,57 @@ function analyzeCoverage(text) {
 }
 
 let _analyseTimer;
+/* ──────────────────────────────────────────────────────────────
+   THE EXCHANGE - handing work to the Bench
+   A handoff does not land in the Bench. It queues in the shell's
+   inbox and a person lets it through. That wait is the contract:
+   nothing reaches an app without someone saying yes.
+────────────────────────────────────────────────────────────── */
+function sendToBench(subject, body, facet) {
+  if (typeof window.tgcSeal !== 'function') {
+    toast('The Bench is reachable from inside the house', true);
+    return;
+  }
+  if (!String(body || '').trim()) { toast('Nothing to send', true); return; }
+  window.tgcSeal('handoff', {
+    to: 'bench',
+    subject: String(subject || 'From Excelsior').slice(0, 72),
+    body: String(body),
+    facet: facet || 'session',
+    privacy: 'full'
+  });
+  toast('Sent to the Bench · waiting in the inbox');
+}
+
+/* Print/export popups are about:blank, so a relative href is a coin flip.
+   Resolve the house faces against this page once and interpolate. */
+const FONTS_CSS = new URL('../fonts/fonts.css', location.href).href;
+
+/* ──────────────────────────────────────────────────────────────
+   EMPTY STATES - each says what the surface is and what to do first
+────────────────────────────────────────────────────────────── */
+const EMPTY = {
+  analyse: `<div class="ex-empty">
+    <div class="ex-empty__kicker">the mirror is quiet</div>
+    <div class="ex-empty__title">Nothing to read yet</div>
+    <div class="ex-empty__line">Paste a draft on the left. The engine reads it the way a busy
+    customer does &mdash; urgency, hedging, passive voice, jargon, where the ask sits &mdash;
+    and answers as you type. Nothing leaves this machine.</div>
+  </div>`,
+  template: `<div class="ex-empty">
+    <div class="ex-empty__kicker">five artefacts</div>
+    <div class="ex-empty__title">Choose a template</div>
+    <div class="ex-empty__line">Call script, coaching debrief, session plan, email brief,
+    feedback form. Pick one above and it opens a form. Fill what you know and leave the
+    rest &mdash; the draft keeps itself.</div>
+  </div>`,
+  history: `<div class="ex-empty ex-empty--tight">
+    <div class="ex-empty__kicker">nothing saved yet</div>
+    <div class="ex-empty__line">Score the card on the left, name it, and save. Saved
+    assessments stack here, so a seller\'s arc across sessions stays visible.</div>
+  </div>`
+};
+
 function runAnalyse(text) {
   clearTimeout(_analyseTimer);
   _analyseTimer = setTimeout(() => _runAnalyse(text), 500);
@@ -6136,7 +6142,7 @@ function _runAnalyse(text) {
     analyseHeadline.querySelector('.ex-headline-strip__text').textContent = 'Paste or type a message to analyse...';
     analyseHeadline.querySelector('.ex-headline-strip__conf').textContent = '';
     analyseDomainChips.innerHTML = '';
-    analyseFindings.innerHTML = '';
+    analyseFindings.innerHTML = EMPTY.analyse;
     analyseTryThis.innerHTML = '';
     analyseShip.innerHTML = '';
     analyseCoverage.innerHTML = '';
@@ -6231,6 +6237,7 @@ function _runAnalyse(text) {
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
       <div class="ex-mirror__persona">${m.persona}</div>
       <button class="ex-copy-btn" id="copyMirrorBtn">⎘ Copy mirror</button>
+      <button class="ex-copy-btn" id="benchMirrorBtn">↗ Send to Bench</button>
     </div>
     <div class="ex-mirror__block">
       <div class="ex-mirror__block-title">First Read</div>
@@ -6255,8 +6262,12 @@ function _runAnalyse(text) {
   `;
   const cb = document.getElementById('copyMirrorBtn');
   if (cb) cb.addEventListener('click', () => copyText(mirrorSummary, cb));
+  const bb = document.getElementById('benchMirrorBtn');
+  if (bb) bb.addEventListener('click', () => sendToBench(
+    'Analysis · ' + (result.headline?.text || m.persona), mirrorSummary, 'draft'));
 }
 analyseInput.addEventListener('input', () => runAnalyse(analyseInput.value));
+if (!analyseInput.value.trim()) analyseFindings.innerHTML = EMPTY.analyse;
 
 /* ──────────────────────────────────────────────────────────────
    BUILD MODE - Templates
@@ -6277,6 +6288,7 @@ function renderTemplatePicker() {
   templatePicker.querySelectorAll('.ex-template-card').forEach(card => {
     card.addEventListener('click', () => selectTemplate(card.dataset.tid));
   });
+  if (!selectedTemplate) templateFormArea.innerHTML = EMPTY.template;
 }
 
 function selectTemplate(tid) {
@@ -7630,30 +7642,6 @@ document.addEventListener('keydown', (e) => {
 });
 
 /* ──────────────────────────────────────────────────────────────
-   v1.3.9 - CROSS-APP LAUNCHER
-────────────────────────────────────────────────────────────── */
-const APP_URLS = {
-  excelsior: window.location.href,
-  mfcoach: 'http://localhost:3001/',
-  mfping:  'http://localhost:3002/',
-  mfsync:  'http://localhost:3003/',
-};
-document.getElementById('launcherBtn').addEventListener('click', (e) => {
-  e.stopPropagation();
-  document.getElementById('launcherMenu').classList.toggle('is-open');
-});
-document.addEventListener('click', () => document.getElementById('launcherMenu').classList.remove('is-open'));
-document.querySelectorAll('[data-launcher]').forEach(b => {
-  b.addEventListener('click', (e) => {
-    const target = b.dataset.launcher;
-    document.getElementById('launcherMenu').classList.remove('is-open');
-    if (target === 'excelsior') { switchMode('landing'); return; }
-    const url = APP_URLS[target];
-    if (url) window.open(url, '_blank');
-  });
-});
-
-/* ──────────────────────────────────────────────────────────────
    v1.3.7 - BRAND KIT EDITOR
 ────────────────────────────────────────────────────────────── */
 function getCustomVariants() { return persistGet('custom-variants', {}) || {}; }
@@ -7992,7 +7980,7 @@ document.getElementById('cohortClearBtn').addEventListener('click', () => {
 document.getElementById('cohortPrintBtn').addEventListener('click', () => {
   const cohort = getCohort();
   if (!cohort.length) { toast('Empty cohort', true); return; }
-  const css = `body{font-family:Crimson Pro,Georgia,serif;padding:24pt;color:#1a1a18;} h1{font-family:Playfair Display,serif;font-size:24pt;margin-bottom:14pt;} table{width:100%;border-collapse:collapse;margin-top:12pt;} th,td{padding:8pt;border-bottom:1px solid #ccc;text-align:left;font-size:11pt;} th{background:#f4eee0;text-transform:uppercase;font-size:9pt;letter-spacing:0.05em;} td.score{font-family:DM Mono,monospace;font-weight:600;text-align:center;}`;
+  const css = `@import url('${FONTS_CSS}');body{font-family:'Cormorant Garamond',Georgia,serif;padding:24pt;color:#1a1a18;} h1{font-family:Playfair Display,serif;font-size:24pt;margin-bottom:14pt;} table{width:100%;border-collapse:collapse;margin-top:12pt;} th,td{padding:8pt;border-bottom:1px solid #ccc;text-align:left;font-size:11pt;} th{background:#f4eee0;text-transform:uppercase;font-size:9pt;letter-spacing:0.05em;} td.score{font-family:DM Mono,monospace;font-weight:600;text-align:center;}`;
   const w = window.open('','_blank','width=900,height=900');
   const pillars = ASSESS_CRITERIA.map(p => p.pillar);
   const rows = cohort.map(p => {
@@ -8087,12 +8075,12 @@ document.getElementById('docPrintBtn').addEventListener('click', () => {
   if (!docElements.length) { toast('Empty doc', true); return; }
   const html = docElements.map(renderElementForPrint).join('');
   const css = `
-    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,700;1,400;1,700&family=DM+Mono:wght@500&family=Playfair+Display:ital,wght@0,900;1,900&display=swap');
+    @import url('${FONTS_CSS}');
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-    body{background:#fff;color:#1a1a18;font-family:'Crimson Pro',Georgia,serif;font-size:14pt;line-height:1.6;max-width:680px;margin:0 auto;padding:48px 32px;}
+    body{background:#fff;color:#1a1a18;font-family:'Cormorant Garamond',Georgia,serif;font-size:14pt;line-height:1.6;max-width:680px;margin:0 auto;padding:48px 32px;}
     .p-heading{font-family:'Playfair Display',serif;font-size:36pt;font-weight:900;margin:14pt 0 8pt;}
     .p-heading.is-large{font-size:56pt;text-align:center;}
-    .p-subheading{font-family:'Crimson Pro',serif;font-style:italic;font-size:18pt;color:#8b2c0e;margin:6pt 0;}
+    .p-subheading{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18pt;color:#8b2c0e;margin:6pt 0;}
     .p-body{margin-bottom:10pt;}
     .p-dropcap{margin-bottom:10pt;}
     .p-dropcap::first-letter{font-family:'Playfair Display',serif;font-weight:900;font-style:italic;color:#8b2c0e;font-size:64pt;float:left;line-height:0.85;padding:4pt 8pt 0 0;}
@@ -8284,9 +8272,9 @@ function printDeck() {
     return `<section class="slide" data-layout="${slide.layout}"><div class="slide-num">${i+1} / ${slidesDeck.length}</div><div class="slide-inner ${isTitle?'is-title':''}">${body}</div><div class="slide-footer">Excelsior · theGuide.club</div></section>`;
   }).join('');
   const css = `
-    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,700;1,400;1,700&family=DM+Mono:wght@500&family=Playfair+Display:ital,wght@0,900;1,900&display=swap');
+    @import url('${FONTS_CSS}');
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-    body{background:#f4eee0;font-family:'Crimson Pro',Georgia,serif;color:#1a1a18;}
+    body{background:#f4eee0;font-family:'Cormorant Garamond',Georgia,serif;color:#1a1a18;}
     .slide{
       width:100vw;height:100vh;
       padding:48px 64px;
@@ -8319,10 +8307,10 @@ function printDeck() {
     /* Element renderers */
     .p-heading{font-family:'Playfair Display',serif;font-weight:900;font-size:48px;line-height:1.05;letter-spacing:-0.02em;color:#1a1a18;}
     .p-heading.is-large{font-size:84px;text-align:center;}
-    .p-subheading{font-family:'Crimson Pro',serif;font-style:italic;font-size:24px;color:#8b2c0e;line-height:1.4;}
+    .p-subheading{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:24px;color:#8b2c0e;line-height:1.4;}
     .is-title .p-subheading{text-align:center;font-size:28px;margin-top:8px;}
-    .p-body{font-family:'Crimson Pro',serif;font-size:20px;line-height:1.55;}
-    .p-dropcap{font-family:'Crimson Pro',serif;font-size:20px;line-height:1.55;}
+    .p-body{font-family:'Cormorant Garamond',serif;font-size:20px;line-height:1.55;}
+    .p-dropcap{font-family:'Cormorant Garamond',serif;font-size:20px;line-height:1.55;}
     .p-dropcap::first-letter{font-family:'Playfair Display',serif;font-weight:900;font-style:italic;color:#8b2c0e;font-size:80px;float:left;line-height:0.85;padding:4px 12px 0 0;}
     .p-pullquote{padding:14px 20px 14px 36px;border-left:3px double #8b2c0e;font-style:italic;font-size:22px;line-height:1.45;position:relative;}
     .p-pullquote::before{content:'"';position:absolute;top:-12px;left:8px;font-family:'Playfair Display',serif;font-size:56px;color:#8b2c0e;opacity:0.5;line-height:1;}
@@ -8358,11 +8346,11 @@ function printPillar() {
   if (!content || content.includes('Select a pillar')) { toast('Open a pillar first', true); return; }
   const title = facilitateContent.querySelector('h2')?.textContent || 'Excelsior Pillar';
   const css = `
-    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,700;1,400;1,700&family=DM+Mono:wght@500&family=Playfair+Display:ital,wght@0,900;1,900&display=swap');
+    @import url('${FONTS_CSS}');
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
     body{
       background:#fff;color:#1a1a18;
-      font-family:'Crimson Pro',Georgia,serif;font-size:14pt;line-height:1.6;
+      font-family:'Cormorant Garamond',Georgia,serif;font-size:14pt;line-height:1.6;
       max-width:680px;margin:0 auto;padding:48px 32px;
     }
     h2{font-family:'Playfair Display',serif;font-size:36pt;font-weight:900;line-height:1.05;margin-bottom:12pt;}
@@ -8798,7 +8786,7 @@ function renderHistory() {
       <span style="color:var(--ex-gold);font-weight:600;">${h.pct}%</span>
       <span style="color:var(--ex-text-muted);">${h.date}</span>
     </div>
-  `).join('') || '<div style="font-size:12px;color:var(--ex-text-muted);padding:8px;">No saved assessments yet.</div>';
+  `).join('') || EMPTY.history;
 }
 
 function clearScore() {
@@ -8817,6 +8805,25 @@ function printScore() {
 document.getElementById('saveScoreBtn').addEventListener('click', saveScore);
 document.getElementById('clearScoreBtn').addEventListener('click', clearScore);
 document.getElementById('printScoreBtn').addEventListener('click', printScore);
+document.getElementById('benchScoreBtn').addEventListener('click', () => {
+  const name = document.getElementById('assessName').value.trim();
+  const marked = Object.keys(scores).length;
+  if (!marked) { toast('Score the card first', true); return; }
+  const total = Object.values(scores).reduce((a, b) => a + b, 0);
+  const pct = Math.round((total / (marked * 5)) * 100);
+  /* scorecard keys are `<pillar name>_<criterion>` - ASSESS_CRITERIA's shape,
+     not CURRICULUM's ids - so the breakdown has to be built from the same list */
+  const lines = ASSESS_CRITERIA.map(p => {
+    const keys = p.criteria.map(c => p.pillar + '_' + c).filter(k => scores[k]);
+    if (!keys.length) return null;
+    const sum = keys.reduce((a, k) => a + scores[k], 0);
+    return p.pillar + ': ' + sum + '/' + (keys.length * 5) + '  (' + keys.length + ' of ' + p.criteria.length + ' marked)';
+  }).filter(Boolean);
+  sendToBench(
+    'Scorecard · ' + (name || 'unnamed') + ' · ' + pct + '%',
+    ['PARTICIPANT: ' + (name || 'unnamed'), 'OVERALL: ' + pct + '% (' + marked + ' of 20 criteria marked)', '', lines.join('\n')].join('\n'),
+    'session');
+});
 
 // Hydrate persisted state (Phase A.3)
 const savedScores = persistGet('current-scores', null);
@@ -8832,53 +8839,6 @@ updateScoreSummary();
 renderHistory();
 renderSlideCanvas();
 renderSlideDeck();
-
-/* ──────────────────────────────────────────────────────────────
-   DEMO FLAG (Phase A.4)
-────────────────────────────────────────────────────────────── */
-const DEMO_TEXT = "Hi team, just wanted to follow up on the deliverables from last week. I think we should probably leverage our bandwidth to synergise the ecosystem moving forward. It was felt that perhaps we could circle back on this by end of week. Hope this helps.";
-const DEMO_TEMPLATE_DATA = {
-  'call-script': {
-    objective: 'Qualify the prospect and book a follow-up demo',
-    opener: 'Hi [Name], thanks for taking the time today. Before I dive in, what made you say yes to this call?',
-    questions: 'What\'s driving the evaluation right now?\nWhat have you tried so far?\nWho else is involved in the decision?\nWhat would success look like 6 months from now?',
-    objections: 'Too expensive - explore what "expensive" means relative to the cost of inaction\nNot the right time - clarify what makes timing "right"\nNeed to think about it - uncover the specific concern',
-    close: 'Based on what you\'ve shared, the next step would be a 30-minute demo with our solutions team. Does Thursday at 2pm work?',
-  },
-};
-const demoBtn = document.getElementById('demoBtn');
-function applyDemoState() {
-  demoBtn.classList.toggle('is-on', demoOn);
-  demoBtn.textContent = demoOn ? '✓ DEMO' : 'DEMO';
-  if (demoOn) {
-    if (!analyseInput.value.trim()) {
-      analyseInput.value = DEMO_TEXT;
-      analyseInput.dispatchEvent(new Event('input'));
-    }
-    // Pre-fill call script if no existing draft
-    if (!persistGet('template-draft-call-script', null)) {
-      persistSet('template-draft-call-script', DEMO_TEMPLATE_DATA['call-script']);
-    }
-    // Seed a starter deck if empty
-    if (!slidesDeck.length) {
-      slidesDeck = [
-        { layout:'title', title:'Excelsior Sales Training', subtitle:'A 5-Pillar Framework', body:'' },
-        { layout:'agenda', title:'Today\'s Session', subtitle:'', body:'Foundation\nConversation\nInfluence\nCommunication\nPractice' },
-        { layout:'summary', title:'Key Takeaways', subtitle:'', body:'Lead with the ask\nQuestions > Statements\nOwn your view - no hedging' },
-      ];
-      currentSlideIdx = 0;
-      persistSet('slides-deck', slidesDeck);
-      renderSlideCanvas(); renderSlideDeck();
-    }
-  }
-}
-demoBtn.addEventListener('click', () => {
-  demoOn = !demoOn;
-  localStorage.setItem('ex-coach-demo', demoOn ? '1' : '0');
-  applyDemoState();
-  toast(demoOn ? 'Demo mode on' : 'Demo mode off');
-});
-applyDemoState();
 
 /* ──────────────────────────────────────────────────────────────
    LANDING PAGE (Phase C)
@@ -8909,10 +8869,7 @@ function renderLandingPillars() {
 }
 renderLandingPillars();
 document.getElementById('landingStartBtn').addEventListener('click', () => switchMode('analyse'));
-document.getElementById('landingDemoBtn').addEventListener('click', () => {
-  if (!demoOn) { demoOn = true; localStorage.setItem('ex-coach-demo','1'); applyDemoState(); }
-  switchMode('analyse');
-});
+document.getElementById('landingLibraryBtn').addEventListener('click', () => switchMode('library'));
 document.querySelectorAll('[data-mode-jump]').forEach(card => {
   card.addEventListener('click', () => switchMode(card.dataset.modeJump));
 });
@@ -9033,8 +8990,8 @@ let cmdItems = [];
 function buildCmdItems() {
   const items = [];
   // Modes
-  ['landing','analyse','build','facilitate','assess'].forEach((m, i) => {
-    items.push({ type:'MODE', label: m.charAt(0).toUpperCase()+m.slice(1), action: () => switchMode(m), shortcut: '^'+i });
+  MODES.forEach(m => {
+    items.push({ type:'MODE', label: m.label, action: () => switchMode(m.id), shortcut: m.alt ? '\u2325'+m.alt : '' });
   });
   // Pillars
   CURRICULUM.forEach(p => {
@@ -9049,7 +9006,6 @@ function buildCmdItems() {
     items.push({ type:'TEMPLATE', label: t.name, action: () => { switchMode('build'); setTimeout(()=>selectTemplate(t.id), 50); } });
   });
   // Actions
-  items.push({ type:'ACTION', label: 'Toggle Demo Mode', action: () => document.getElementById('demoBtn').click() });
   items.push({ type:'ACTION', label: 'Toggle Notes Drawer', shortcut: '^/', action: () => toggleNotesDrawer() });
   items.push({ type:'ACTION', label: 'Switch Theme (Press / Cream)', action: () => {
     const cur = document.documentElement.dataset.theme;

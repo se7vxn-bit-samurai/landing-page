@@ -3,7 +3,7 @@
    1 · derives the app id from its own filename
    2 · storage shim · engages ONLY where localStorage is blocked;
        persists to the shell via tgc.ls.persist postMessage
-   3 · key relay · Esc / Ctrl+K / Ctrl+1-4 reach the shell
+   3 · key relay · Esc / Ctrl+K / Ctrl+1-6 reach the shell
    ═══════════════════════════════════════════ */
 /* the portable build presets __TGC_APP_ID before inlining this file (blob URLs have no filename) */
 window.__TGC_APP_ID = window.__TGC_APP_ID || (location.pathname.split('/').pop() || 'app').replace(/\.html$/, '');
@@ -38,6 +38,7 @@ window.tgcOnMissive = function (fn) {
   var MAP = {
     ping:  { night: 'pulse', twilight: 'slate', day: 'linen', pop: 'paper' },
     notes: { night: 'pulse', twilight: 'slate', day: 'linen', pop: 'paper' },
+    bench: { night: 'pulse', twilight: 'slate', day: 'linen', pop: 'paper' },
     coach: { night: 'press', twilight: 'press', day: 'cream', pop: 'cream' }
   };
   window.addEventListener('message', function (e) {
@@ -99,7 +100,7 @@ try {
     if (e.ctrlKey || e.metaKey) {
       var k = (e.key || '').toLowerCase();
       if (k === 'k') { e.preventDefault(); send('ctrlk'); }
-      else if (k >= '1' && k <= '4') { e.preventDefault(); send('ctrl' + k); }
+      else if (k >= '1' && k <= '6') { e.preventDefault(); send('ctrl' + k); }
     }
   }, true);
 })();

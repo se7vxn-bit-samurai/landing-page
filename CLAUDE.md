@@ -30,8 +30,8 @@ First-run entry is owned by the **scroll landing** (`js/landing.js`, 3 snap sect
 ### Key Data Structures (top of `js/shell.js`)
 
 - **`WORLDS`** — The four worlds: `mirrorflow`, `excelsior`, `riftborn`, `altar`. Each has `name`, `motto`, `tagline`, `status`, `accent`, `palette`, `flagship`, and optionally `app` (the default app to launch for that world).
-- **`APPS`** — Individual apps (`ping`, `sync`, `coach`, `codex`, `notes`, `insight`). Each has `id`, `world`, `glyph`, `accent`, `status`, `version`, `localPath` (the iframe URL, `apps/<id>.html`), and `kind`.
-- **`DOCK`** — Ordered list of app IDs shown in the topbar braziers: `['ping','sync','coach','codex']`.
+- **`APPS`** — Individual apps (`ping`, `sync`, `notes`, `bench`, `coach`, `codex`, `insight`). Each has `id`, `world`, `glyph`, `accent`, `status`, `version`, `localPath` (the iframe URL, `apps/<id>.html`), and `kind`.
+- **`DOCK`** — Ordered list of app IDs reachable by `Ctrl+1–6`: `['ping','sync','notes','bench','coach','codex']`.
 - **`ORDER`** — Display order of worlds in the nave: `['mirrorflow','excelsior','riftborn','altar']`.
 - **`STATUS`** — Maps status strings (`building`, `active`, `open`, `soon`, `archived`) to display label and dot color.
 - **`ARCHIVE` / `EXCHANGE` / `IDEAS`** — sealed donors (undercroft), per-world bus contracts, and altar ideas.
@@ -55,7 +55,7 @@ First-run entry is owned by the **scroll landing** (`js/landing.js`, 3 snap sect
 
 ### The app bridge (`apps/bridge.js`)
 
-Every app's `<head>` loads `bridge.js` first. It derives the app id from the filename, installs a localStorage shim **only where storage is blocked** (persisting through the shell via `tgc.ls.persist` under `tgc.appstore.<id>`), relays Esc / Ctrl+K / Ctrl+1–4 to the shell, and applies the **theme handshake**: the shell broadcasts `{type:'tgc.theme', theme:'night'|'day'|'twilight'}` on mount/hello/sky-change and the bridge maps it onto each app's native skins (ping/notes: pulse·slate·linen; coach: press·cream; sync/codex opt out). When adding a new app, include this script tag and add a manifest entry to `APPS`.
+Every app's `<head>` loads `bridge.js` first. It derives the app id from the filename, installs a localStorage shim **only where storage is blocked** (persisting through the shell via `tgc.ls.persist` under `tgc.appstore.<id>`), relays Esc / Ctrl+K / Ctrl+1–6 to the shell, and applies the **theme handshake**: the shell broadcasts `{type:'tgc.theme', theme:'night'|'day'|'twilight'}` on mount/hello/sky-change and the bridge maps it onto each app's native skins (ping/notes: pulse·slate·linen; coach: press·cream; sync/codex opt out). When adding a new app, include this script tag and add a manifest entry to `APPS`.
 
 ### UI Sections (in DOM order)
 
@@ -88,7 +88,7 @@ The **satchel** (vestry) exports/imports every `tgc.*` key as one JSON file.
 
 ### Keyboard Shortcuts
 
-- `Ctrl+K` — command palette · `Ctrl+1–4` — switch DOCK apps
+- `Ctrl+K` — command palette · `Ctrl+1–6` — switch DOCK apps
 - `1`–`6` — open chambers (worlds, undercroft, vestry) from the nave
 - `←`/`→` — walk chambers · `Ctrl+←/→` — cycle warm frames · `H` — home · `Esc` — ascend/close
 
@@ -98,7 +98,7 @@ No CSS framework. Four skins via `:root[data-theme]` token overrides in `css/she
 
 ## Conventions
 
-- **Checks live in `tools/`** — `node tools/qc.mjs` (48 house checks) and `node tools/lens.mjs` (Ping's rule floor + a clean-prose ceiling). Both need a static server on `:8901` and Playwright installed locally; see `tools/README.md`. Run them before pushing anything that touches the shell or the Lens pack.
+- **Checks live in `tools/`** — `node tools/qc.mjs` (49 house checks) and `node tools/lens.mjs` (Ping's rule floor + a clean-prose ceiling). Both need a static server on `:8901` and Playwright installed locally; see `tools/README.md`. Run them before pushing anything that touches the shell or the Lens pack.
 - **No external runtime dependencies** — the shell and every app are self-contained. Fonts live in `fonts/`, Sync's spreadsheet libraries and Codex's Three.js in `vendor/` (see `vendor/README.md` before touching them). The only outbound call in the whole house is opt-in weather (Open-Meteo); the QC suite fails on any other external request.
 - **Status values** are `'building'`, `'active'`, or `'open'`; rendered via the `pip()` helper.
 - **App URLs** are set via `localPath` in each `APPS` entry — update these if app files move. An app declared with `status:'soon'` and `localPath:null` is a promise, not a build; the rites count it as declared rather than broken.
