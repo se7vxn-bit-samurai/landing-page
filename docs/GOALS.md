@@ -183,8 +183,20 @@ mechanism is already right — no work needed there.
       sections, `SHIFT NOTES` (239 KB) and `OT PLANNER UI` (231 KB) the largest.
       When the external work lands, the H1 playbook applies — split at the
       existing banners, then look for the deferral seams.
-- [ ] **H4 · Codex's other on-demand surfaces** — `weave-atlas` (129 KB) and
-      `reader-editor` (24 KB) behind their own openers.
+- [x] **H4 · Codex's other surfaces — investigated, and deliberately not built.**
+      The premise was wrong, the same way F3's was. `weave-atlas` (129 KB) is not a
+      per-view module: it reaches ids across **all five** views (atlas, globe, paths,
+      bridge, catalog) plus twelve outside any view, and `view-atlas` is the default
+      active view. It is Codex's main controller wearing a module's filename.
+      Deferring it would leave the app empty on open — it is not an on-demand surface
+      and never was.
+      That leaves `reader-editor` (24 KB), which genuinely is scoped to `view-catalog`
+      and could hang off `setView` like Three.js does. **It is not worth it.** 24 KB is
+      3% of Codex's remaining 749 KB, and buying it costs a loader plus a new failure
+      mode on a surface that currently cannot fail. The 153 KB headline was 129 KB of
+      my own bad reading.
+      *Codex's real remaining weight is its markup and controller, not a deferrable
+      library. Anything further there is a rewrite, not a load-order fix.*
 
 ## Phase G · MirrorFlow Insight
 
@@ -240,6 +252,23 @@ fiction, which is the thing Phase B2 and F1 both existed to remove.
       rites **8/8 · all rites held**. The automated sweep runs against a clean
       checkout of the merged commit and covers everything except delivery
       (DNS, TLS, Pages) — that part needs a real browser on the real domain
+
+## What the measurement says now
+
+After H1 and H2, and with Sync owned elsewhere:
+
+| App | Mount | Boot payload | Note |
+|---|---:|---:|---|
+| sync | 696 ms | 1 269 KB | owned outside this repo · H3 |
+| coach | 223 ms | 703 KB | **untouched · the next honest question** |
+| codex | 219 ms | 749 KB | mostly markup + controller now; no library left to defer |
+| ping | 143 ms | 353 KB | H1 |
+| notes | — | — | rebuilt by PR #13 |
+
+Coach has never been measured for *why* it weighs 703 KB, only that it does. That
+is the next place a real finding could be, and the H1/H2 playbook (find the thing
+that loads for everyone and is used by few) is the way to look. Not scheduled —
+it needs a look before it needs a plan.
 
 ## Horizon (not scheduled, kept on purpose)
 
