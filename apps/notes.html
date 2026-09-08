@@ -400,15 +400,21 @@ body::before {
 .mf-empty__line { font-size: 13px; line-height: 1.6; max-width: 48ch; margin: 0 auto; }
 .mf-empty__act { margin-top: var(--mf-s4); }
 
-/* ── compose · the slot that is honest about being empty ───────────── */
-.mf-slot { padding: var(--mf-s7) var(--mf-s6); text-align: center; }
-.mf-slot__list {
-  list-style: none; display: inline-grid; gap: 8px; text-align: left;
-  margin-top: var(--mf-s5);
-  font-family: var(--mf-mono); font-size: 11px;
-  letter-spacing: .06em; color: var(--mf-ink-3);
+/* ── the picked bar · what Capture hands to Compose ─────────────────── */
+.mf-picked {
+  position: sticky; top: 0; z-index: 6;
+  display: none; align-items: center; gap: var(--mf-s2); flex-wrap: wrap;
+  margin-bottom: var(--mf-s4); padding: 10px var(--mf-s4);
+  background: var(--mf-surface); border: 1px solid var(--mf-accent);
+  border-radius: var(--mf-r-md); box-shadow: 0 4px 18px var(--mf-glow);
 }
-.mf-slot__list li::before { content: "— "; color: var(--mf-accent); }
+.mf-picked.is-on { display: flex; }
+.mf-picked__n {
+  font-family: var(--mf-mono); font-size: 11px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--mf-accent); margin-right: auto;
+}
+.mf-note[data-picked="true"] { border-color: var(--mf-accent); }
+.mf-note[data-picked="true"]::before { opacity: 1; }
 
 /* ── toast ─────────────────────────────────────────────────────────── */
 .mf-toast {
@@ -1713,6 +1719,13 @@ textarea.ex-input:focus, input.ex-input:focus, select.ex-input:focus {
         <button class="mf-btn" id="clearSearch" type="button" disabled>Clear</button>
         <button class="mf-btn mf-btn--primary" id="newNote" type="button">New note</button>
       </div>
+      <div class="mf-picked" id="pickedBar">
+        <span class="mf-picked__n" id="pickedCount">0 picked</span>
+        <button class="mf-btn" type="button" data-picked="doc">To a document</button>
+        <button class="mf-btn" type="button" data-picked="deck">To a deck</button>
+        <button class="mf-btn" type="button" data-picked="bench">To the Bench</button>
+        <button class="mf-btn" type="button" data-picked="clear">clear</button>
+      </div>
       <div class="mf-status" id="status">0 notes</div>
       <div class="mf-notes" id="notes"></div>
     </section>
@@ -1721,10 +1734,11 @@ textarea.ex-input:focus, input.ex-input:focus, select.ex-input:focus {
     <section class="mf-pane" id="paneCompose" aria-labelledby="composeTitle">
       <div class="mf-masthead">
         <div class="mf-masthead__corners" aria-hidden="true"><span></span></div>
-        <div class="mf-kicker">not built yet</div>
+        <div class="mf-kicker">where a note becomes something</div>
         <h1 class="mf-title" id="composeTitle">The <em>press</em></h1>
-        <p class="mf-lede">Where a note becomes something worth handing over &mdash; a deck, a
-          document, a page laid out properly.</p>
+        <p class="mf-lede">Slides and documents, laid out properly. Pick notes over in Capture
+          and send them here, or start from a blank layout &mdash; either way it ends up as
+          something you can hand over.</p>
       </div>
       <div class="mf-divider" aria-hidden="true">
         <svg width="44" height="14" viewBox="0 0 44 14" fill="currentColor">
@@ -1737,7 +1751,9 @@ textarea.ex-input:focus, input.ex-input:focus, select.ex-input:focus {
       <div class="ex-build-tabs">
         <div class="ex-build-tab is-active" data-build="slides">Slides</div>
         <div class="ex-build-tab" data-build="doc">Doc</div>
-        <button class="mf-btn" id="composeBrandBtn" style="margin-left:auto;">Brand kit</button>
+        <button class="mf-btn" id="liftSlideBtn" style="margin-left:auto;">Lift slide to a note</button>
+        <button class="mf-btn" id="liftDocBtn">Lift doc to a note</button>
+        <button class="mf-btn" id="composeBrandBtn">Brand kit</button>
       </div>
       <!-- Slides sub-panel -->
       <div class="ex-build-panel is-active" id="buildSlides">
@@ -2240,6 +2256,9 @@ textarea.ex-input:focus, input.ex-input:focus, select.ex-input:focus {
 
   let state = loadState();
   let query = "";
+  /* Which notes are picked for Compose. View state, not saved - a pick is a
+     gesture you are in the middle of, not something to find again tomorrow. */
+  const picked = new Set();
   let saveTimer = 0, toastTimer = 0, resizeFrame = 0;
   let lastDeleted = null;
   let lastSavedAt = Date.now();
@@ -2387,10 +2406,11 @@ textarea.ex-input:focus, input.ex-input:focus, select.ex-input:focus {
     const list = visible();
     stats(list.length);
     notesEl.innerHTML = list.length ? list.map(n => `
-      <article class="mf-note" data-id="${esc(n.id)}" data-pinned="${n.pinned}">
+      <article class="mf-note" data-id="${esc(n.id)}" data-pinned="${n.pinned}" data-picked="${picked.has(n.id)}">
         <div class="mf-note__top">
           <span class="mf-note__meta">${words(n.text)}w · ${ago(n.updatedAt)}</span>` +
           (n.source ? `<span class="mf-note__from">via ${esc(n.source)}</span>` : "") + `
+          <button class="mf-note__act ${picked.has(n.id) ? "is-on" : ""}" type="button" data-act="pick">${picked.has(n.id) ? "picked" : "pick"}</button>
           <button class="mf-note__act ${n.pinned ? "is-on" : ""}" type="button" data-act="pin">${n.pinned ? "pinned" : "pin"}</button>
           <button class="mf-note__act" type="button" data-act="copy">copy</button>
           <button class="mf-note__act" type="button" data-act="bench">bench</button>
@@ -2400,6 +2420,7 @@ textarea.ex-input:focus, input.ex-input:focus, select.ex-input:focus {
         <textarea class="mf-note__text" spellcheck="true" placeholder="Write a reusable note…">${esc(n.text)}</textarea>
       </article>`).join("") : emptyState();
 
+    renderPicked();
     notesEl.querySelectorAll(".mf-note__text").forEach(autoSize);
     if (opts.focusId) {
       const t = notesEl.querySelector(`[data-id="${CSS.escape(opts.focusId)}"] .mf-note__text`);
@@ -2608,6 +2629,11 @@ textarea.ex-input:focus, input.ex-input:focus, select.ex-input:focus {
     const note = state.notes.find(n => n.id === card.dataset.id);
     if (!note) return;
     const act = btn.dataset.act;
+    if (act === "pick") {
+      picked.has(note.id) ? picked.delete(note.id) : picked.add(note.id);
+      render();
+      return;
+    }
     if (act === "pin") {
       note.pinned = !note.pinned; note.updatedAt = Date.now();
       render({ focusId: note.id }); scheduleSave();
@@ -2617,6 +2643,128 @@ textarea.ex-input:focus, input.ex-input:focus, select.ex-input:focus {
     else if (act === "dup") duplicate(note);
     else if (act === "del") removeNote(note);
   });
+
+  /* ══════════════════════════════════════════════════════════════
+     THE SEAM · Capture hands work to Compose
+     parseMarkdownToElements() already turns text into exactly the element
+     shape the editor uses, and it reads plain prose as body text, so a note
+     that never saw a markdown character still crosses intact. These are the
+     crossings, not a second parser.
+  ══════════════════════════════════════════════════════════════ */
+  const pickedNotes = () =>
+    visible().filter(n => picked.has(n.id)).filter(n => n.text.trim());
+
+  function renderPicked() {
+    const bar = $("pickedBar");
+    /* Count what would actually be sent, not what is ticked: a search can hide a
+       picked note, and a bar promising three while sending two is a small lie. */
+    const n = pickedNotes().length;
+    bar.classList.toggle("is-on", picked.size > 0);
+    $("pickedCount").textContent = picked.size > n
+      ? n + " of " + picked.size + " picked in view"
+      : n + (n === 1 ? " note picked" : " notes picked");
+  }
+
+  /* A note's first line is its title; the rest is its body. */
+  function noteToElements(note) {
+    const lines = note.text.trim().split("\n");
+    const head = (lines.shift() || "").trim();
+    const rest = lines.join("\n").trim();
+    const els = [];
+    if (head) els.push({ id: uid(), type: "heading", text: head });
+    if (rest) els.push(...parseMarkdownToElements(rest));
+    return els.length ? els : [{ id: uid(), type: "body", text: note.text.trim() }];
+  }
+
+  function notesToDoc() {
+    const notes = pickedNotes();
+    if (!notes.length) return showToast("Nothing picked");
+    notes.forEach((n, i) => {
+      if (i) docElements.push({ id: uid(), type: "divider" });
+      docElements.push(...noteToElements(n));
+    });
+    persistSet("doc-elements", docElements);
+    renderDoc();
+    picked.clear();
+    switchPane("compose");
+    setBuildTab("doc");
+    render();
+    showToast(notes.length + (notes.length === 1 ? " note" : " notes") + " laid into the document");
+  }
+
+  function notesToDeck() {
+    const notes = pickedNotes();
+    if (!notes.length) return showToast("Nothing picked");
+    const first = slidesDeck.length;
+    notes.forEach(n => slidesDeck.push({ layout: "content", elements: noteToElements(n) }));
+    currentSlideIdx = first;
+    saveSlidesWithHistory();
+    renderSlideCanvas();
+    renderSlideDeck();
+    picked.clear();
+    switchPane("compose");
+    setBuildTab("slides");
+    render();
+    showToast(notes.length + (notes.length === 1 ? " note" : " notes") + " laid out as slides");
+  }
+
+  function pickedToBench() {
+    const notes = pickedNotes();
+    if (!notes.length) return showToast("Nothing picked");
+    notes.forEach(sendToBench);
+    picked.clear();
+    render();
+  }
+
+  $("liftSlideBtn").addEventListener("click", () => {
+    const s = slidesDeck[currentSlideIdx];
+    if (!s) return showToast("No slide selected");
+    liftToNote(s.elements, "Slide " + (currentSlideIdx + 1));
+  });
+  $("liftDocBtn").addEventListener("click", () => liftToNote(docElements, "The document"));
+
+  $("pickedBar").addEventListener("click", e => {
+    const b = e.target.closest("[data-picked]");
+    if (!b) return;
+    const what = b.dataset.picked;
+    if (what === "doc") notesToDoc();
+    else if (what === "deck") notesToDeck();
+    else if (what === "bench") pickedToBench();
+    else { picked.clear(); render(); }
+  });
+
+  /* ── the way back · elements to markdown ────────────────────────────
+     deckAsText() exists but is decorative - it emits § bullets and
+     SLIDE n [LAYOUT] banners, so nothing it writes can be read back. This
+     is a true inverse of parseMarkdownToElements, so a slide lifted to a
+     note can be sent straight back and land as the same elements. */
+  function elementsToMarkdown(els) {
+    const strip = t => String(t || "").replace(/<strong>(.*?)<\/strong>/g, "**$1**")
+                                      .replace(/<em>(.*?)<\/em>/g, "*$1*")
+                                      .replace(/<[^>]+>/g, "");
+    return (els || []).map(el => {
+      switch (el.type) {
+        case "heading":    return (el.size === "large" ? "# " : "## ") + strip(el.text);
+        case "subheading": return "### " + strip(el.text);
+        case "pullquote":  return "> " + strip(el.text);
+        case "bullets":    return (el.items || []).map(i => "- " + strip(i)).join("\n");
+        case "numbered":   return (el.items || []).map((i, k) => (k + 1) + ". " + strip(i)).join("\n");
+        case "divider":    return "---";
+        case "columns":    return strip(el.left) + "\n\n" + strip(el.right);
+        case "sourcetag":  return "*" + strip(el.text) + "*";
+        case "image":      return strip(el.caption);
+        case "body": case "dropcap": case "callout": return strip(el.text);
+        default: return "";
+      }
+    }).filter(Boolean).join("\n\n");
+  }
+
+  function liftToNote(els, what) {
+    const md = elementsToMarkdown(els).trim();
+    if (!md) return showToast("Nothing to lift");
+    addNote(md, { source: "compose" });
+    showToast(what + " lifted to a note");
+  }
 
   /* Shortcuts stay off Ctrl. apps/bridge.js relays Ctrl+K and Ctrl+1-4 up
      to the shell on capture without stopping propagation, so anything bound
@@ -2719,9 +2867,9 @@ textarea.ex-input:focus, input.ex-input:focus, select.ex-input:focus {
     title: () => ({
       layout: 'title',
       elements: [
-        { id: uid(), type: 'heading', text: 'Excelsior', size: 'large' },
+        { id: uid(), type: 'heading', text: 'Title', size: 'large' },
         { id: uid(), type: 'divider' },
-        { id: uid(), type: 'subheading', text: 'theGuide · A Collection of Practical Lessons' },
+        { id: uid(), type: 'subheading', text: 'A line that says what this is' },
       ],
     }),
     agenda: () => ({
@@ -2730,7 +2878,7 @@ textarea.ex-input:focus, input.ex-input:focus, select.ex-input:focus {
         { id: uid(), type: 'heading', text: 'Agenda' },
         { id: uid(), type: 'subheading', text: 'What we\'ll cover today' },
         { id: uid(), type: 'divider' },
-        { id: uid(), type: 'numbered', items: ['Foundation', 'Conversation', 'Influence', 'Communication', 'Practice'] },
+        { id: uid(), type: 'numbered', items: ['First thing', 'Second thing', 'Third thing'] },
       ],
     }),
     content: () => ({
@@ -4320,15 +4468,18 @@ textarea.ex-input:focus, input.ex-input:focus, select.ex-input:focus {
   });
 
   /* Build tab switching to wire Doc */
+  const BUILD_TABS = { templates:'buildTemplates', slides:'buildSlides', doc:'buildDoc' };
+  function setBuildTab(which) {
+    const pane = document.getElementById(BUILD_TABS[which]);
+    if (!pane) return;
+    document.querySelectorAll('.ex-build-tab').forEach(t =>
+      t.classList.toggle('is-active', t.dataset.build === which));
+    document.querySelectorAll('#panelBuild .ex-build-panel').forEach(p =>
+      p.classList.toggle('is-active', p === pane));
+    if (which === 'doc') renderDoc();
+  }
   document.querySelectorAll('.ex-build-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.ex-build-tab').forEach(t => t.classList.remove('is-active'));
-      document.querySelectorAll('#panelBuild .ex-build-panel').forEach(p => p.classList.remove('is-active'));
-      tab.classList.add('is-active');
-      const map = { templates:'buildTemplates', slides:'buildSlides', doc:'buildDoc' };
-      document.getElementById(map[tab.dataset.build]).classList.add('is-active');
-      if (tab.dataset.build === 'doc') renderDoc();
-    });
+    tab.addEventListener('click', () => setBuildTab(tab.dataset.build));
   });
 
   /* ──────────────────────────────────────────────────────────────
