@@ -16,7 +16,7 @@ const WORLDS = {
     palette:{bg:'#070d14',ink:'#eef0f5',accent:'#5dd9ff',fire:'#7df9e8'},
     desc:'The productivity arm, expressed as two instruments. Ping holds the moment: one mirror, one note back. Sync holds the long arc: continuity across days. Notes catches what falls between. Together: your voice, reflected and kept.'},
   excelsior:{name:'Excelsior',motto:'Ars Vendendi',tagline:'The editorial sales coach.',status:'active',version:'v2.7',
-    accent:'#d4a832',glyph:'E',flagship:true,app:'coach',appName:'Excelsior Coach',
+    accent:'#d4a832',glyph:'E',flagship:true,app:'excelsior',appName:'Excelsior',
     palette:{bg:'#17120b',ink:'#f4eee0',accent:'#d4a832',fire:'#e05c24'},
     desc:'A coaching atelier for sellers who think in arguments, not scripts. The flagship of the house: mindset, craft, and the art of the honest sale. Every session is an argument refined; every review, a rung on the ladder.'},
   riftborn:{name:'Riftborn',motto:'Inter Mvndos',tagline:'Fables, worlds & memory.',status:'active',version:'v2.0',
@@ -38,9 +38,9 @@ const APPS = {
   notes:{id:'notes',short:'Notes',name:'MirrorFlow Notes',world:'mirrorflow',glyph:'N',accent:'#a9b6c8',status:'active',version:'v4',
     kind:'The workbench',localPath:'apps/notes.html',
     desc:'Catch it before it goes, then shape it. Hands work to the Bench.'},
-  coach:{id:'coach',short:'Coach',name:'Excelsior Coach',world:'excelsior',glyph:'E',accent:'#d4a832',status:'active',version:'v2.7',
-    kind:'Editorial sales coach',localPath:'apps/coach.html',
-    desc:'Coaching for sellers who think in arguments.'},
+  excelsior:{id:'excelsior',short:'Excelsior',name:'Excelsior',world:'excelsior',glyph:'E',accent:'#d4a832',status:'active',version:'v2.8',
+    kind:'The editorial atelier',localPath:'apps/excelsior.html',
+    desc:'For sellers who think in arguments, not scripts.'},
   bench:{id:'bench',short:'Bench',name:'MirrorFlow Bench',world:'mirrorflow',glyph:'B',accent:'#8ec8b8',status:'building',version:'v1',
     kind:'The review desk',localPath:'apps/bench.html',
     desc:'Where work lands to be looked at. It sorts and stamps; it does not score.'},
@@ -52,7 +52,7 @@ const APPS = {
     desc:'Rituals, bibles, lore: sealed and canon.'}
 };
 window.TGC_APPS = APPS;            // apps live under apps/<id>.html · fetched on demand
-const DOCK = ['ping','sync','notes','bench','coach','codex'];   // Ctrl+1-6 · not the braziers, which track mounted frames
+const DOCK = ['ping','sync','notes','bench','excelsior','codex'];   // Ctrl+1-6 · not the braziers, which track mounted frames
 const ORDER = ['mirrorflow','excelsior','riftborn','altar'];
 const SKY_X = {mirrorflow:16,excelsior:36,riftborn:64,altar:84};
 const ARCHIVE = [
@@ -63,7 +63,7 @@ const ARCHIVE = [
   {name:'Excelsior Classic',version:'v0.0.9',sealed:'Feb 2026',to:'Coach',world:'excelsior',note:'The printed-dossier prototype. Now the Coach Library.'}
 ];
 const EXCHANGE = {
-  excelsior:{consumes:'none yet',produces:'theguide.exchange.v2 · handoff',note:'Coach hands an analysis or a scorecard to the Bench. It does not yet receive; the old claim that it did was a promise, not a build.'},
+  excelsior:{consumes:'none yet',produces:'theguide.exchange.v2 · handoff',note:'Excelsior hands an analysis or a scorecard to the Bench. It does not yet receive; the old claim that it did was a promise, not a build.'},
   mirrorflow:{consumes:'theguide.exchange.v2 · handoff (Notes, Bench)',produces:'theguide.exchange.v2 · handoff & digest (Ping, Sync, Notes, Bench)',note:'The Bench receives what the others lay down; Notes both seals and receives, and hands a piece back when it is time to work on it.'},
   riftborn:{consumes:'none',produces:'none',note:'The Codex keeps memory, not correspondence. The game gets no bus until the rift opens.'},
   altar:{consumes:'none',produces:'none',note:'Ideas have no bus. An idea earns one by becoming an app.'}
@@ -92,7 +92,7 @@ const IDEAS = [
   {name:'Undercroft Exchange',stage:'prototype',desc:'A harvest surface: browsing donor engines and porting them as modules. Handoff received.',dest:'Shell'},
   {name:'Artemis',stage:'drafting',desc:'Unnamed venture, still veiled. A folder on the workshop floor.',dest:'unplaced'}
 ];
-/* demo packet retired · the exchange carries real missives only (Ping → hand to Coach) */
+/* demo packet retired · the exchange carries real missives only (Ping → the Bench) */
 const KEYS = {session:'tgc.shell2.session',inbox:'tgc.shell2.inbox',demo:'tgc.shell2.demoDone',
   altar:'tgc.shell2.altar',gate:'tgc.shell2.gate',last:'tgc.shell2.last',settings:'tgc.shell2.settings',
   visits:'tgc.shell2.visits', digests:'tgc.shell2.digests'};
@@ -521,10 +521,10 @@ function runRites(){
   // the contract itself · every kind reads, every malformed packet is refused
   let contractOk = false;
   try{
-    contractOk = Object.keys(KINDS).every(k=>readPacket({contract:'theguide.exchange.v2',kind:k,from:'ping',to:'coach'}).ok)
-      && readPacket({contract:'theguide.exchange.v1',from:'ping',to:'coach'}).kind==='handoff'
-      && !readPacket({contract:'not.a.contract',from:'ping',to:'coach'}).ok
-      && !readPacket({contract:'theguide.exchange.v2',kind:'nonsense',to:'coach'}).ok
+    contractOk = Object.keys(KINDS).every(k=>readPacket({contract:'theguide.exchange.v2',kind:k,from:'ping',to:'excelsior'}).ok)
+      && readPacket({contract:'theguide.exchange.v1',from:'ping',to:'excelsior'}).kind==='handoff'
+      && !readPacket({contract:'not.a.contract',from:'ping',to:'excelsior'}).ok
+      && !readPacket({contract:'theguide.exchange.v2',kind:'nonsense',to:'excelsior'}).ok
       && !readPacket({contract:'theguide.exchange.v2',kind:'handoff',to:'no-such-app'}).ok;
   }catch(e){}
   rites.push(['exchange contract','v2 kinds read · malformed refused',contractOk]);
@@ -710,7 +710,7 @@ function moduleExcelsior(w){ return `
     <div class="ex-d"><div class="r">II</div><div class="t">Mindset</div><div class="s">The seller's posture: calm, curious, never needy.</div></div>
     <div class="ex-d"><div class="r">III</div><div class="t">Craft</div><div class="s">Delivery: timing, language, the review after the call.</div></div>
   </div>
-  <div class="mf-pair" style="grid-template-columns:1fr;margin-top:22px">${appCard('coach')}</div>
+  <div class="mf-pair" style="grid-template-columns:1fr;margin-top:22px">${appCard('excelsior')}</div>
   <div class="ex-ladder">the ladder · declared rung: <b style="color:var(--cacc)">${w.version}</b>
     <div class="rungs">${[...Array(LADDER.total)].map((_,k)=>`<span class="rung ${k<LADDER.lit?'lit':''}"></span>`).join('')}</div>
     <div class="cap"><span>prototype</span><span>a stated intent, not a measurement</span><span>v3.0</span></div>

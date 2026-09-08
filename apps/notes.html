@@ -2161,7 +2161,7 @@ textarea.ex-input:focus, input.ex-input:focus, select.ex-input:focus {
     <input type="text" id="bkFireHex" value="#8b2c0e" style="width:80px;padding:6px;font-family:var(--ex-font-mono);font-size:11px;"/>
   </div>
   <div class="ex-brandkit-preview" id="bkPreview">
-    <div class="ex-brandkit-preview__title">Excelsior <span>Coach</span></div>
+    <div class="ex-brandkit-preview__title">MirrorFlow <span>Notes</span></div>
     <div style="font-family:var(--ex-font-mono);font-size:9px;letter-spacing:0.2em;margin-top:4px;">PREVIEW</div>
   </div>
   <div class="ex-brandkit-row" style="margin-top:16px;">
@@ -4314,7 +4314,7 @@ textarea.ex-input:focus, input.ex-input:focus, select.ex-input:focus {
     const w = window.open('', '_blank', 'width=820,height=900');
     if (!w) { toast('Pop-up blocked', true); return; }
     w.document.open();
-    w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>Excelsior Doc - print</title><style>${css}</style></head><body>${html}<div class="footer">Excelsior Coach · theGuide.club · Selvan K. Naicker</div><script>setTimeout(()=>window.print(),400);</scr`+`ipt></body></html>`);
+    w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>Document - print</title><style>${css}</style></head><body>${html}<div class="footer">MirrorFlow Notes · theGuide.club</div><script>setTimeout(()=>window.print(),400);</scr`+`ipt></body></html>`);
     w.document.close();
     toast('Print preview opened');
   });
@@ -4484,7 +4484,7 @@ textarea.ex-input:focus, input.ex-input:focus, select.ex-input:focus {
       const slide = migrateSlide(s);
       const isTitle = slide.layout === 'title';
       const body = (slide.elements||[]).map(renderElementForPrint).join('');
-      return `<section class="slide" data-layout="${slide.layout}"><div class="slide-num">${i+1} / ${slidesDeck.length}</div><div class="slide-inner ${isTitle?'is-title':''}">${body}</div><div class="slide-footer">Excelsior · theGuide.club</div></section>`;
+      return `<section class="slide" data-layout="${slide.layout}"><div class="slide-num">${i+1} / ${slidesDeck.length}</div><div class="slide-inner ${isTitle?'is-title':''}">${body}</div><div class="slide-footer">theGuide.club</div></section>`;
     }).join('');
     const css = `
       @import url('${FONTS_CSS}');
@@ -4548,7 +4548,7 @@ textarea.ex-input:focus, input.ex-input:focus, select.ex-input:focus {
         .slide{border:none;width:297mm;height:210mm;}
       }
     `;
-    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>Excelsior Deck - print</title><style>${css}</style></head><body>${slidesHtml}<script>setTimeout(()=>window.print(),400);</scr`+`ipt></body></html>`;
+    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>Deck - print</title><style>${css}</style></head><body>${slidesHtml}<script>setTimeout(()=>window.print(),400);</scr`+`ipt></body></html>`;
     const w = window.open('', '_blank', 'width=1024,height=720');
     if (!w) { toast('Pop-up blocked - allow pop-ups to print', true); return; }
     w.document.open(); w.document.write(html); w.document.close();

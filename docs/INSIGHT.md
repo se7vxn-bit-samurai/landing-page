@@ -115,8 +115,8 @@ anything.
 `Pulse` (in `js/shell.js`) was built to report only true things. Insight is its
 first real feed beyond visit stamps.
 
-### 5 · A handoff to Excelsior Coach
-`tgcSeal('handoff', { to:'coach' })` carrying a period's error profile — *"here is
+### 5 · A handoff to Excelsior
+`tgcSeal('handoff', { to:'excelsior' })` carrying a period's error profile — *"here is
 what I keep getting wrong, coach me on it."* The cross-arm loop MirrorFlow and
 Excelsior were always meant to close.
 

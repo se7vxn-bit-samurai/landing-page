@@ -103,10 +103,10 @@ check('handshake: ping wears night → pulse', await page.evaluate(() => documen
 await page.evaluate(() => setThemeMode('pop')); await page.waitForTimeout(1300);
 check('handshake: live sky change → paper', await page.evaluate(() => document.querySelector('iframe[data-shell-app="ping"]').contentDocument.documentElement.dataset.theme) === 'paper');
 await page.evaluate(() => setThemeMode('night')); await page.waitForTimeout(1000);
-await page.evaluate(() => Frame.enter('coach'));
+await page.evaluate(() => Frame.enter('excelsior'));
 await page.waitForFunction(() => !document.getElementById('veil').classList.contains('on'), null, { timeout: 25000 });
 await page.waitForTimeout(1300);
-check('handshake: coach wears night → press', await page.evaluate(() => document.querySelector('iframe[data-shell-app="coach"]').contentDocument.documentElement.dataset.theme) === 'press');
+check('handshake: excelsior wears night → press', await page.evaluate(() => document.querySelector('iframe[data-shell-app="excelsior"]').contentDocument.documentElement.dataset.theme) === 'press');
 await page.evaluate(() => Frame.ascend());
 check('visit stamps recorded', await page.evaluate(() => Object.keys(JSON.parse(localStorage.getItem('tgc.shell2.visits')||'{}')).length >= 2));
 
@@ -137,13 +137,13 @@ check('laid idea persists + names its ember',
 
 // ─── EXCHANGE v2 ───
 const send = pkt => page.evaluate(k => window.postMessage({ type:'tgc.exchange.send', packet:k }, '*'), pkt);
-await send({ contract:'bogus', from:'ping', to:'coach' }); await page.waitForTimeout(220);
+await send({ contract:'bogus', from:'ping', to:'excelsior' }); await page.waitForTimeout(220);
 check('malformed packet refused with a reason',
   await page.evaluate(() => Bus.queue.length) === 0 &&
   (await page.evaluate(() => document.getElementById('toast').textContent)).includes('must declare'));
-await send({ contract:'theguide.exchange.v2', kind:'handoff', from:'ping', to:'coach', subject:'QC handoff' });
+await send({ contract:'theguide.exchange.v2', kind:'handoff', from:'ping', to:'excelsior', subject:'QC handoff' });
 await send({ contract:'theguide.exchange.v2', kind:'digest',  from:'sync', to:'notes', subject:'QC digest' });
-await send({ contract:'theguide.exchange.v2', kind:'receipt', from:'coach', subject:'QC receipt' });
+await send({ contract:'theguide.exchange.v2', kind:'receipt', from:'excelsior', subject:'QC receipt' });
 await send({ contract:'theguide.exchange.v1', from:'notes', to:'ping', subject:'QC legacy v1' });
 await page.waitForTimeout(450);
 check('handoffs + receipts queue, legacy v1 accepted', await page.evaluate(() => Bus.queue.length) === 3);

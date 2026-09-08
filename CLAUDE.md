@@ -30,8 +30,8 @@ First-run entry is owned by the **scroll landing** (`js/landing.js`, 3 snap sect
 ### Key Data Structures (top of `js/shell.js`)
 
 - **`WORLDS`** — The four worlds: `mirrorflow`, `excelsior`, `riftborn`, `altar`. Each has `name`, `motto`, `tagline`, `status`, `accent`, `palette`, `flagship`, and optionally `app` (the default app to launch for that world).
-- **`APPS`** — Individual apps (`ping`, `sync`, `notes`, `bench`, `coach`, `codex`, `insight`). Each has `id`, `world`, `glyph`, `accent`, `status`, `version`, `localPath` (the iframe URL, `apps/<id>.html`), and `kind`.
-- **`DOCK`** — Ordered list of app IDs bound to Ctrl+1–6: `['ping','sync','notes','bench','coach','codex']`. Note this is *not* the braziers — those render whichever frames are currently mounted (`Frame.order`), capped by the LRU.
+- **`APPS`** — Individual apps (`ping`, `sync`, `notes`, `bench`, `excelsior`, `codex`, `insight`). Each has `id`, `world`, `glyph`, `accent`, `status`, `version`, `localPath` (the iframe URL, `apps/<id>.html`), and `kind`.
+- **`DOCK`** — Ordered list of app IDs bound to Ctrl+1–6: `['ping','sync','notes','bench','excelsior','codex']`. Note this is *not* the braziers — those render whichever frames are currently mounted (`Frame.order`), capped by the LRU.
 - **`ORDER`** — Display order of worlds in the nave: `['mirrorflow','excelsior','riftborn','altar']`.
 - **`STATUS`** — Maps status strings (`building`, `active`, `open`, `soon`, `archived`) to display label and dot color.
 - **`ARCHIVE` / `EXCHANGE` / `IDEAS`** — sealed donors (undercroft), per-world bus contracts, and altar ideas.
@@ -55,7 +55,7 @@ First-run entry is owned by the **scroll landing** (`js/landing.js`, 3 snap sect
 
 ### The app bridge (`apps/bridge.js`)
 
-Every app's `<head>` loads `bridge.js` first. It derives the app id from the filename, installs a localStorage shim **only where storage is blocked** (persisting through the shell via `tgc.ls.persist` under `tgc.appstore.<id>`), relays Esc / Ctrl+K / Ctrl+1–6 to the shell, and applies the **theme handshake**: the shell broadcasts `{type:'tgc.theme', theme:'night'|'day'|'twilight'}` on mount/hello/sky-change and the bridge maps it onto each app's native skins (ping/notes/bench: pulse·slate·linen·paper; coach: press·cream; sync/codex opt out). When adding a new app, include this script tag and add a manifest entry to `APPS`.
+Every app's `<head>` loads `bridge.js` first. It derives the app id from the filename, installs a localStorage shim **only where storage is blocked** (persisting through the shell via `tgc.ls.persist` under `tgc.appstore.<id>`), relays Esc / Ctrl+K / Ctrl+1–6 to the shell, and applies the **theme handshake**: the shell broadcasts `{type:'tgc.theme', theme:'night'|'day'|'twilight'}` on mount/hello/sky-change and the bridge maps it onto each app's native skins (ping/notes/bench: pulse·slate·linen·paper; excelsior: press·cream; sync/codex opt out). When adding a new app, include this script tag and add a manifest entry to `APPS`.
 
 ### UI Sections (in DOM order)
 

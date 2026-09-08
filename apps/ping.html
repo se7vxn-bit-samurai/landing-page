@@ -6703,7 +6703,7 @@ function mfBuildTheGuideExchangePacket() {
     exportedAt: new Date().toISOString(),
     sourceApp: THEGUIDE_EXCHANGE_SOURCE,
     sourceVersion: 'ping-shell-v6-codex',
-    destinationHints: ['excelsior-coach', 'mirrorflow-sync'],
+    destinationHints: ['excelsior', 'mirrorflow-sync'],
     session: {
       id: mfExchangeId(),
       title,
@@ -10094,27 +10094,14 @@ requestAnimationFrame(() => {
   });
 });
 </script>
-<!-- TGC:EXCHANGE-CLIENT v1 · added by theguide-shell-v2 · Phase 2 -->
+<!-- TGC:EXCHANGE-CLIENT · the announce.
+     A floating button used to sit here handing selected text straight to
+     Excelsior. It sealed a v1 packet to a hardcoded recipient and did the same
+     job as the toolbar's Bench button, which seals a proper v2 handoff with a
+     facet. One obvious path beats two, so it was retired. -->
 <script>(function(){
   if(window.parent===window) return;                 /* only when framed by the shell */
   try{ parent.postMessage({type:'tgc.shell.hello',appId:'ping'},'*'); }catch(e){}
-  var b=document.createElement('button');
-  b.textContent='\u2726 hand to Coach';
-  b.setAttribute('style','position:fixed;right:14px;bottom:14px;z-index:2147483000;font:500 11px/1 ui-monospace,Menlo,monospace;letter-spacing:.08em;padding:9px 14px;border-radius:999px;border:1px solid rgba(212,175,55,.55);background:rgba(10,13,20,.88);color:#d4af37;cursor:pointer');
-  b.title='select text in Ping, then hand it to Excelsior Coach for review';
-  b.addEventListener('click',function(){
-    var sel=''; try{ sel=String(window.getSelection()||'').trim(); }catch(e){}
-    if(!sel){ sel=(prompt('Nothing selected \u00b7 paste or type what Coach should review:')||'').trim(); }
-    if(!sel) return;
-    var packet={contract:'theguide.exchange.v1',from:'ping',to:'coach',sealedAt:new Date().toISOString(),
-      subject:(sel.length>48?sel.slice(0,48)+'\u2026':sel),draft:sel,
-      privacy:'as selected \u00b7 nothing redacted',
-      coachSeed:'Analyse this exchange and suggest the stronger reply.'};
-    try{ parent.postMessage({type:'tgc.exchange.send',packet:packet},'*'); }catch(e){}
-    b.textContent='\u2726 sealed & sent'; setTimeout(function(){ b.textContent='\u2726 hand to Coach'; },1800);
-  });
-  function mount(){ (document.body||document.documentElement).appendChild(b); }
-  document.body ? mount() : document.addEventListener('DOMContentLoaded',mount);
 })();</script>
 </body>
 </html>

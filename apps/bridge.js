@@ -39,7 +39,7 @@ window.tgcOnMissive = function (fn) {
     ping:  { night: 'pulse', twilight: 'slate', day: 'linen', pop: 'paper' },
     notes: { night: 'pulse', twilight: 'slate', day: 'linen', pop: 'paper' },
     bench: { night: 'pulse', twilight: 'slate', day: 'linen', pop: 'paper' },
-    coach: { night: 'press', twilight: 'press', day: 'cream', pop: 'cream' }
+    excelsior: { night: 'press', twilight: 'press', day: 'cream', pop: 'cream' }
   };
   window.addEventListener('message', function (e) {
     var d = e.data;

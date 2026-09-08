@@ -5,7 +5,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2317120b'/%3E%3Cpath d='M16 5 L23 16 L16 27 L9 16 Z' fill='%23d4a832'/%3E%3Cpath d='M16 11 L19.5 16 L16 21 L12.5 16 Z' fill='%23e05c24'/%3E%3C/svg%3E"/>
-<title>Excelsior Coach</title>
+<title>Excelsior</title>
 <style>
 /* ============================================================
    EXCELSIOR COACH - Design Token System
@@ -3426,7 +3426,7 @@ mark.ex-saved-highlight {
   /* Page footer with brand */
   @page { margin: 18mm 16mm; }
   .ex-content-area::after {
-    content: 'Excelsior Coach · theGuide.club · Selvan K. Naicker';
+    content: 'Excelsior · theGuide.club · Selvan K. Naicker';
     display: block; margin-top: 32px;
     font-family: 'DM Mono', monospace; font-size: 9pt;
     color: #888; text-align: center;
@@ -4217,7 +4217,7 @@ mark.ex-saved-highlight {
 
   <!-- ═══════════════ TOPBAR ═══════════════ -->
   <header class="ex-topbar">
-    <div class="ex-topbar__brand">Excelsior <span>Coach</span></div>
+    <div class="ex-topbar__brand">Excel<span>sior</span></div>
     <div class="ex-topbar__spacer"></div>
     <button class="ex-topbar__demo-btn" id="cmdOpenBtn" title="Command Palette (Ctrl+K)">⌘ K</button>
     <button class="ex-topbar__demo-btn" id="notesOpenBtn" title="Notes Drawer (Ctrl+/)">NOTES</button>
@@ -4225,7 +4225,7 @@ mark.ex-saved-highlight {
       <button class="ex-topbar__theme-btn" data-t="press" title="Press (dark editorial)"></button>
       <button class="ex-topbar__theme-btn is-active" data-t="cream" title="Cream (paper editorial)"></button>
     </div>
-    <div class="ex-topbar__version">v2.7</div>
+    <div class="ex-topbar__version">v2.8</div>
   </header>
   <div class="ex-toast" id="exToast"></div>
 
@@ -4338,7 +4338,7 @@ mark.ex-saved-highlight {
       </section>
 
       <div class="ex-landing-footer">
-        Excelsior Coach v2.7 · presenter mode · animations · reading mode · mobile · brand kit · cohort · 60+ glossary
+        Excelsior v2.8 · analyse · facilitate · templates · assess · library · 60+ glossary
       </div>
     </div>
 
@@ -4714,7 +4714,7 @@ mark.ex-saved-highlight {
 
         <h2>The Coach</h2>
         <p>
-          <strong>Excelsior Coach</strong> is the workspace built around theGuide. It does four things. It <em>analyses</em> your written communication for clarity, urgency, and the specific patterns that diffuse a clear ask. It <em>builds</em> reusable artefacts: call scripts, coaching debriefs, session plans, slide decks. It <em>facilitates</em> live sessions with a 5-pillar curriculum, session timer, facilitator notes, and a role-play sandbox. And it <em>assesses</em> performance across 20 criteria, four per pillar.
+          <strong>Excelsior</strong> is the workspace built around theGuide. It does four things. It <em>analyses</em> your written communication for clarity, urgency, and the specific patterns that diffuse a clear ask. It <em>templates</em> the artefacts a session leaves behind: call scripts, coaching debriefs, session plans, email briefs, feedback forms. It <em>facilitates</em> live sessions with a 5-pillar curriculum, session timer, facilitator notes, and a role-play sandbox. And it <em>assesses</em> performance across 20 criteria, four per pillar. Composition &mdash; decks and documents &mdash; lives in MirrorFlow Notes.
         </p>
         <p>
           Everything is offline-first. Nothing leaves your browser. Your notes, your scorecard history, your draft templates, all live in localStorage on the device you are on. You can export the whole thing as a JSON bundle and restore it anywhere.
@@ -4722,7 +4722,7 @@ mark.ex-saved-highlight {
 
         <h2>Universal, Not Generic</h2>
         <p>
-          Excelsior Coach is meant for anyone who sells, services, or coaches: contact-centre agents, BPO teams, retail floor reps, B2B field sales, account managers, customer service queues, renewals specialists, launch teams, canvassers, branch staff. Anyone moving between a new sale, a renewal, a service query, and a face-to-face conversation in the same week. The techniques are the same. Only the surface details change.
+          Excelsior is meant for anyone who sells, services, or coaches: contact-centre agents, BPO teams, retail floor reps, B2B field sales, account managers, customer service queues, renewals specialists, launch teams, canvassers, branch staff. Anyone moving between a new sale, a renewal, a service query, and a face-to-face conversation in the same week. The techniques are the same. Only the surface details change.
         </p>
 
         <h2>Why Editorial</h2>
@@ -6092,7 +6092,7 @@ function printPillar() {
     @page{margin:18mm 16mm;}
     @media print{button{display:none !important;}}
   `;
-  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>${title} - print</title><style>${css}</style></head><body>${content}<div class="footer">Excelsior Coach · theGuide.club · Selvan K. Naicker</div><script>setTimeout(()=>window.print(),400);</scr`+`ipt></body></html>`;
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>${title} - print</title><style>${css}</style></head><body>${content}<div class="footer">Excelsior · theGuide.club · Selvan K. Naicker</div><script>setTimeout(()=>window.print(),400);</scr`+`ipt></body></html>`;
   const w = window.open('', '_blank', 'width=820,height=900');
   if (!w) { toast('Pop-up blocked - allow pop-ups to print', true); return; }
   w.document.open(); w.document.write(html); w.document.close();
@@ -6814,7 +6814,7 @@ function exportBundle() {
   const keys = Object.keys(localStorage).filter(k => k.startsWith('ex-coach-'));
   const bundle = {};
   keys.forEach(k => { bundle[k] = localStorage.getItem(k); });
-  bundle._meta = { exported: new Date().toISOString(), version: 'v0.7', source: 'Excelsior Coach' };
+  bundle._meta = { exported: new Date().toISOString(), version: 'v0.8', source: 'Excelsior' };
   const blob = new Blob([JSON.stringify(bundle, null, 2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -9549,7 +9549,7 @@ document.addEventListener('mouseout', (e) => {
 /* ──────────────────────────────────────────────────────────────
    INIT
 ────────────────────────────────────────────────────────────── */
-console.log('Excelsior Coach v2.5 loaded - Canva-lite Build panel · visual slide picker · inspector tabs · tile palettes');
+console.log('Excelsior v2.8 loaded - analyse · facilitate · templates · assess · library');
 
 })();
 </script>

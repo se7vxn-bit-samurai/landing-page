@@ -9,7 +9,7 @@ Manifest entries live in `APPS` inside `js/shell.js`.
 | **MirrorFlow Ping** | `apps/ping.html` | mirrorflow | active · v6 | Message mirror. The deepest build: theme system (pulse/slate/linen/paper + variants), workspace-mode dock, insights rail, editor + phone preview, Assist integration. |
 | **MirrorFlow Sync** | `apps/sync.html` | mirrorflow | building · v64 | Schedules & continuity — parsing, cleaning and visualising schedule data. |
 | **MirrorFlow Notes** | `apps/notes.html` | mirrorflow | active · v4 | The workbench. Modes: Capture / Compose. Rebuilt on Excelsior's structure under the shell's own four grounds; first app to both seal and receive missives. |
-| **Excelsior Coach** | `apps/coach.html` | excelsior | active · v2.7 | Editorial sales coach. Modes: Home / Analyse / Facilitate / Templates / Assess / Library. Cream editorial default theme. The composition editor that used to sit under Build now lives in Notes. |
+| **Excelsior** | `apps/excelsior.html` | excelsior | active · v2.8 | The editorial atelier. Modes: Home / Analyse / Facilitate / Templates / Assess / Library. Cream editorial default theme. Composition — decks and documents — lives in Notes. |
 | **MirrorFlow Bench** | `apps/bench.html` | mirrorflow | building · v1 | The review desk. Receives handoffs from Ping, Sync, Excelsior and Notes; sorts them into lanes and stamps their source. Sorts and shelves — it does not score. |
 | **the Codex** | `apps/codex.html` | riftborn | active · v2.0 | Riftborn terminal — rituals, design bibles, lore. |
 
@@ -33,13 +33,13 @@ Every missive declares what it **is**, so the receiver never has to guess:
 
 | `kind` | Sigil | Means | What the inbox offers |
 |---|---|---|---|
-| `handoff` | ✦ | work handed to another instrument (Ping → Coach for review) | deliver into the target app |
+| `handoff` | ✦ | work handed to another instrument (Ping → the Bench for review) | deliver into the target app |
 | `digest` | ◈ | a summary, sealed for reading | open in the target app |
 | `receipt` | ✓ | an acknowledgement that work was done | acknowledge (no app entry) |
 
 ```js
 tgcSeal('handoff', {
-  to: 'coach',                       // a known app id — required for handoff & digest
+  to: 'bench',                       // a known app id — required for handoff & digest
   subject: 'Hartley & Co · reply thread',
   coachSeed: 'The customer asked twice about pricing.',
   privacy: 'redacted'                // optional, shown in the inbox
