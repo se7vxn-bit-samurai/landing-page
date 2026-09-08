@@ -30,8 +30,8 @@ First-run entry is owned by the **scroll landing** (`js/landing.js`, 3 snap sect
 ### Key Data Structures (top of `js/shell.js`)
 
 - **`WORLDS`** — The four worlds: `mirrorflow`, `excelsior`, `riftborn`, `altar`. Each has `name`, `motto`, `tagline`, `status`, `accent`, `palette`, `flagship`, and optionally `app` (the default app to launch for that world).
-- **`APPS`** — Individual apps (`ping`, `sync`, `coach`, `codex`, `notes`, `insight`). Each has `id`, `world`, `glyph`, `accent`, `status`, `version`, `localPath` (the iframe URL, `apps/<id>.html`), and `kind`.
-- **`DOCK`** — Ordered list of app IDs shown in the topbar braziers: `['ping','sync','coach','codex']`.
+- **`APPS`** — Individual apps (`ping`, `sync`, `notes`, `bench`, `coach`, `codex`, `insight`). Each has `id`, `world`, `glyph`, `accent`, `status`, `version`, `localPath` (the iframe URL, `apps/<id>.html`), and `kind`.
+- **`DOCK`** — Ordered list of app IDs bound to Ctrl+1–6: `['ping','sync','notes','bench','coach','codex']`. Note this is *not* the braziers — those render whichever frames are currently mounted (`Frame.order`), capped by the LRU.
 - **`ORDER`** — Display order of worlds in the nave: `['mirrorflow','excelsior','riftborn','altar']`.
 - **`STATUS`** — Maps status strings (`building`, `active`, `open`, `soon`, `archived`) to display label and dot color.
 - **`ARCHIVE` / `EXCHANGE` / `IDEAS`** — sealed donors (undercroft), per-world bus contracts, and altar ideas.
@@ -55,7 +55,7 @@ First-run entry is owned by the **scroll landing** (`js/landing.js`, 3 snap sect
 
 ### The app bridge (`apps/bridge.js`)
 
-Every app's `<head>` loads `bridge.js` first. It derives the app id from the filename, installs a localStorage shim **only where storage is blocked** (persisting through the shell via `tgc.ls.persist` under `tgc.appstore.<id>`), relays Esc / Ctrl+K / Ctrl+1–4 to the shell, and applies the **theme handshake**: the shell broadcasts `{type:'tgc.theme', theme:'night'|'day'|'twilight'}` on mount/hello/sky-change and the bridge maps it onto each app's native skins (ping/notes: pulse·slate·linen; coach: press·cream; sync/codex opt out). When adding a new app, include this script tag and add a manifest entry to `APPS`.
+Every app's `<head>` loads `bridge.js` first. It derives the app id from the filename, installs a localStorage shim **only where storage is blocked** (persisting through the shell via `tgc.ls.persist` under `tgc.appstore.<id>`), relays Esc / Ctrl+K / Ctrl+1–6 to the shell, and applies the **theme handshake**: the shell broadcasts `{type:'tgc.theme', theme:'night'|'day'|'twilight'}` on mount/hello/sky-change and the bridge maps it onto each app's native skins (ping/notes/bench: pulse·slate·linen·paper; coach: press·cream; sync/codex opt out). When adding a new app, include this script tag and add a manifest entry to `APPS`.
 
 ### UI Sections (in DOM order)
 
@@ -88,7 +88,7 @@ The **satchel** (vestry) exports/imports every `tgc.*` key as one JSON file.
 
 ### Keyboard Shortcuts
 
-- `Ctrl+K` — command palette · `Ctrl+1–4` — switch DOCK apps
+- `Ctrl+K` — command palette · `Ctrl+1–6` — switch DOCK apps
 - `1`–`6` — open chambers (worlds, undercroft, vestry) from the nave
 - `←`/`→` — walk chambers · `Ctrl+←/→` — cycle warm frames · `H` — home · `Esc` — ascend/close
 
@@ -102,6 +102,6 @@ No CSS framework. Four skins via `:root[data-theme]` token overrides in `css/she
 - **No external runtime dependencies** — the shell and every app are self-contained. Fonts live in `fonts/`, Sync's spreadsheet libraries in `vendor/` (see `vendor/README.md` before touching them). The only outbound call in the whole house is opt-in weather (Open-Meteo); the QC suite fails on any other external request.
 - **Status values** are `'building'`, `'active'`, or `'open'`; rendered via the `pip()` helper.
 - **App URLs** are set via `localPath` in each `APPS` entry — update these if app files move. An app declared with `status:'soon'` and `localPath:null` is a promise, not a build; the rites count it as declared rather than broken.
-- **Braziers** (`.brz`) are the 4-slot frame indicators in the topbar that track mounted iframes.
+- **Braziers** (`.brz`) are the 4-slot frame indicators in the topbar that track mounted iframes. They are driven by `Frame.order`, not `DOCK` — the two are independent.
 - The `$` helper is `document.querySelector`; `$$` is `querySelectorAll` as an array.
 - Canon: **apps never read each other's storage — explicit exchange packets only.**

@@ -609,7 +609,12 @@ window.addEventListener('message',e=>{
 })();
 
 /* ═══════════ THE DOORS ═══════════ */
-const LADDER = { lit: 9, total: 12 };   // excelsior's rung count · one source, read by the door rays and the chamber ladder
+/* Excelsior's ladder · read by the door rays and the chamber.
+   Every number in this house is true, and this one is true as an INTENT:
+   it is where the work is declared to stand on the way to v3.0, not
+   something measured. It is labelled that way wherever it is shown, so
+   nobody reads it as telemetry. Anything derivable belongs in Pulse. */
+const LADDER = { lit: 9, total: 12 };
 /* the altar's embers · one per resting idea, named on hover (B4) */
 function altarEmbersHTML(){
   const ideas = [...IDEAS, ...userIdeas()];
@@ -686,6 +691,16 @@ document.addEventListener('click',e=>{
 })();
 
 /* ═══════════ CHAMBER MODULES ═══════════ */
+/* One app card, used by every chamber that shows an instrument. */
+function appCard(id){
+  const a = APPS[id];
+  return `<div class="mf-card" style="--iacc:${a.accent}" data-launch="${id}">
+      <div class="g">${a.glyph}</div><div class="n">${a.short}</div>
+      <div class="k">${a.kind} · ${a.version} · ${STATUS[a.status].label}</div>
+      <div class="d">${a.desc}</div>
+      <div class="foot"><span>${Pulse.visitLine(id)}</span><span class="e">enter ↘</span></div>
+    </div>`;
+}
 function moduleExcelsior(w){ return `
   <div class="ch-mod-h">The Atelier · three disciplines</div>
   <div class="ex-creed">“We do not pitch. We make the honest argument, and we make it beautifully.”
@@ -695,22 +710,16 @@ function moduleExcelsior(w){ return `
     <div class="ex-d"><div class="r">II</div><div class="t">Mindset</div><div class="s">The seller's posture: calm, curious, never needy.</div></div>
     <div class="ex-d"><div class="r">III</div><div class="t">Craft</div><div class="s">Delivery: timing, language, the review after the call.</div></div>
   </div>
-  <div class="ex-ladder">the ladder · current rung: <b style="color:var(--cacc)">${w.version}</b>
+  <div class="mf-pair" style="grid-template-columns:1fr;margin-top:22px">${appCard('coach')}</div>
+  <div class="ex-ladder">the ladder · declared rung: <b style="color:var(--cacc)">${w.version}</b>
     <div class="rungs">${[...Array(LADDER.total)].map((_,k)=>`<span class="rung ${k<LADDER.lit?'lit':''}"></span>`).join('')}</div>
-    <div class="cap"><span>prototype</span><span>excelsior · ever upward</span><span>v3.0</span></div>
+    <div class="cap"><span>prototype</span><span>a stated intent, not a measurement</span><span>v3.0</span></div>
   </div>`;
 }
 function moduleMirrorflow(w){
-  const card = id => { const a=APPS[id]; return `
-    <div class="mf-card" style="--iacc:${a.accent}" data-launch="${id}">
-      <div class="g">${a.glyph}</div><div class="n">${a.short}</div>
-      <div class="k">${a.kind} · ${a.version} · ${STATUS[a.status].label}</div>
-      <div class="d">${a.desc}</div>
-      <div class="foot"><span>${Pulse.visitLine(id)}</span><span class="e">enter ↘</span></div>
-    </div>`; };
   return `
   <div class="ch-mod-h">The four instruments</div>
-  <div class="mf-pair">${card('ping')}${card('sync')}${card('notes')}${card('bench')}</div>
+  <div class="mf-pair">${appCard('ping')}${appCard('sync')}${appCard('notes')}${appCard('bench')}</div>
   <div class="mf-axis">· the moment · the long arc · the workbench · the bench ·</div>`;
 }
 function moduleRiftborn(w){ return `

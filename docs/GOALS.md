@@ -160,6 +160,15 @@ fiction, which is the thing Phase B2 and F1 both existed to remove.
 - [x] Canon repair: Coach and Sync fetched Google Fonts on every mount, which
       broke the offline promise and leaked a request per open. Both now use the
       self-hosted faces; Cinzel falls back to the hosted Playfair
+- [x] The same repair, finished. It had covered mounts and missed Coach's print
+      and export popups, which kept three `@import` calls to Google Fonts and
+      fired them on every print. They now import the local sheet, resolved
+      against the page rather than `about:blank`'s inherited base; the cohort
+      sheet had never imported anything and now does. While in there:
+      `--ex-font-editorial` asked for Crimson Pro, which is not in `fonts/` —
+      the whole cream editorial voice had been rendering as Georgia since it was
+      written. It asks for Cormorant Garamond now, which is local and is the
+      type law's own face
 - [x] Sync's four CDN libraries vendored into `vendor/` (xlsx 0.18.5, exceljs
       4.4.0, jszip 3.10.1, html2canvas 1.4.1). Each pulled from its npm tarball
       and verified byte-for-byte against the SRI hash the page already trusted,
@@ -172,9 +181,44 @@ fiction, which is the thing Phase B2 and F1 both existed to remove.
       checkout of the merged commit and covers everything except delivery
       (DNS, TLS, Pages) — that part needs a real browser on the real domain
 
+- [x] The exchange gets its other half. `EXCHANGE.excelsior` had claimed "Coach
+      receives handoffs" while no app in the repo called `tgcOnMissive` and the
+      only `tgcSeal` caller was Ping, for digests. **The Bench** (`apps/bench.html`)
+      is the first app in the house that receives: Ping seals a draft, Sync an
+      EOD, Excelsior an analysis or a scorecard, Notes anything on the desk, and
+      each waits in the inbox for a person. Its engine sorts, stamps and shelves;
+      it scores nothing, and says so
+- [x] Finding the first real consumer of a handoff found why there had never
+      been one: `Bus.deliver` mounted the target frame then flushed immediately,
+      and a brand-new iframe hands back its `about:blank` window — so the packet
+      went nowhere while `flush`'s `splice(0)` dropped it for good. Digests
+      survived because they replay from the ledger; handoffs vanished silently.
+      `Frame.ready` gates the flush now
+- [x] Notes rebuilt as the workbench — Excelsior's structure, Ping's token
+      layer, and the shell's own four grounds, so a skin change in the nave and
+      one in Notes are the same colour. It carried the last cross-app storage
+      read in the house; that is gone
+- [x] Excelsior repaired: Analyse was unreachable from its own rail, three
+      shortcut maps disagreed, and Ctrl+1-4 fired twice — once in the shell,
+      once in a frame nobody could see. One `MODES` array drives the rail, the
+      landing cards and the palette; mode shortcuts moved to Alt. The demo
+      content is gone and every empty surface says what to do first. The
+      cross-app launcher shipped `localhost:3001-3003` to production and is gone
+- [x] The composition editor left the sales coach for Notes, where composing
+      happens. Nothing was renamed: the lifted CSS keeps its `--ex-*` variables
+      and Notes defines them in terms of its own, so the editor follows the skin
+      for free. Two of Excelsior's own bugs came out in the move — undo restored
+      a deck of a different length without moving the index, so the next render
+      threw before the deck strip repainted, which is why undo had always looked
+      inert. Fixed in the surviving copy
+
 ## Horizon (not scheduled, kept on purpose)
 
 - Sync and Coach as digest producers too, once Ping proves the shape
-- Insight → Coach handoff: a period's error profile sent for coaching, closing
-  the MirrorFlow ↔ Excelsior loop
+- Insight → Bench handoff: a period's error profile laid down for review,
+  closing the MirrorFlow ↔ Excelsior loop
+- The Bench learns to judge. Today it sorts and stamps; a rubric written before
+  real traffic would be wrong in an expensive way, so it waits for traffic
+- Coach still carries ~700 lines of CSS for the editor that left. Safe to
+  remove, but not provable by test, so it wants its own change
 - The Rift (Riftborn game) gets its bus only "when the rift opens"

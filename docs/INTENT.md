@@ -32,7 +32,9 @@ fake pulse counters were removed in favour of visit stamps and candle counts).
 ## The system canon
 
 1. **Apps never read each other's storage** — explicit exchange packets only
-   (`theguide.exchange.v1`), accepted visibly via the inbox, never silently.
+   (`theguide.exchange.v2`; v1 is still accepted and read as a handoff), accepted
+   visibly via the inbox, never silently. Notes carried the last violation of this
+   rule — a direct read of Ping's key — until it was rebuilt.
 2. **The shell owns the sky; the worlds own their rooms.** Each app keeps its own
    identity, but it listens to the sky: the theme handshake (`tgc.theme` over the
    bus) maps night/day/twilight onto each app's native skins.
@@ -47,8 +49,9 @@ fake pulse counters were removed in favour of visit stamps and candle counts).
 ## Ecosystem placement
 
 The shell serves **TheGuide.club** (umbrella). MirrorFlow is a **suite** —
-Ping, Sync, Notes today; Insight and others may join — never collapsed into one
-app. Excelsior and Riftborn are arms with their own voices. The Altar is a tier,
+Ping, Sync, Notes and the Bench today; Insight and others may join — never
+collapsed into one app. Notes authors, the Bench receives: that line is what
+keeps them from becoming the same thing. Excelsior and Riftborn are arms with their own voices. The Altar is a tier,
 not a product: the intake valve for everything future.
 
 ## What the shell is not
