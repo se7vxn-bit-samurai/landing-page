@@ -284,6 +284,22 @@ body::before {
   transition: all var(--mf-fast) var(--mf-ease);
 }
 .mf-act:hover { color: var(--mf-accent); border-color: var(--mf-border); }
+.mf-act--verdict { border-color: var(--mf-hair); }
+.mf-act--verdict.is-on { color: var(--mf-accent); border-color: var(--mf-accent); }
+.mf-tag--verdict { color: var(--mf-accent); border-color: var(--mf-accent-soft); }
+.mf-piece[data-verdict="passed"] { opacity: .62; }
+.mf-piece[data-verdict="passed"]:hover { opacity: 1; }
+
+/* ── the shelf's own toolbar · find it, order it, keep it ──────────── */
+.mf-tools { display: flex; gap: var(--mf-s2); align-items: center; margin-bottom: var(--mf-s3); flex-wrap: wrap; }
+.mf-input {
+  flex: 1; min-width: 180px; padding: 8px 12px;
+  background: var(--mf-bg); border: 1px solid var(--mf-border);
+  border-radius: var(--mf-r-sm); color: var(--mf-ink);
+  transition: border-color var(--mf-fast) var(--mf-ease);
+}
+.mf-input::placeholder { color: var(--mf-ink-4); }
+.mf-input:focus { outline: none; border-color: var(--mf-accent); }
 
 /* ═══════════ EMPTY ═══════════ */
 .mf-empty {
@@ -348,12 +364,12 @@ body::before {
     <div class="mf-rail__rule"></div>
     <div class="mf-rail__label">The shelf</div>
     <div class="mf-stat"><span>On the bench</span><b id="statTotal">0</b></div>
-    <div class="mf-stat"><span>Unseen</span><b id="statNew">0</b></div>
+    <div class="mf-stat"><span>Open</span><b id="statOpen">0</b></div>
     <div class="mf-stat"><span>Senders</span><b id="statFrom">0</b></div>
     <div class="mf-rail__rule"></div>
     <div class="mf-rail__actions">
-      <button class="mf-btn" id="markAll" type="button">Mark all seen</button>
-      <button class="mf-btn" id="clearSeen" type="button">Clear the seen</button>
+      <button class="mf-btn" id="exportShelf" type="button">Export the shelf</button>
+      <button class="mf-btn" id="clearSettled" type="button">Clear the settled</button>
     </div>
   </nav>
 
@@ -373,6 +389,11 @@ body::before {
           <circle cx="4" cy="7" r="1.6" opacity="0.7"/>
           <circle cx="40" cy="7" r="1.6" opacity="0.7"/>
         </svg>
+      </div>
+      <div class="mf-tools">
+        <input class="mf-input" id="search" type="search" autocomplete="off" placeholder="Search the shelf&hellip;">
+        <button class="mf-btn" id="clearSearch" type="button" disabled>Clear</button>
+        <button class="mf-btn" id="sortBtn" type="button" title="Reverse the order">Newest first</button>
       </div>
       <div class="mf-status" id="status">nothing on the bench</div>
       <div class="mf-shelf" id="shelf"></div>
@@ -406,15 +427,20 @@ body::before {
   const LANE_IDS = LANES.map(l => l.id).filter(id => id !== "all");
 
   /* When a sender does not declare a facet, its identity is the next best guess. */
-  const BY_SENDER = { ping: "message", sync: "schedule", coach: "session", notes: "note" };
+  const BY_SENDER = { ping: "message", sync: "schedule", excelsior: "session", notes: "note" };
 
   const root = document.documentElement;
   const $ = id => document.getElementById(id);
   const shell = $("shell"), shelfEl = $("shelf"), statusEl = $("status");
   const toastEl = $("toast"), toastText = $("toastText"), toastAction = $("toastAction");
 
-  let state = loadState();
   let lane = "all";
+  let query = "";
+  let oldestFirst = false;
+
+  /* A piece is open until it has a verdict. Seen only says you looked;
+     the verdict says you decided, which is the number a desk runs on. */
+  const VERDICTS = { kept: "kept", done: "done", passed: "passed" };
   let saveTimer = 0, toastTimer = 0;
   let lastCleared = null;
 
@@ -426,6 +452,10 @@ body::before {
   ══════════════════════════════════════════════════════════════ */
 
   const uid = () => "b-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8);
+
+  /* loadState() reheats stored items through normalise(), which calls uid() —
+     must not run until uid (and everything else the engine needs) exists. */
+  let state = loadState();
 
   function normalise(packet) {
     if (!packet || typeof packet !== "object") return null;
@@ -441,6 +471,7 @@ body::before {
       privacy: packet.privacy === "redacted" ? "redacted" : "full",
       at: Number(packet.at) || Date.now(),
       seen: false,
+      verdict: null,
       lane: "other"
     };
   }
@@ -477,6 +508,7 @@ body::before {
     if (!item) return null;
     item.id = typeof raw.id === "string" && raw.id ? raw.id : item.id;
     item.seen = Boolean(raw.seen);
+    item.verdict = VERDICTS[raw.verdict] ? raw.verdict : null;
     item.lane = LANE_IDS.includes(raw.lane) ? raw.lane : classify(item);
     return item;
   }
@@ -506,6 +538,14 @@ body::before {
   }
 
   const inLane = id => id === "all" ? state.items : state.items.filter(i => i.lane === id);
+  const isOpen = i => !i.verdict;
+  function onShelf() {
+    const needle = query.trim().toLowerCase();
+    return inLane(lane)
+      .filter(i => !needle || (i.subject + " " + i.body).toLowerCase().includes(needle))
+      .slice()
+      .sort((a, b) => oldestFirst ? a.at - b.at : b.at - a.at);
+  }
 
   function renderRail() {
     $("railLanes").innerHTML = LANES.map(l => {
@@ -522,6 +562,12 @@ body::before {
   }
 
   function emptyState() {
+    if (query.trim()) return `
+      <div class="mf-empty">
+        <div class="mf-empty__title">Nothing matches that</div>
+        <div class="mf-empty__line">No piece on the shelf contains &ldquo;${esc(query.trim())}&rdquo;.
+          Try a shorter word, or clear the search to see the whole bench again.</div>
+      </div>`;
     if (lane !== "all" && state.items.length) return `
       <div class="mf-empty">
         <div class="mf-empty__title">This lane is empty</div>
@@ -547,25 +593,30 @@ body::before {
   }
 
   function render() {
-    const list = inLane(lane).slice().sort((a, b) => b.at - a.at);
-    const unseen = state.items.filter(i => !i.seen).length;
+    const list = onShelf();
+    const open = state.items.filter(isOpen).length;
     const senders = new Set(state.items.map(i => i.from)).size;
 
     $("statTotal").textContent = String(state.items.length);
-    $("statNew").textContent = String(unseen);
+    $("statOpen").textContent = String(open);
     $("statFrom").textContent = String(senders);
+    $("clearSearch").disabled = !query;
+    $("sortBtn").textContent = oldestFirst ? "Oldest first" : "Newest first";
 
     statusEl.textContent = !state.items.length
       ? "nothing on the bench"
-      : list.length + (list.length === 1 ? " piece · " : " pieces · ") + unseen + " unseen";
+      : query.trim()
+        ? list.length + " of " + state.items.length + " match · " + open + " open"
+        : list.length + (list.length === 1 ? " piece · " : " pieces · ") + open + " open";
 
     shelfEl.innerHTML = list.length ? list.map(i => `
-      <article class="mf-piece" data-id="${esc(i.id)}" data-seen="${i.seen}">
+      <article class="mf-piece" data-id="${esc(i.id)}" data-seen="${i.seen}" data-verdict="${i.verdict || ''}">
         <div class="mf-piece__top">
           <span class="mf-tag mf-tag--from">${esc(i.from)}</span>
           <span class="mf-tag">${esc(i.lane)}</span>` +
           (i.privacy === "redacted" ? `<span class="mf-tag">redacted</span>` : "") +
-          (i.seen ? "" : `<span class="mf-tag mf-tag--new">new</span>`) + `
+          (i.verdict ? `<span class="mf-tag mf-tag--verdict">${i.verdict}</span>`
+                     : i.seen ? "" : `<span class="mf-tag mf-tag--new">new</span>`) + `
           <span class="mf-piece__at">${ago(i.at)}</span>
         </div>
         <div class="mf-piece__subject">${esc(i.subject)}</div>` +
@@ -574,7 +625,9 @@ body::before {
           <button class="mf-act" type="button" data-act="open">read</button>
           <button class="mf-act" type="button" data-act="copy">copy</button>
           <button class="mf-act" type="button" data-act="notes">hand to notes</button>
-          <button class="mf-act" type="button" data-act="seen">${i.seen ? "mark unseen" : "mark seen"}</button>
+          <button class="mf-act mf-act--verdict ${i.verdict === 'kept' ? 'is-on' : ''}" type="button" data-act="keep" title="Worth coming back to">keep</button>
+          <button class="mf-act mf-act--verdict ${i.verdict === 'done' ? 'is-on' : ''}" type="button" data-act="done" title="Finished &mdash; seals a receipt to ${esc(i.from)}">done &middot; receipt to ${esc(i.from)}</button>
+          <button class="mf-act mf-act--verdict ${i.verdict === 'passed' ? 'is-on' : ''}" type="button" data-act="pass" title="Not for me">pass</button>
           <button class="mf-act" type="button" data-act="drop">clear</button>
         </div>
       </article>`).join("") : emptyState();
@@ -588,7 +641,9 @@ body::before {
   if (typeof window.tgcOnMissive === "function") {
     window.tgcOnMissive(packet => {
       if (!packet) return;
-      if (packet.kind && packet.kind !== "handoff" && packet.kind !== "digest") return;
+      /* Handoffs only. A digest is telemetry, not correspondence - canon names
+         Insight as its reader, and a review desk collecting telemetry is noise. */
+      if (packet.kind && packet.kind !== "handoff") return;
       const item = normalise(packet);
       if (!item) return;
       shelve(item);
@@ -597,19 +652,42 @@ body::before {
     });
   }
 
-  /* the ledger replay · the shell hands over a recipient's backlog on mount */
-  window.addEventListener("message", e => {
-    const d = e.data;
-    if (!d || d.type !== "tgc.exchange.ledger" || !Array.isArray(d.packets)) return;
-    const known = new Set(state.items.map(i => i.subject + "|" + i.at));
-    let added = 0;
-    d.packets.forEach(p => {
-      const item = normalise(p);
-      if (!item || known.has(item.subject + "|" + item.at)) return;
-      shelve(item); added++;
+  /* There was a tgc.exchange.ledger listener here. Bus.ledger() is only called
+     for digests, so the ledger carries digests exclusively - refusing them above
+     made this unreachable. Insight is the app that will want it. */
+
+  /* ── the receipt ────────────────────────────────────────────────────
+     `receipt` has been in the contract since v2 - the shell has KINDS.receipt,
+     readPacket exempting it from recipient checks, Bus.acknowledge, the sky
+     envelope's "a receipt waits" and the inbox's acknowledge action - and until
+     now nothing in the house had ever sealed one.
+
+     It does not reach the sending app; senders do not receive yet. It lands in
+     the shell's inbox as the house's record that the work was looked at, which
+     is what an acknowledgement is. The button and the toast both say so. */
+  function sealReceipt(item) {
+    if (typeof window.tgcSeal !== "function") return false;
+    window.tgcSeal("receipt", {
+      to: item.from,                       // provenance · receipts need no recipient
+      subject: "Reviewed · " + item.subject,
+      note: "Laid down by " + item.from + ", reviewed on the bench."
     });
-    if (added) { render(); showToast(added + (added === 1 ? " piece" : " pieces") + " from the ledger"); }
-  });
+    return true;
+  }
+
+  function setVerdict(item, verdict) {
+    item.verdict = item.verdict === verdict ? null : verdict;
+    if (item.verdict) item.seen = true;    // a verdict implies you looked
+    scheduleSave();
+    render();
+    if (item.verdict !== "done") {
+      showToast(item.verdict ? "Marked " + item.verdict : "Verdict cleared");
+      return;
+    }
+    showToast(sealReceipt(item)
+      ? "Done · receipt waiting in the inbox"
+      : "Marked done · the receipt needs the house around it");
+  }
 
   function handToNotes(item) {
     if (typeof window.tgcSeal !== "function") return showToast("Notes is reachable from inside the house");
@@ -671,8 +749,8 @@ body::before {
       catch (_) { showToast("Copy failed"); }
     } else if (act === "notes") {
       handToNotes(item);
-    } else if (act === "seen") {
-      item.seen = !item.seen; scheduleSave(); render();
+    } else if (act === "keep" || act === "done" || act === "pass") {
+      setVerdict(item, act === "keep" ? "kept" : act === "done" ? "done" : "passed");
     } else if (act === "drop") {
       const i = state.items.findIndex(x => x.id === item.id);
       lastCleared = { items: [item], at: [i] };
@@ -695,22 +773,42 @@ body::before {
     shell.classList.toggle("is-collapsed");
     $("railToggle").title = shell.classList.contains("is-collapsed") ? "Expand rail" : "Collapse rail";
   });
-  $("markAll").addEventListener("click", () => {
-    const n = state.items.filter(i => !i.seen).length;
-    if (!n) return showToast("Nothing unseen");
-    state.items.forEach(i => { i.seen = true; });
-    scheduleSave(); render();
-    showToast(n + (n === 1 ? " piece marked seen" : " pieces marked seen"));
-  });
-  $("clearSeen").addEventListener("click", () => {
+  /* Settled means it has a verdict. Open work never clears by accident. */
+  $("clearSettled").addEventListener("click", () => {
     const keep = [], gone = [], at = [];
-    state.items.forEach((i, k) => { if (i.seen) { gone.push(i); at.push(k); } else keep.push(i); });
-    if (!gone.length) return showToast("Nothing seen yet");
+    state.items.forEach((i, k) => { if (i.verdict) { gone.push(i); at.push(k); } else keep.push(i); });
+    if (!gone.length) return showToast("Nothing settled yet");
     lastCleared = { items: gone, at };
     state.items = keep;
     scheduleSave(); render();
     showToast(gone.length + (gone.length === 1 ? " piece cleared" : " pieces cleared"), "Undo", undoClear);
   });
+
+  /* Export only. A review record is something you keep, not something you
+     merge back in - and the pieces came from elsewhere, so a cleared shelf
+     cannot be regenerated. */
+  $("exportShelf").addEventListener("click", () => {
+    if (!state.items.length) return showToast("Nothing to export");
+    const payload = {
+      app: "MirrorFlow Bench", version: 1,
+      exportedAt: new Date().toISOString(),
+      items: state.items
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "mirrorflow-bench-" + new Date().toISOString().slice(0, 10) + ".json";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+    showToast(state.items.length + " pieces exported");
+  });
+
+  $("search").addEventListener("input", e => { query = e.target.value; render(); });
+  $("clearSearch").addEventListener("click", () => {
+    query = ""; $("search").value = ""; render(); $("search").focus();
+  });
+  $("sortBtn").addEventListener("click", () => { oldestFirst = !oldestFirst; render(); });
   document.querySelectorAll("[data-skin]").forEach(b =>
     b.addEventListener("click", () => { applySkin(b.dataset.skin); showToast(b.dataset.skin); }));
 

@@ -64,7 +64,7 @@ const ARCHIVE = [
 ];
 const EXCHANGE = {
   excelsior:{consumes:'none yet',produces:'theguide.exchange.v2 · handoff',note:'Excelsior hands an analysis or a scorecard to the Bench. It does not yet receive; the old claim that it did was a promise, not a build.'},
-  mirrorflow:{consumes:'theguide.exchange.v2 · handoff (Notes, Bench)',produces:'theguide.exchange.v2 · handoff & digest (Ping, Sync, Notes, Bench)',note:'The Bench receives what the others lay down; Notes both seals and receives, and hands a piece back when it is time to work on it.'},
+  mirrorflow:{consumes:'theguide.exchange.v2 · handoff (Notes, Bench)',produces:'theguide.exchange.v2 · handoff & digest (Ping, Sync, Notes, Bench)',note:'The Bench receives what the others lay down and seals a receipt when a piece is done - the first producer the contract\'s third kind has ever had. Notes both seals and receives, and hands a piece back when it is time to work on it.'},
   riftborn:{consumes:'none',produces:'none',note:'The Codex keeps memory, not correspondence. The game gets no bus until the rift opens.'},
   altar:{consumes:'none',produces:'none',note:'Ideas have no bus. An idea earns one by becoming an app.'}
 };

@@ -10,7 +10,7 @@ Manifest entries live in `APPS` inside `js/shell.js`.
 | **MirrorFlow Sync** | `apps/sync.html` | mirrorflow | building · v64 | Schedules & continuity — parsing, cleaning and visualising schedule data. |
 | **MirrorFlow Notes** | `apps/notes.html` | mirrorflow | active · v4 | The workbench. Modes: Capture / Compose. Rebuilt on Excelsior's structure under the shell's own four grounds; first app to both seal and receive missives. |
 | **Excelsior** | `apps/excelsior.html` | excelsior | active · v2.8 | The editorial atelier. Modes: Home / Analyse / Facilitate / Templates / Assess / Library. Cream editorial default theme. Composition — decks and documents — lives in Notes. |
-| **MirrorFlow Bench** | `apps/bench.html` | mirrorflow | building · v1 | The review desk. Receives handoffs from Ping, Sync, Excelsior and Notes; sorts them into lanes and stamps their source. Sorts and shelves — it does not score. |
+| **MirrorFlow Bench** | `apps/bench.html` | mirrorflow | building · v2 | The review desk. Receives handoffs from Ping, Sync, Excelsior and Notes; sorts them into lanes and stamps their source. A piece gets a verdict — kept / done / passed — and `done` seals a receipt. Search, sort and export over the shelf. It records a verdict; it does not score. |
 | **the Codex** | `apps/codex.html` | riftborn | active · v2.0 | Riftborn terminal — rituals, design bibles, lore. |
 
 ## Contract with the shell
@@ -35,7 +35,7 @@ Every missive declares what it **is**, so the receiver never has to guess:
 |---|---|---|---|
 | `handoff` | ✦ | work handed to another instrument (Ping → the Bench for review) | deliver into the target app |
 | `digest` | ◈ | a summary, sealed for reading | open in the target app |
-| `receipt` | ✓ | an acknowledgement that work was done | acknowledge (no app entry) |
+| `receipt` | ✓ | an acknowledgement that work was done — sealed by the Bench when a piece is marked done | acknowledge (no app entry) |
 
 ```js
 tgcSeal('handoff', {
