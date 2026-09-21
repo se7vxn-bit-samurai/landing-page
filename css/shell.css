@@ -179,18 +179,18 @@ body[data-view="frame"] .stars{display:none}
 .tp-panel.flag{flex:1.45}
 .tp-panel:hover,.tp-panel.breathe{flex:2.05}
 .tp-panel.locked:hover{flex:1.3}
-.tp-glyph{position:absolute;top:44%;left:50%;transform:translate(calc(-50% + var(--px,0px)),-50%);font-family:var(--serif-alt);
+.tp-glyph{position:absolute;top:44%;left:50%;transform:translate(calc(-50% + var(--px,0px)),-50%);font-family:var(--display);font-weight:900;
   font-size:min(18vw,240px);line-height:1;color:var(--ac);opacity:.21;transition:opacity .55s,text-shadow .55s;pointer-events:none}
-.tp-panel:hover .tp-glyph,.tp-panel.breathe .tp-glyph{opacity:.32;text-shadow:0 0 90px var(--ac)}
+.tp-panel:hover .tp-glyph,.tp-panel.breathe .tp-glyph{opacity:.32;text-shadow:0 0 46px var(--ac)}
 .tp-panel.flag .tp-glyph{opacity:.26}
 /* DAY · neon letters that pop */
 /* DAY · noon over paper — glyphs as quiet ink, no glow (B6) */
-:root[data-theme="day"] .tp-glyph{opacity:.22;font-weight:600;text-shadow:none}
+:root[data-theme="day"] .tp-glyph{opacity:.22;font-weight:900;text-shadow:none}
 :root[data-theme="day"] .tp-panel:hover .tp-glyph{opacity:.42;text-shadow:none}
 :root[data-theme="day"] .tp-rays line{stroke-width:.8}
 :root[data-theme="day"] .tp-rays line:not(.lit){opacity:.25}
 /* POP · neon letters that pop (the old summer day, kept as a chosen skin) */
-:root[data-theme="pop"] .tp-glyph{opacity:.92;font-weight:600;
+:root[data-theme="pop"] .tp-glyph{opacity:.92;font-weight:900;
   text-shadow:0 0 28px currentColor,0 0 9px currentColor,0 1px 0 rgba(255,255,255,.4)}
 :root[data-theme="pop"] .tp-panel:hover .tp-glyph{opacity:1}
 :root[data-theme="pop"] .tp-panel[data-world="mirrorflow"] .tp-glyph{color:#00e6a2}

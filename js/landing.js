@@ -56,6 +56,8 @@
   .lp-resume:hover{background:var(--gilt-faint)}
   .lp-h{font-family:var(--mono);font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--gilt-soft);margin-bottom:6px;position:relative}
   .lp-title{font-family:var(--display);font-weight:600;font-size:clamp(28px,4vw,46px);position:relative}
+  /* stamped masthead — Henry-broadside weight/scale, reserved for the doors panel which has the vertical room */
+  .lp-title.stamp{font-weight:900;font-size:clamp(52px,9vw,128px);line-height:.86;letter-spacing:-.01em;max-width:1100px;margin:0 auto}
   .lp-cards{display:flex;gap:18px;margin-top:46px;flex-wrap:wrap;justify-content:center;position:relative;max-width:1180px}
   .lp-card{flex:1;min-width:200px;max-width:260px;border:1px solid var(--rule);border-radius:10px;padding:30px 22px;cursor:pointer;
     background:linear-gradient(180deg,transparent,var(--card-wash) 160%);transition:transform .3s,border-color .3s,box-shadow .3s;position:relative;overflow:hidden}
@@ -134,7 +136,7 @@
     <section class="lp" data-p="2">
       <div class="lp-bg" id="lp-bg2"></div>
       <div class="lp-h in-up d1">the worlds</div>
-      <div class="lp-title in-up d2">Four doors, one nave</div>
+      <div class="lp-title stamp in-up d2">Four doors, one nave</div>
       <div class="lp-cards">${cardsHTML}</div>
       <div class="lp-cue">scroll ↓</div>
     </section>
