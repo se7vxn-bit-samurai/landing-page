@@ -128,7 +128,7 @@
       <div class="lp-motto in-up d3">· The Seletiv Kolektiv ·</div>
       <div class="lp-sub in-up d4">One roof over four worlds: a productivity mirror, an editorial coach, a house of fables, and an altar for what comes next. Built as one place, not a list of links.</div>
       <div class="lp-hero-actions in-up d5">
-        <button class="lp-enter" id="lp-enter-hero">enter the nave <span>↘</span></button>
+        <button class="lp-enter" id="lp-enter-hero">enter <span>↘</span></button>
         <div class="lp-resume" id="lp-resume"></div>
       </div>
       <div class="lp-cue">scroll ↓</div>
@@ -136,7 +136,7 @@
     <section class="lp" data-p="2">
       <div class="lp-bg" id="lp-bg2"></div>
       <div class="lp-h in-up d1">the worlds</div>
-      <div class="lp-title stamp in-up d2">Four doors, one nave</div>
+      <div class="lp-title stamp in-up d2">7OS. Excelsior. Riftborn. Altar.</div>
       <div class="lp-cards">${cardsHTML}</div>
       <div class="lp-cue">scroll ↓</div>
     </section>
@@ -146,7 +146,7 @@
       <div class="lp-h in-up d1">the ecosystem</div>
       <div class="lp-title in-up d2">A place that keeps its own memory</div>
       <div class="lp-sky in-up d3" id="lp-sky"></div>
-      <button class="lp-enter in-up d4" id="lp-enter">enter the nave <span>↘</span></button>
+      <button class="lp-enter in-up d4" id="lp-enter">enter <span>↘</span></button>
       <div class="lp-foot">the sky follows your hour · night · day · twilight</div>
     </section>`;
   document.body.appendChild(wrap);

@@ -639,7 +639,7 @@ $('#tp-panels').innerHTML = ORDER.map(id=>{
   const motif = MOTIF[id] || '';
   return `
   <div class="tp-panel ${w.flagship?'flag':''} ${locked?'locked':''}" style="--ac:${w.accent};--wash:${w.accent}22" data-world="${id}"
-    role="button" tabindex="0" aria-label="${w.name} · ${w.tagline} · open its chamber">
+    role="button" tabindex="0" aria-label="${w.name} · ${w.tagline} · open ${w.name}">
     <div class="tp-arch"></div>
     ${motif}
     <div class="tp-glyph">${w.glyph}</div>
@@ -653,7 +653,7 @@ $('#tp-panels').innerHTML = ORDER.map(id=>{
         <div class="tp-meta"><span class="pip" style="--pc:${STATUS[w.status].dot}"><i></i>${STATUS[w.status].label} · ${w.version}</span></div>
         <div class="tp-pulse">${Pulse.line(id)}</div>
         <div class="tp-actions">
-          <span class="tp-act">open the chamber</span>
+          <span class="tp-act">open ${w.name}</span>
           ${id==='altar'?`<span class="tp-act go" data-altar-lay>✶ lay an idea</span>`:''}
           ${locked?'':`<span class="tp-act go" data-launch="${w.app}">↘ enter now</span>`}
         </div>
