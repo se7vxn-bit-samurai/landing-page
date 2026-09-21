@@ -429,6 +429,7 @@ const SETTINGS = lsGet(KEYS.settings,{});
 function setSetting(k,v){ SETTINGS[k]=v; lsSet(KEYS.settings,SETTINGS); applySettings(); }
 function applySettings(){
   document.documentElement.classList.toggle('still', !!SETTINGS.stillNave);
+  const tips = document.getElementById('tb-tips'); if(tips) tips.style.display = SETTINGS.tipsOff ? 'none' : '';
 }
 if(!document.getElementById('still-css')){
   const s=document.createElement('style'); s.id='still-css';
@@ -557,6 +558,7 @@ document.addEventListener('click',e=>{
   if(d==='toggle-gate'){ setSetting('gateOff',!SETTINGS.gateOff); relight(); return toast(SETTINGS.gateOff?'the threshold will be skipped':'the threshold returns'); }
   if(d==='toggle-still'){ setSetting('stillNave',!SETTINGS.stillNave); relight(); return toast(SETTINGS.stillNave?'the nave is stilled':'motion restored'); }
   if(d==='toggle-weather'){ setSetting('weather',!SETTINGS.weather); if(SETTINGS.weather) fetchWeather(true); else setWeather('',false); relight(); return toast(SETTINGS.weather?'live weather on · reading your sky':'weather off'); }
+  if(d==='toggle-tips'){ setSetting('tipsOff',!SETTINGS.tipsOff); relight(); return toast(SETTINGS.tipsOff?'tips button hidden':'tips button restored'); }
   const clr = act.dataset.do==='clear' ? act.dataset.app : null;
   if(clr) return clearAppData(clr);
 });
@@ -791,6 +793,8 @@ function moduleVestry(){
     <span class="vs-sw ${SETTINGS.stillNave?'on':''}" data-do="toggle-still"></span></label>
   <label class="vs-toggle"><span>Live weather &amp; sky <small>uses your location · the nave mirrors your real sky</small></span>
     <span class="vs-sw ${SETTINGS.weather?'on':''}" data-do="toggle-weather"></span></label>
+  <label class="vs-toggle"><span>Hide the tips button <small>the shortcuts panel in the topbar</small></span>
+    <span class="vs-sw ${SETTINGS.tipsOff?'on':''}" data-do="toggle-tips"></span></label>
 
   <div class="ch-mod-h" style="margin-top:26px">The Stores · ${fmtBytes(rep.total)} held</div>
   ${rep.apps.map(a=>meter(a.label,a.bytes,a.bytes?a.key.split('.').pop():null)).join('')}
