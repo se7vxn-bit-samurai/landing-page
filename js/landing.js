@@ -40,6 +40,22 @@
     align-items:center;justify-content:center;text-align:center;padding:7vh 6vw;overflow:hidden}
   .lp-bg{position:absolute;inset:-5%;pointer-events:none;opacity:.13;color:var(--gilt)}
   .lp-bg svg{width:100%;height:100%}
+  /* the geometry breathes instead of sitting frozen — dash-flow + slow drift, same language as the sky constellation */
+  #lp-bg1 svg{animation:lpDrift1 46s ease-in-out infinite;transform-origin:50% 50%}
+  #lp-bg1 svg line{stroke-dasharray:5 13;animation:lpThread 16s linear infinite}
+  @keyframes lpDrift1{0%,100%{transform:rotate(-1.6deg) scale(1)}50%{transform:rotate(1.6deg) scale(1.02)}}
+  @keyframes lpThread{to{stroke-dashoffset:-360}}
+  #lp-bg2 svg{animation:lpSpin2 210s linear infinite;transform-origin:50% 50%}
+  #lp-bg2 svg line{stroke-dasharray:4 10;animation:lpThread 12s linear infinite}
+  #lp-bg2 svg path{stroke-dasharray:14 9;animation:lpThread 20s linear infinite}
+  #lp-bg2 svg circle{animation:lpBreathe 9s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+  @keyframes lpSpin2{to{transform:rotate(360deg)}}
+  @keyframes lpBreathe{0%,100%{opacity:1}50%{opacity:.45}}
+  #lp-bg3 svg path{stroke-dasharray:10 22;animation:lpThread 18s linear infinite}
+  #lp-bg3 svg{animation:lpDrift1 60s ease-in-out infinite reverse;transform-origin:50% 50%}
+  @media (prefers-reduced-motion:reduce){
+    #lp-bg1 svg,#lp-bg2 svg,#lp-bg3 svg,#lp-bg1 svg line,#lp-bg2 svg line,#lp-bg2 svg path,#lp-bg2 svg circle,#lp-bg3 svg path{animation:none}
+  }
   .lp-wash{position:absolute;inset:0;pointer-events:none;background:var(--sky-grad)}
   .lp .in-up{opacity:0;transform:translateY(34px);transition:opacity .9s cubic-bezier(.2,1,.3,1),transform .9s cubic-bezier(.2,1,.3,1)}
   .lp.seen .in-up{opacity:1;transform:none}
