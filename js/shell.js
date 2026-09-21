@@ -814,7 +814,8 @@ function navArrows(id){
   const prev = CH_ORDER[(ix-1+CH_ORDER.length)%CH_ORDER.length];
   const next = CH_ORDER[(ix+1)%CH_ORDER.length];
   const nm = k => WORLDS[k] ? WORLDS[k].name.toLowerCase() : 'the '+k;
-  return `<span class="x" data-nav="${prev}" title="walk left">← ${nm(prev)}</span><span class="x" data-nav="${next}" title="walk right">${nm(next)} →</span><span class="x" data-close>esc · return ✕</span>`;
+  const acc = k => WORLDS[k] ? ` style="--tacc:${WORLDS[k].accent}"` : '';
+  return `<span class="x" data-nav="${prev}" data-dir="-1"${acc(prev)} title="walk left">← ${nm(prev)}</span><span class="x" data-nav="${next}" data-dir="1"${acc(next)} title="walk right">${nm(next)} →</span><span class="x" data-close>esc · return ✕</span>`;
 }
 function buildChamberHTML(id){
   if(id==='undercroft'){
@@ -905,16 +906,32 @@ function countUp(){
     requestAnimationFrame(tick);
   });
 }
-function openChamber(id,animate=true){
-  currentChamber = id;
-  $('#ch-content').innerHTML = buildChamberHTML(id);
-  $('#nave').classList.add('dimmed');
-  const c = $('#chamber');
-  if(animate){ c.classList.remove('open'); void c.offsetWidth; }
-  c.classList.add('open');
-  history.replaceState(null,'','#world/'+id);
-  const w = WORLDS[id]; if(w && w.app) Frame.warm(w.app);
-  setTimeout(countUp, animate?420:0);
+function openChamber(id,animate=true,dir=0){
+  const content = $('#ch-content');
+  const wasOpen = $('#chamber').classList.contains('open');
+  const doOpen = ()=>{
+    currentChamber = id;
+    content.classList.remove('walk-out-l','walk-out-r','walk-in-l','walk-in-r');
+    content.innerHTML = buildChamberHTML(id);
+    $('#nave').classList.add('dimmed');
+    const c = $('#chamber');
+    if(animate){ c.classList.remove('open'); void c.offsetWidth; }
+    c.classList.add('open');
+    history.replaceState(null,'','#world/'+id);
+    const w = WORLDS[id]; if(w && w.app) Frame.warm(w.app);
+    setTimeout(countUp, animate?420:0);
+    if(dir){
+      content.classList.add(dir>0?'walk-in-r':'walk-in-l');
+      void content.offsetWidth;
+      content.classList.remove('walk-in-r','walk-in-l');
+    }
+  };
+  if(dir && wasOpen){
+    content.classList.add(dir>0?'walk-out-l':'walk-out-r');
+    setTimeout(doOpen,220);
+  } else {
+    doOpen();
+  }
 }
 function relight(){ if(currentChamber) $('#ch-content').innerHTML = buildChamberHTML(currentChamber); }
 function closeChamber(){
@@ -1048,7 +1065,7 @@ $('#palette').addEventListener('click',e=>{ if(e.target.id==='palette') palClose
 document.addEventListener('click',e=>{
   if(e.target.closest('[data-close]')) return closeChamber();
   const nav = e.target.closest('[data-nav]');
-  if(nav) return openChamber(nav.dataset.nav,false);
+  if(nav) return openChamber(nav.dataset.nav,false,parseInt(nav.dataset.dir,10)||0);
   const panel = e.target.closest('.tp-panel');
   if(panel && !e.target.closest('[data-toast],[data-launch],[data-altar-lay],.tp-lay')) openChamber(panel.dataset.world);
 });
@@ -1186,8 +1203,8 @@ document.addEventListener('keydown',e=>{
   }
   if(currentChamber){
     const ix = CH_ORDER.indexOf(currentChamber);
-    if(e.key==='ArrowLeft')  return openChamber(CH_ORDER[(ix-1+CH_ORDER.length)%CH_ORDER.length],false);
-    if(e.key==='ArrowRight') return openChamber(CH_ORDER[(ix+1)%CH_ORDER.length],false);
+    if(e.key==='ArrowLeft')  return openChamber(CH_ORDER[(ix-1+CH_ORDER.length)%CH_ORDER.length],false,-1);
+    if(e.key==='ArrowRight') return openChamber(CH_ORDER[(ix+1)%CH_ORDER.length],false,1);
   }
   if(document.body.dataset.view!=='frame'){
     const k = {'1':'mirrorflow','2':'excelsior','3':'riftborn','4':'altar','5':'undercroft','6':'vestry'}[e.key];
