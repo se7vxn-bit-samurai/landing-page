@@ -11,10 +11,10 @@ const STATUS = {
   open:{label:'Open',dot:'#e08b4a'}
 };
 const WORLDS = {
-  mirrorflow:{name:'MirrorFlow',motto:'Specvlvm Lvcens',tagline:'The communication mirror.',status:'building',version:'v1.4',
-    accent:'#5dd9ff',glyph:'M',app:'ping',appName:'MirrorFlow Ping',
+  mirrorflow:{name:'7OS',motto:'Ordo Septimvs',tagline:'The order behind the work.',status:'building',version:'v1.4',
+    accent:'#5dd9ff',glyph:'7',app:'ping',appName:'7OS Ping',
     palette:{bg:'#070d14',ink:'#eef0f5',accent:'#5dd9ff',fire:'#7df9e8'},
-    desc:'The productivity arm, expressed as two instruments. Ping holds the moment: one mirror, one note back. Sync holds the long arc: continuity across days. Notes catches what falls between. Together: your voice, reflected and kept.'},
+    desc:'Seventh Order Systems — the systems arm, expressed as three instruments. Ping holds the moment: one mirror, one note back. Sync holds the long arc: continuity across days. Notes catches what falls between. Together: the seventh order — how the work actually gets done.'},
   excelsior:{name:'Excelsior',motto:'Ars Vendendi',tagline:'The editorial sales coach.',status:'active',version:'v2.7',
     accent:'#d4a832',glyph:'E',flagship:true,app:'coach',appName:'Excelsior Coach',
     palette:{bg:'#17120b',ink:'#f4eee0',accent:'#d4a832',fire:'#e05c24'},
@@ -29,22 +29,22 @@ const WORLDS = {
     desc:'The fourth door is not a product. It is a tier. New ideas are laid here as candles: named, given a line of intent, and watched. An idea that catches fire earns a world of its own; one that gutters descends to the undercroft. Nothing is pitched in the dark.'}
 };
 const APPS = {
-  ping:{id:'ping',short:'Ping',name:'MirrorFlow Ping',world:'mirrorflow',glyph:'P',accent:'#7df9e8',status:'active',version:'v6',
+  ping:{id:'ping',short:'Ping',name:'7OS Ping',world:'mirrorflow',glyph:'P',accent:'#7df9e8',status:'active',version:'v6',
     kind:'Message mirror',localPath:'apps/ping.html',
     desc:'A single tap. One mirror, one moment, one note back.'},
-  sync:{id:'sync',short:'Sync',name:'MirrorFlow Sync',world:'mirrorflow',glyph:'S',accent:'#9bb8ff',status:'building',version:'v64',
+  sync:{id:'sync',short:'Sync',name:'7OS Sync',world:'mirrorflow',glyph:'S',accent:'#9bb8ff',status:'building',version:'v64',
     kind:'Schedules & continuity',localPath:'apps/sync.html',
     desc:'Continuity across days, your voice over time.'},
-  notes:{id:'notes',short:'Notes',name:'MirrorFlow Notes',world:'mirrorflow',glyph:'N',accent:'#a9b6c8',status:'active',version:'v4',
+  notes:{id:'notes',short:'Notes',name:'7OS Notes',world:'mirrorflow',glyph:'N',accent:'#a9b6c8',status:'active',version:'v4',
     kind:'The workbench',localPath:'apps/notes.html',
     desc:'Catch it before it goes, then shape it. Hands work to the Bench.'},
   coach:{id:'coach',short:'Coach',name:'Excelsior Coach',world:'excelsior',glyph:'E',accent:'#d4a832',status:'active',version:'v2.7',
     kind:'Editorial sales coach',localPath:'apps/coach.html',
     desc:'Coaching for sellers who think in arguments.'},
-  bench:{id:'bench',short:'Bench',name:'MirrorFlow Bench',world:'mirrorflow',glyph:'B',accent:'#8ec8b8',status:'building',version:'v1',
+  bench:{id:'bench',short:'Bench',name:'7OS Bench',world:'mirrorflow',glyph:'B',accent:'#8ec8b8',status:'building',version:'v1',
     kind:'The review desk',localPath:'apps/bench.html',
     desc:'Where work lands to be looked at. It sorts and stamps; it does not score.'},
-  insight:{id:'insight',short:'Insight',name:'MirrorFlow Insight',world:'mirrorflow',glyph:'I',accent:'#7df9e8',status:'soon',version:'—',
+  insight:{id:'insight',short:'Insight',name:'7OS Insight',world:'mirrorflow',glyph:'I',accent:'#7df9e8',status:'soon',version:'—',
     kind:'Pattern & signal layer',localPath:null,
     desc:'The memory of the mirror. Reads digests, shows the arc.'},
   codex:{id:'codex',short:'Codex',name:'the Codex',world:'riftborn',glyph:'C',accent:'#b98bff',status:'active',version:'v2.0',
@@ -88,7 +88,7 @@ function readPacket(p){
 }
 const kindOf = p => (readPacket(p).kind || 'handoff');
 const IDEAS = [
-  {name:'MirrorFlow Insight',stage:'concept',desc:'Analytics, pattern detection, signal layers over Ping & Sync data.',dest:'MirrorFlow'},
+  {name:'7OS Insight',stage:'concept',desc:'Analytics, pattern detection, signal layers over Ping & Sync data.',dest:'7OS'},
   {name:'Undercroft Exchange',stage:'prototype',desc:'A harvest surface: browsing donor engines and porting them as modules. Handoff received.',dest:'Shell'},
   {name:'Artemis',stage:'drafting',desc:'Unnamed venture, still veiled. A folder on the workshop floor.',dest:'unplaced'}
 ];

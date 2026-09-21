@@ -149,7 +149,7 @@ body[data-view="frame"] .stars{display:none}
   opacity:0;transition:opacity .25s;pointer-events:none}
 .sky-body:hover .sky-tag{opacity:1}
 #comet{position:absolute;width:5px;height:5px;border-radius:50%;background:#fff;z-index:7;pointer-events:none;opacity:0;
-  box-shadow:0 0 8px #fff,0 0 16px var(--gilt), -10px 2px 12px 1px var(--gilt-dim), -20px 4px 16px 2px rgba(212,175,55,.12);
+  box-shadow:0 0 8px #fff,0 0 18px var(--gilt);
   animation:cometfly 9s ease-in-out infinite}
 @keyframes cometfly{
   0%{opacity:0;left:var(--cx1);top:var(--cy1)}
