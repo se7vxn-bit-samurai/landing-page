@@ -11,19 +11,19 @@ const STATUS = {
   open:{label:'Open',dot:'#e08b4a'}
 };
 const WORLDS = {
-  mirrorflow:{name:'7OS',motto:'Ordo Septimvs',tagline:'The order behind the work.',status:'building',version:'v1.4',
+  mirrorflow:{name:'7OS',motto:'The Blade and Me',tagline:'The order behind the work.',status:'building',version:'v1.4',
     accent:'#5dd9ff',glyph:'7',app:'ping',appName:'7OS Ping',
     palette:{bg:'#070d14',ink:'#eef0f5',accent:'#5dd9ff',fire:'#7df9e8'},
     desc:'Seventh Order Systems — the systems arm, expressed as three instruments. Ping holds the moment: one mirror, one note back. Sync holds the long arc: continuity across days. Notes catches what falls between. Together: the seventh order — how the work actually gets done.'},
-  excelsior:{name:'Excelsior',motto:'Ars Vendendi',tagline:'The editorial sales coach.',status:'active',version:'v2.7',
+  excelsior:{name:'Excelsior',motto:'The Death and the Strawberry',tagline:'The editorial sales coach.',status:'active',version:'v2.7',
     accent:'#d4a832',glyph:'E',flagship:true,app:'coach',appName:'Excelsior Coach',
     palette:{bg:'#17120b',ink:'#f4eee0',accent:'#d4a832',fire:'#e05c24'},
     desc:'A coaching atelier for sellers who think in arguments, not scripts. The flagship of the house: mindset, craft, and the art of the honest sale. Every session is an argument refined; every review, a rung on the ladder.'},
-  riftborn:{name:'Riftborn',motto:'Inter Mvndos',tagline:'Fables, worlds & memory.',status:'active',version:'v2.0',
+  riftborn:{name:'Riftborn',motto:'Turn Back the Pendulum',tagline:'Fables, worlds & memory.',status:'active',version:'v2.0',
     accent:'#b98bff',glyph:'R',app:'codex',appName:'the Codex',
     palette:{bg:'#0c0816',ink:'#ede7ff',accent:'#b98bff',fire:'#ff6ec7'},
     desc:'The fable arm of the house: worldbuilding, symbolism, and the memory that keeps it canon. The Codex is its living terminal: rituals, design bibles and lore, all sealed here. Inside it, the game is still forming: a card-and-tile crossing between worlds.'},
-  altar:{name:'The Altar',motto:'Nova Flamma',tagline:'Where new ideas are laid.',status:'open',version:'tier',
+  altar:{name:'The Altar',motto:'Nothing Can Be Explained',tagline:'Where new ideas are laid.',status:'open',version:'tier',
     accent:'#e08b4a',glyph:'A',app:null,appName:null,
     palette:{bg:'#100c09',ink:'#ece4d6',accent:'#e08b4a',fire:'#ffb36b'},
     desc:'The fourth door is not a product. It is a tier. New ideas are laid here as candles: named, given a line of intent, and watched. An idea that catches fire earns a world of its own; one that gutters descends to the undercroft. Nothing is pitched in the dark.'}
@@ -689,7 +689,7 @@ document.addEventListener('click',e=>{
 function moduleExcelsior(w){ return `
   <div class="ch-mod-h">The Atelier · three disciplines</div>
   <div class="ex-creed">“We do not pitch. We make the honest argument, and we make it beautifully.”
-    <small>the house creed · ars vendendi</small></div>
+    <small>the house creed</small></div>
   <div class="ex-disc">
     <div class="ex-d"><div class="r">I</div><div class="t">Argument</div><div class="s">The case itself: structure, evidence, the shape of persuasion.</div></div>
     <div class="ex-d"><div class="r">II</div><div class="t">Mindset</div><div class="s">The seller's posture: calm, curious, never needy.</div></div>
@@ -827,7 +827,7 @@ function buildChamberHTML(id){
       <div class="ch-id">
         <div class="stat-line">${pip('archived',' · read-only')}</div>
         <h1>The Undercroft</h1>
-        <div class="motto">· Nihil Perit · nothing is lost ·</div>
+        <div class="motto">· Memories in the Rain · nothing is lost ·</div>
         <div class="desc">Donor codebases, sealed and kept. These are not dead products: they are quarries. Engines, patterns and logic are harvested from here into the living apps. Nothing gets deleted; nothing gets patched in place. The donors themselves stay in the workshop: this portable carries their records, not their weight.</div>
         <div class="ch-pulse-row">
           <div class="ch-pulse"><div class="n" data-count="5">5</div><div class="l">sealed donors</div></div>
@@ -849,7 +849,7 @@ function buildChamberHTML(id){
       <div class="ch-id">
         <div class="stat-line">${pip('active',' · settings')}</div>
         <h1>The Vestry</h1>
-        <div class="motto">· Ordo Domus · the order of the house ·</div>
+        <div class="motto">· Bells of Separation · the order of the house ·</div>
         <div class="desc">Where the house keeps itself. Pack your whole life into a satchel and carry it to another device; test that the rites still hold; tend the observances. Everything here is data, not theatre.</div>
         <div class="ch-pulse-row">
           <div class="ch-pulse"><div class="n">${Object.keys(gatherStore()).length}</div><div class="l">stores held</div></div>
