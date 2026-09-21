@@ -56,6 +56,8 @@
   .lp-resume:hover{background:var(--gilt-faint)}
   .lp-h{font-family:var(--mono);font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--gilt-soft);margin-bottom:6px;position:relative}
   .lp-title{font-family:var(--display);font-weight:600;font-size:clamp(28px,4vw,46px);position:relative}
+  /* stamped masthead — Henry-broadside weight/scale, reserved for the doors panel which has the vertical room */
+  .lp-title.stamp{font-weight:900;font-size:clamp(52px,9vw,128px);line-height:.86;letter-spacing:-.01em;max-width:1100px;margin:0 auto}
   .lp-cards{display:flex;gap:18px;margin-top:46px;flex-wrap:wrap;justify-content:center;position:relative;max-width:1180px}
   .lp-card{flex:1;min-width:200px;max-width:260px;border:1px solid var(--rule);border-radius:10px;padding:30px 22px;cursor:pointer;
     background:linear-gradient(180deg,transparent,var(--card-wash) 160%);transition:transform .3s,border-color .3s,box-shadow .3s;position:relative;overflow:hidden}
@@ -95,6 +97,9 @@
     background:var(--gilt);border:none;padding:16px 34px;cursor:pointer;font-weight:500;transition:all .25s;position:relative;display:inline-flex;gap:11px;align-items:center}
   .lp-enter:hover{gap:16px;box-shadow:0 0 34px var(--gilt-soft)}
   .lp-foot{position:absolute;bottom:4vh;font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink4)}
+  .lp-hero-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:26px;position:relative}
+  .lp-hero-actions .lp-enter,.lp-hero-actions .lp-resume{margin-top:0}
+  .lp-hero-actions .lp-resume{display:none}
   @media(max-width:760px){.lp-cards{gap:12px}.lp-card{min-width:140px;padding:20px 14px}}
   @media (prefers-reduced-motion:reduce){.lp .in-up{transition:none}}`;
   const st=document.createElement('style'); st.textContent=css; document.head.appendChild(st);
@@ -122,13 +127,16 @@
       <div class="lp-name in-up d2">theGuide<span>.Club</span></div>
       <div class="lp-motto in-up d3">· The Seletiv Kolektiv ·</div>
       <div class="lp-sub in-up d4">One roof over four worlds: a productivity mirror, an editorial coach, a house of fables, and an altar for what comes next. Built as one place, not a list of links.</div>
-      <div class="lp-resume in-up d5" id="lp-resume" style="display:none"></div>
+      <div class="lp-hero-actions in-up d5">
+        <button class="lp-enter" id="lp-enter-hero">enter <span>↘</span></button>
+        <div class="lp-resume" id="lp-resume"></div>
+      </div>
       <div class="lp-cue">scroll ↓</div>
     </section>
     <section class="lp" data-p="2">
       <div class="lp-bg" id="lp-bg2"></div>
       <div class="lp-h in-up d1">the worlds</div>
-      <div class="lp-title in-up d2">Four doors, one nave</div>
+      <div class="lp-title stamp in-up d2">7OS. Excelsior. Riftborn. Altar.</div>
       <div class="lp-cards">${cardsHTML}</div>
       <div class="lp-cue">scroll ↓</div>
     </section>
@@ -138,7 +146,7 @@
       <div class="lp-h in-up d1">the ecosystem</div>
       <div class="lp-title in-up d2">A place that keeps its own memory</div>
       <div class="lp-sky in-up d3" id="lp-sky"></div>
-      <button class="lp-enter in-up d4" id="lp-enter">enter the nave <span>↘</span></button>
+      <button class="lp-enter in-up d4" id="lp-enter">enter <span>↘</span></button>
       <div class="lp-foot">the sky follows your hour · night · day · twilight</div>
     </section>`;
   document.body.appendChild(wrap);
@@ -191,6 +199,7 @@
     }, 590);
   }
   wrap.querySelector('#lp-enter').addEventListener('click',()=>enterNave());
+  wrap.querySelector('#lp-enter-hero').addEventListener('click',()=>enterNave());
   wrap.querySelectorAll('.lp-card').forEach(c=>{
     c.addEventListener('click',()=>enterNave(c.dataset.world));
     /* pre-warm the world's app so entry from the landing is never a cold summon */
