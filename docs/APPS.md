@@ -11,6 +11,10 @@ Manifest entries live in `APPS` inside `js/shell.js`.
 | **MirrorFlow Notes** | `apps/notes.html` | mirrorflow | active · v4 | The workbench. Modes: Capture / Compose. Rebuilt on Excelsior's structure under the shell's own four grounds; first app to both seal and receive missives. |
 | **Excelsior Coach** | `apps/coach.html` | excelsior | active · v2.7 | Editorial sales coach. Modes: Home / Library / Facilitate / Build / Assess. Cream editorial default theme. |
 | **the Codex** | `apps/codex.html` | riftborn | active · v2.0 | Riftborn terminal — rituals, design bibles, lore. |
+| **the Reader** | `apps/codex.html#read` | riftborn | active · v2.0 | Not its own file — the Codex's Awakening Arc book view, reached by `Frame.enter('codex','read')` (`data-at="read"` on a launch card). |
+| **Riftborn Screenplay** | — | riftborn | soon | Declared. Source lives outside this repo. |
+| **Riftborn Storyboards** | — | riftborn | soon | Declared. Source lives outside this repo. |
+| **The Rift** | — | riftborn | soon · v0.0.3 | Card-and-tile game. Rules draft only; gets its bus when it gets a build. |
 
 ## Contract with the shell
 

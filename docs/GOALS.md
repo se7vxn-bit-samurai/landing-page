@@ -175,6 +175,21 @@ mechanism is already right — no work needed there.
 - [ ] **H4 · Codex's other on-demand surfaces** — `weave-atlas` (129 KB) and
       `reader-editor` (24 KB) behind their own openers.
 
+## Phase R · Riftborn works
+
+The chamber now shows the fable arm's works as cards. Live ones launch; declared
+ones (`status:'soon'`, `localPath:null`) say so and do nothing.
+
+- [x] **R1 · The Reader surfaced** — the Codex's `#read` panel gets its own card;
+      `Frame.enter(id, at)` deep-links a panel (cold: `src#at`, warm: sets the hash).
+- [ ] **R2 · Screenplay** — bring the source into `apps/screenplay.html`, add
+      `bridge.js`, set `localPath` + status.
+- [ ] **R3 · Storyboards** — same path as R2 → `apps/storyboard.html`. Image-heavy:
+      check weight against Phase H before landing.
+- [ ] **R4 · The Rift (game)** — past the v0.0.3 rules draft to a playable build.
+- [ ] **R5 · Reader as its own file** — only if it outgrows the Codex; today it is
+      one panel plus the 24 KB `reader-editor` script (see H4).
+
 ## Phase G · MirrorFlow Insight
 
 Design and digest contract: [`INSIGHT.md`](INSIGHT.md). F2 has landed, so digests

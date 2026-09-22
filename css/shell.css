@@ -449,6 +449,9 @@ body[data-view="frame"] #tb-reload{display:inline-block}
 .mf-card .foot{display:flex;justify-content:space-between;align-items:center;margin-top:16px;
   font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--cmut)}
 .mf-card .foot .e{color:var(--iacc);letter-spacing:.16em}
+.mf-card.soon{cursor:default;border-style:dashed;opacity:.72}
+.mf-card.soon:hover{transform:none;border-color:var(--crule)}
+.mf-card.soon:hover::after{left:-80%}
 .mf-axis{text-align:center;font-family:var(--mono);font-size:8.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--cmut2);margin:14px 0 0}
 .cx-term{border:1px solid var(--crule);background:rgba(0,0,0,.32);padding:22px 24px;font-family:var(--mono);font-size:11.5px;line-height:2.1;color:var(--cmut)}
 .cx-term .ln b{color:var(--cink);font-weight:400}

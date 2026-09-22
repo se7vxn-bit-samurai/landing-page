@@ -49,7 +49,16 @@ const APPS = {
     desc:'The memory of the mirror. Reads digests, shows the arc.'},
   codex:{id:'codex',short:'Codex',name:'the Codex',world:'riftborn',glyph:'C',accent:'#b98bff',status:'active',version:'v2.0',
     kind:'Riftborn terminal',localPath:'apps/codex.html',
-    desc:'Rituals, bibles, lore: sealed and canon.'}
+    desc:'Rituals, bibles, lore: sealed and canon.'},
+  screenplay:{id:'screenplay',short:'Screenplay',name:'Riftborn Screenplay',world:'riftborn',glyph:'S',accent:'#ff6ec7',status:'soon',version:'—',
+    kind:'Script for the screen',localPath:null,
+    desc:'The Awakening Arc told for the screen. Lives outside the house until its file is brought in.'},
+  storyboard:{id:'storyboard',short:'Storyboards',name:'Riftborn Storyboards',world:'riftborn',glyph:'B',accent:'#c9a2ff',status:'soon',version:'—',
+    kind:'Panels & shot boards',localPath:null,
+    desc:'The arc drawn in panels. Lives outside the house until its file is brought in.'},
+  rift:{id:'rift',short:'The Rift',name:'The Rift',world:'riftborn',glyph:'R',accent:'#ff6ec7',status:'soon',version:'v0.0.3',
+    kind:'Card-and-tile game',localPath:null,
+    desc:'A crossing between worlds. Rules draft only: the door is drawn, not yet cut.'}
 };
 window.TGC_APPS = APPS;            // apps live under apps/<id>.html · fetched on demand
 const DOCK = ['ping','sync','notes','bench','coach','codex'];   // Ctrl+1-6 · not the braziers, which track mounted frames
@@ -133,8 +142,9 @@ const Frame = {
     Frame.ready[id] = false;
     fr.src = APPS[id].localPath;
   },
-  enter(id){
+  enter(id, at){
     const a = APPS[id];
+    const src = at ? a && a.localPath && a.localPath+'#'+at : a && a.localPath;   /* at: a panel inside the app (Codex #read) */
     if(!a || !a.localPath){ toast((a?a.short:'it')+' has no frame yet'); return; }
     if(typeof currentChamber!=='undefined' && currentChamber) closeChamber();
     document.body.dataset.view = 'frame';
@@ -153,7 +163,7 @@ const Frame = {
       }
       fr = document.createElement('iframe');
       fr.setAttribute('data-shell-app',id);
-      fr.src = a.localPath;                       // apps/<id>.html · same-origin frame
+      fr.src = src;                               // apps/<id>.html · same-origin frame
       $('#veil').classList.add('on'); $('#veil-line').textContent = 'summoning '+a.short.toLowerCase();
       Frame.ready[id] = false;
       fr.addEventListener('load',()=>{ Frame.ready[id] = true; $('#veil').classList.remove('on'); Bus.flush(id); broadcastTheme(fr.contentWindow); });
@@ -161,6 +171,7 @@ const Frame = {
       Frame.iframes[id] = fr;
     } else {
       const ix = Frame.order.indexOf(id); if(ix>-1) Frame.order.splice(ix,1);
+      if(at){ try{ fr.contentWindow.location.hash = at; }catch(e){} }   // warm frame · the app's hashchange routes it
     }
     Frame.order.push(id);
     { const v = lsGet(KEYS.visits,{}); v[id] = Date.now(); lsSet(KEYS.visits,v); }   /* the pulse: when each door was last truly entered */
@@ -669,7 +680,7 @@ $$('.tp-panel').forEach(p=>{
 });
 document.addEventListener('click',e=>{
   const el = e.target.closest('[data-launch]');
-  if(el){ e.stopPropagation(); Frame.enter(el.dataset.launch); }
+  if(el){ e.stopPropagation(); Frame.enter(el.dataset.launch, el.dataset.at); }
 });
 
 /* parallax */
@@ -715,19 +726,28 @@ function moduleMirrorflow(w){
   <div class="mf-pair">${card('ping')}${card('sync')}${card('notes')}${card('bench')}</div>
   <div class="mf-axis">· the moment · the long arc · the workbench · the bench ·</div>`;
 }
-function moduleRiftborn(w){ return `
-  <div class="ch-mod-h">The Codex · memory of the worlds</div>
-  <div class="cx-term">
-    <div class="ln"><span class="p">☉ codex</span> :: mounted · riftborn terminal <b>v2.0</b></div>
-    <div class="ln">holds :: rituals · design bibles · lore</div>
-    <div class="ln">integrity :: <b>canon</b> · nothing deleted, everything sealed</div>
-    <div class="ln"><span class="p">&gt;</span> open the codex <span class="cur"></span></div>
-  </div>
-  <div class="cx-shelves">
-    <div class="cx-shelf"><div class="t">Fables</div><div class="s">worldbuilding · symbols · the lore beneath the worlds</div></div>
-    <div class="cx-shelf"><div class="t">Design Bibles</div><div class="s">universal design bible · brand bibles · token law</div></div>
-    <div class="cx-shelf"><div class="t">Rituals & Manuals</div><div class="s">working modes · shell canon · exchange contract</div></div>
-  </div>
+/* the Riftborn works · Reader is a panel inside the Codex, not its own file;
+   the rest are declared ('soon') until their sources are brought into the house */
+const RIFT_WORKS = [
+  {id:'codex',  at:null,  n:'The Codex',   g:'C', k:'lore terminal', d:'Rituals, design bibles, lore, the Weave atlas and the character index.'},
+  {id:'codex',  at:'read',n:'The Reader',  g:'¶', k:'awakening arc · book view', d:'The Awakening Arc manuscript as a paged book: chapters, focus mode, paper and night.'},
+  {id:'screenplay'},{id:'storyboard'},{id:'rift'}
+];
+function moduleRiftborn(w){
+  const card = x => {
+    const a = APPS[x.id], live = !!a.localPath;
+    const n = x.n||a.short, g = x.g||a.glyph, k = [x.k||a.kind, a.version!=='—'&&a.version, STATUS[a.status].label].filter(Boolean).join(' · ');
+    return `
+    <div class="mf-card ${live?'':'soon'}" style="--iacc:${a.accent}" ${live?`data-launch="${x.id}"${x.at?` data-at="${x.at}"`:''}`:''}>
+      <div class="g">${g}</div><div class="n">${n}</div>
+      <div class="k">${k}</div>
+      <div class="d">${x.d||a.desc}</div>
+      <div class="foot"><span>${live?Pulse.visitLine(x.id):'not yet in the house'}</span><span class="e">${live?'enter ↘':'forming'}</span></div>
+    </div>`; };
+  return `
+  <div class="ch-mod-h">The Works · what the fable arm holds</div>
+  <div class="mf-pair">${RIFT_WORKS.map(card).join('')}</div>
+  <div class="mf-axis">· the lore · the book · the screen · the panels · the game ·</div>
   <div class="ch-mod-h" style="margin-top:28px">The Rift · the game, forming</div>
   <div class="rb-rift"><div class="rb-crack"></div><div class="rb-crack c2"></div>
     <div class="cap">the door is drawn · not yet cut</div></div>
