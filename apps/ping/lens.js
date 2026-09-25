@@ -367,7 +367,7 @@
     },
     {
       id:"lens.spelling.unknown_word", category:"grammar", subtype:"spelling", label:"Possible misspelling", severity:"medium", confidence:0.72,
-      run({ text, protectedSpans, push }) {
+      run({ text, protectedSpans, push, note }) {
         const D = window.__TGC_LENS_DICT;
         if (!D) {
           /* Only reach for the ~500 KB ledger once there is real prose to check —
@@ -397,8 +397,9 @@
           out.delete(w); return [...out]; };
         const CONTRACTION_OK = /^(?:won't|can't|shan't|ain't|o'clock|y'all|ma'am)$/;
         const re = /[A-Za-z]+(?:'[A-Za-z]+)*/g;
-        let m, flagged = 0;
-        while ((m = re.exec(text)) !== null && flagged < 8) {
+        const CAP = 8;
+        let m, flagged = 0, unknown = 0, firstHidden = null;
+        while ((m = re.exec(text)) !== null) {
           const raw = m[0], start = m.index, end = start + raw.length;
           if (raw.length < 4 || raw.length > 18) continue;
           if (/[A-Z]/.test(raw)) continue;                               /* proper nouns & acronyms */
@@ -412,6 +413,10 @@
             if (w.length < 4) continue;
           }
           if (inDict(w)) continue;
+          unknown++;
+          /* past the cap, keep counting but skip the candidate search — that is the
+             expensive half, and an honest total must not cost a slow editor */
+          if (flagged >= CAP) { if (!firstHidden) firstHidden = raw; continue; }
           const cands = edits1(w);
           const fromCommon = cands.filter(c => D._cset.has(c)).sort((a, b) => D._rank.get(a) - D._rank.get(b));
           const fromDict = fromCommon.length ? [] : cands.filter(c => !D._cset.has(c) && c.length > 3 && inDict(c)).slice(0, 2);
@@ -422,6 +427,17 @@
             severity: this.severity, confidence: this.confidence,
             start, end, excerpt: raw, replacement: fix,
             message: sugg.length ? ("Unknown word · did you mean " + sugg.join(", ") + "?") : "Not in the dictionary." }, protectedSpans);
+        }
+        /* The cap is a real ceiling. Stopping quietly at eight taught a long draft
+           that it was clean below the eighth typo — say the number instead. */
+        if (unknown > flagged) {
+          note({ ruleId: this.id, kind: "cap", shown: flagged, total: unknown,
+            /* "unknown words" not "misspellings" — the fixed-misspelling rules flag
+               their own words too, so a count of "misspellings" would not match what
+               the rail shows. This number is the dictionary check's own. */
+            message: "Dictionary check · " + flagged + " of " + unknown + " unknown words shown"
+                   + (firstHidden ? " · next is “" + firstHidden + "”" : "")
+                   + ". Fix these and the rest appear." });
         }
       }
     },
@@ -1033,15 +1049,20 @@
   }
   /* set while the fixture suite runs · keeps self-tests from fetching the ledger */
   let TGC_IN_SELFTEST = false;
+  /* A rule sometimes needs to report a LIMIT rather than a finding — "I stopped at 8
+     of 23". That is not an issue: it has no fix, and counting it as one would inflate
+     the digest's grammarHits and lie to Insight. Notes are that channel. */
   function runRuleRegistry(text, protectedSpans, ruleState) {
-    const issues=[], lower=text.toLowerCase();
+    const issues=[], notes=[], lower=text.toLowerCase();
     const push=(issue,spans)=>addIssue(issues,spans||protectedSpans,issue);
+    const note=(n)=>{ if(n&&n.message) notes.push(Object.assign({severity:"info"},n)); };
     getActiveRegexRules(ruleState).forEach(rule=>{
       const flags=rule.pattern.flags.includes("g")?rule.pattern.flags:rule.pattern.flags+"g";
       const pat=new RegExp(rule.pattern.source,flags);
       let m; while((m=pat.exec(text))) push(issueFromRegexRule(rule,m),protectedSpans);
     });
-    getActiveStructuralRules(ruleState).forEach(rule=>rule.run({text,lower,protectedSpans,push}));
+    getActiveStructuralRules(ruleState).forEach(rule=>rule.run({text,lower,protectedSpans,push,note}));
+    issues.notes = notes;
     return issues;
   }
   function resolveEngineContext(context) {
@@ -1074,7 +1095,7 @@
       engine:ENGINE_ID, contract:buildContractMetadata(), offline:true,
       context:Object.assign({channel:"writing",dialect:"en-GB"},es.context),
       contextBridge:{ ping:null, issues:0 },
-      protectedSpans, issues:issues.sort((a,b)=>a.start-b.start),
+      protectedSpans, issues:issues.sort((a,b)=>a.start-b.start), notes:issues.notes||[],
       rules:{ profile:buildRuleProfile(es.disabledRuleIds,es.profileValidation,es.profileMeta), active:getActiveRules(es.disabledRuleIds).map(r=>({id:r.id,category:r.category,label:r.label,severity:r.severity})), disabled:Array.from(es.disabledRuleIds), categories:RULE_CATEGORIES.slice() },
       rewrites:buildRewritePreviews(text,issues),
       quality,

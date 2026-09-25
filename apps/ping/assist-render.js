@@ -258,6 +258,14 @@ function renderPingAssistRewrites(result) {
     `).join('')}`;
 }
 
+function mfAssistNotesHtml(result) {
+  /* Notes report a LIMIT the engine hit, not something to fix. They get a line, never
+     a card: a card implies an Apply or an Ignore, and there is neither. */
+  const notes = (result && result.notes) || [];
+  if (!notes.length) return '';
+  return `<div class="mf-assist-note-line">${notes.map(n => escHtml(n.message)).join('<br>')}</div>`;
+}
+
 function renderPingAssistCards(result) {
   const list        = document.getElementById('mfAssistCardList');
   const clearBtn    = document.getElementById('mfAssistClearIgnored');
@@ -307,7 +315,7 @@ function renderPingAssistCards(result) {
       : activeCount === 0 && mfAssistIgnore.size > 0
         ? ['Ignored issues hidden', 'Clear ignored to bring the hidden cards back.']
         : ['No issues found', 'The current text is clean. Use rewrite previews if you want a different tone or length.'];
-    list.innerHTML = mfAssistEmptyHtml(empty[0], empty[1]);
+    list.innerHTML = mfAssistNotesHtml(result) + mfAssistEmptyHtml(empty[0], empty[1]);
     return;
   }
 
@@ -321,7 +329,7 @@ function renderPingAssistCards(result) {
   }
 
   const catLabels = { grammar:'Grammar', clarity:'Clarity', tone:'Tone' };
-  let html = '', currentCat = '';
+  let html = mfAssistNotesHtml(result), currentCat = '';
 
   visible.forEach(issue => {
     /* group header when showing all */
@@ -830,6 +838,19 @@ function renderPingAssistDiagnostics(report) {
     } else {
       note.textContent = `${r.passed || 0} active tests passing. ${skipped} skipped by disabled rules.`;
     }
+  }
+
+  /* The spelling ceiling, said where a person can read it. A bloom filter has no false
+     negatives on membership but does have false positives, so a real misspelling can be
+     waved through as "known". The engine under-flags rather than over-flags — the safe
+     direction for a tool people trust, but only if the limit is stated instead of
+     implied by silence. It lived in docs/PING.md, which no user opens. */
+  const ceiling = document.getElementById('mfAssistDiagCeiling');
+  if (ceiling) {
+    const loaded = Boolean(window.__TGC_LENS_DICT);
+    ceiling.textContent = loaded
+      ? 'Spelling is a floor, not a guarantee: the dictionary is a bloom filter, so a real misspelling can occasionally read as known. At most 8 unknown words are flagged per pass — the rail says so when more are waiting.'
+      : 'Spelling is checked once the dictionary loads, on the first real prose. The other rules run regardless.';
   }
 
   const failBox = document.getElementById('mfAssistDiagFailures');

@@ -272,6 +272,108 @@ body::before {
   box-shadow: var(--mf-shadow); z-index: 20;
 }
 
+/* ═══════════ THE GROUND · geometry under the page ═══════════
+   Two layers, both pure CSS, both fixed behind everything and inert to the
+   pointer. The house's own vocabulary: the nave's constellation geometry, and
+   the deco fan Excelsior uses on its dossiers. They sit at a few percent
+   opacity - the point is that the page does not feel like a blank div, not
+   that anyone consciously sees a pattern. The two light skins lift them a
+   little, because hairlines that read on ink vanish on paper. */
+.mf-ground {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  overflow: hidden; contain: strict;
+}
+/* a · the lattice · isometric diamonds, the constellation's angle */
+.mf-ground::before {
+  content: ""; position: absolute; inset: -10%;
+  background:
+    repeating-linear-gradient(60deg,  var(--mf-hair) 0 1px, transparent 1px 68px),
+    repeating-linear-gradient(-60deg, var(--mf-hair) 0 1px, transparent 1px 68px);
+  opacity: .55;
+  mask-image: radial-gradient(120% 90% at 50% 0%, #000 20%, transparent 78%);
+}
+/* b · the fan · a deco sunburst anchored bottom-right, the way a dossier
+   corner carries one. conic-gradient gives the rays without an SVG. */
+.mf-ground::after {
+  content: ""; position: absolute;
+  right: -14vmin; bottom: -22vmin; width: 78vmin; height: 78vmin;
+  background: repeating-conic-gradient(from 200deg at 100% 100%,
+    var(--mf-accent) 0deg 0.5deg, transparent 0.5deg 7.5deg);
+  opacity: .07;
+  mask-image: radial-gradient(100% 100% at 100% 100%, #000 8%, transparent 66%);
+}
+:root[data-theme="linen"] .mf-ground::before,
+:root[data-theme="paper"] .mf-ground::before { opacity: .95; }
+:root[data-theme="linen"] .mf-ground::after,
+:root[data-theme="paper"] .mf-ground::after  { opacity: .10; }
+@media (prefers-reduced-motion: no-preference) {
+  .mf-ground::after { transition: opacity var(--mf-slow) var(--mf-ease); }
+}
+/* everything the app draws sits above the ground */
+.mf-shell, .mf-topbar, .mf-desk { position: relative; z-index: 1; }
+
+/* ═══════════ THE DESK · one note at full size ═══════════ */
+.mf-desk {
+  position: fixed; inset: 0; z-index: 60;
+  display: grid; place-items: center;
+  padding: var(--mf-s6);
+  background: color-mix(in srgb, var(--mf-bg) 78%, transparent);
+  backdrop-filter: blur(3px);
+  animation: mf-desk-in var(--mf-base) var(--mf-ease-out);
+}
+@keyframes mf-desk-in { from { opacity: 0 } to { opacity: 1 } }
+.mf-desk__sheet {
+  position: relative;
+  width: min(920px, 100%); height: min(84vh, 100%);
+  display: flex; flex-direction: column;
+  background: var(--mf-surface);
+  border: 1px solid var(--mf-border);
+  border-radius: var(--mf-r-lg);
+  box-shadow: var(--mf-shadow), 0 24px 80px rgba(0,0,0,.45);
+  padding: var(--mf-s6) var(--mf-s7) var(--mf-s5);
+  animation: mf-desk-rise var(--mf-slow) var(--mf-ease-out);
+}
+@keyframes mf-desk-rise {
+  from { opacity: 0; transform: translateY(14px) scale(.985) }
+  to   { opacity: 1; transform: none }
+}
+/* the masthead's brackets, so the desk reads as the same building */
+.mf-desk__corners { position: absolute; inset: 10px; pointer-events: none; color: var(--mf-accent); opacity: .42; }
+.mf-desk__corners::before,
+.mf-desk__corners::after,
+.mf-desk__corners > span::before,
+.mf-desk__corners > span::after { content: ""; position: absolute; width: 22px; height: 22px; }
+.mf-desk__corners::before { top: 0; left: 0; border-top: 1px solid; border-left: 1px solid; }
+.mf-desk__corners::after { bottom: 0; right: 0; border-bottom: 1px solid; border-right: 1px solid; }
+.mf-desk__corners > span::before { top: 0; right: 0; border-top: 1px solid; border-right: 1px solid; }
+.mf-desk__corners > span::after { bottom: 0; left: 0; border-bottom: 1px solid; border-left: 1px solid; }
+.mf-desk__head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: var(--mf-s4); margin-bottom: var(--mf-s4);
+}
+.mf-desk__kicker {
+  font-family: var(--mf-mono); font-size: 10px;
+  letter-spacing: .26em; text-transform: uppercase; color: var(--mf-accent);
+}
+.mf-desk__meta {
+  font-family: var(--mf-mono); font-size: 11px; color: var(--mf-ink-3); margin-top: 4px;
+}
+.mf-desk__text {
+  flex: 1; width: 100%; resize: none;
+  background: transparent; border: 0; outline: none;
+  color: var(--mf-ink);
+  font-family: var(--mf-editorial); font-size: 20px; line-height: 1.7;
+  padding: var(--mf-s3) 0;
+}
+.mf-desk__text::placeholder { color: var(--mf-ink-4); }
+/* the desk owns the scroll while it is open */
+body[data-desk="open"] { overflow: hidden; }
+@media (max-width: 720px) {
+  .mf-desk { padding: 0; }
+  .mf-desk__sheet { height: 100%; width: 100%; border-radius: 0; padding: var(--mf-s5); }
+  .mf-desk__text { font-size: 17px; }
+}
+
 /* ═══════════ MAIN ═══════════ */
 .mf-main { position: relative; overflow-y: auto; padding: var(--mf-s6) var(--mf-s7); }
 .mf-pane { display: none; max-width: 1080px; margin: 0 auto; }
@@ -444,8 +546,32 @@ body::before {
   * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
 </style>
+<script>
+/* The studio - Slides and Doc - is ~115 KB of code and styling that a session
+   spent writing notes never touches. It is not part of this file. The first
+   switch to either pane fetches both halves once; until then Notes costs what
+   Notes costs. Same shape as Ping's Lens engine and Codex's Three.js. */
+window.__TGC_STUDIO_URL = 'notes/studio.js';
+window.__TGC_STUDIO_CSS_URL = 'notes/studio.css';
+window.__tgcLoadStudio = function () {
+  if (window.NotesStudio) return Promise.resolve(true);
+  if (window.__tgcStudioPending) return window.__tgcStudioPending;
+  var link = document.createElement('link');
+  link.rel = 'stylesheet'; link.href = window.__TGC_STUDIO_CSS_URL;
+  document.head.appendChild(link);
+  var s = document.createElement('script');
+  s.src = window.__TGC_STUDIO_URL;
+  window.__tgcStudioPending = new Promise(function (res) {
+    s.onload = function () { window.__tgcStudioPending = null; res(Boolean(window.NotesStudio)); };
+    s.onerror = function () { window.__tgcStudioPending = null; res(false); };
+  });
+  document.head.appendChild(s);
+  return window.__tgcStudioPending;
+};
+</script>
 </head>
 <body>
+<div class="mf-ground" aria-hidden="true"></div>
 
 <header class="mf-topbar">
   <div class="mf-brand">MirrorFlow <em>Notes</em></div>
@@ -506,6 +632,390 @@ body::before {
     </section>
 
     <!-- ────── COMPOSE ────── -->
+    
+    <!-- The studio · moved from Excelsior Coach's Build mode. Its markup and
+         ex-* class names came across unchanged; .mf-studio scopes the palette
+         it brought with it so no Notes token is touched. -->
+    <section class="mf-pane mf-studio" id="paneSlides" aria-labelledby="slidesTitle">
+      <div class="mf-masthead">
+        <div class="mf-masthead__corners" aria-hidden="true"><span></span></div>
+        <div class="mf-kicker">The studio</div>
+        <h1 class="mf-title" id="slidesTitle">Slides</h1>
+        <p class="mf-lede">Layouts, layers, elements. A deck stays on this machine and
+          goes nowhere until you export it.</p>
+      </div>
+      <div id="studioFallback" class="mf-empty__line"></div>
+<div class="ex-build-panel is-active" id="buildSlides">
+        <div class="ex-slides-toolbar">
+          <!-- the brand kit opener came from Coach's topbar; it is the studio's own -->
+          <button class="ex-btn" id="brandKitBtn" title="Brand kit editor">Brand</button>
+          <!-- Layout picker -->
+          <div class="ex-tb-group">
+            <div class="ex-slide-type-picker" id="slideTypePicker">
+              <button class="ex-btn" id="slideTypeBtn">+ Slide ▾</button>
+              <div class="ex-slide-type-popover" id="slideTypePopover">
+                <button class="ex-slide-type-card" data-layout="title">
+                  <div class="ex-stc-thumb"><div class="ex-stc-line ex-stc-line--h ex-stc-line--med" style="margin:auto auto 2px;"></div><div class="ex-stc-line ex-stc-line--sm" style="margin:0 auto;"></div></div>
+                  <div class="ex-stc-label">Title</div>
+                </button>
+                <button class="ex-slide-type-card" data-layout="agenda">
+                  <div class="ex-stc-thumb"><div class="ex-stc-line ex-stc-line--h ex-stc-line--wide"></div><div class="ex-stc-line ex-stc-line--wide"></div><div class="ex-stc-line ex-stc-line--wide"></div><div class="ex-stc-line ex-stc-line--med"></div></div>
+                  <div class="ex-stc-label">Agenda</div>
+                </button>
+                <button class="ex-slide-type-card" data-layout="content">
+                  <div class="ex-stc-thumb"><div class="ex-stc-line ex-stc-line--h ex-stc-line--wide"></div><div class="ex-stc-line ex-stc-line--wide"></div><div class="ex-stc-line ex-stc-line--sm"></div></div>
+                  <div class="ex-stc-label">Content</div>
+                </button>
+                <button class="ex-slide-type-card" data-layout="discussion">
+                  <div class="ex-stc-thumb"><div class="ex-stc-line ex-stc-line--h ex-stc-line--wide"></div><div class="ex-stc-cols" style="margin-top:3px;"><div class="ex-stc-col"></div><div class="ex-stc-col"></div></div></div>
+                  <div class="ex-stc-label">Discuss</div>
+                </button>
+                <button class="ex-slide-type-card" data-layout="practice">
+                  <div class="ex-stc-thumb"><div class="ex-stc-line ex-stc-line--h ex-stc-line--wide"></div><div class="ex-stc-line ex-stc-line--wide" style="opacity:0.35;margin-top:4px;height:8px;"></div></div>
+                  <div class="ex-stc-label">Practice</div>
+                </button>
+                <button class="ex-slide-type-card" data-layout="summary">
+                  <div class="ex-stc-thumb"><div class="ex-stc-line ex-stc-line--h ex-stc-line--med"></div><div class="ex-stc-line ex-stc-line--wide"></div><div class="ex-stc-line ex-stc-line--wide"></div><div class="ex-stc-line ex-stc-line--sm"></div></div>
+                  <div class="ex-stc-label">Summary</div>
+                </button>
+                <button class="ex-slide-type-card" data-layout="blank">
+                  <div class="ex-stc-thumb"></div>
+                  <div class="ex-stc-label">Blank</div>
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- Hidden original controls (driven by the visual picker) -->
+          <select class="ex-input" id="slideLayout" style="display:none;">
+            <option value="title">Title</option>
+            <option value="agenda">Agenda</option>
+            <option value="content">Content</option>
+            <option value="discussion">Discussion</option>
+            <option value="practice">Practice</option>
+            <option value="summary">Summary</option>
+            <option value="blank">Blank</option>
+          </select>
+          <button id="addSlideBtn" style="display:none;">Add Slide</button>
+          <span class="ex-tb-sep"></span>
+          <!-- Slide management -->
+          <div class="ex-tb-group">
+            <button class="ex-btn" id="dupSlideBtn" title="Duplicate slide">⎘</button>
+            <button class="ex-btn" id="moveUpBtn" title="Move slide up">↑</button>
+            <button class="ex-btn" id="moveDnBtn" title="Move slide down">↓</button>
+            <button class="ex-btn" id="deleteSlideBtn" title="Delete slide">✕</button>
+          </div>
+          <span class="ex-tb-sep"></span>
+          <!-- History -->
+          <div class="ex-tb-group">
+            <button class="ex-btn ex-history-btn" id="undoBtn" title="Undo (Ctrl+Z)" disabled>↶</button>
+            <button class="ex-btn ex-history-btn" id="redoBtn" title="Redo (Ctrl+Shift+Z)" disabled>↷</button>
+          </div>
+          <span class="ex-tb-sep"></span>
+          <!-- View & transitions -->
+          <div class="ex-tb-group">
+            <button class="ex-btn" id="gridToggleBtn" title="Toggle snap grid">▦</button>
+            <button class="ex-btn" id="findBtn" title="Find & Replace (Ctrl+F)">⌕</button>
+            <select class="ex-input" id="transitionSel" title="Slide transition" style="width:auto;font-size:11px;padding:4px 8px;">
+              <option value="cut">✂ Cut</option>
+              <option value="fade">◎ Fade</option>
+              <option value="slide-left">← Slide L</option>
+              <option value="slide-right">→ Slide R</option>
+              <option value="zoom">⊕ Zoom</option>
+            </select>
+          </div>
+          <button class="ex-btn ex-btn--fire" id="presentBtn" title="Present (F5)">▶ Present</button>
+          <span style="flex:1;"></span>
+          <!-- Export -->
+          <div class="ex-tb-group">
+            <button class="ex-btn" id="copyDeckBtn" title="Copy as text">Copy</button>
+            <button class="ex-btn ex-btn--primary" id="printDeckBtn" title="Print deck">⎙ Print</button>
+            <button class="ex-btn" id="exportDeckBtn" title="Export .txt">.txt</button>
+            <button class="ex-btn" id="clearDeckBtn" title="Clear all slides">Clear</button>
+          </div>
+        </div>
+        <div class="ex-slide-editor-grid">
+          <aside class="ex-element-palette" id="elementPalette">
+            <div class="ex-element-palette__title">Elements</div>
+            <div class="ex-element-palette__section">Text</div>
+            <div class="ex-element-palette__grid">
+              <button class="ex-element-palette__tile" data-add="heading"><span class="ex-element-palette__tile-icon">H1</span>Heading</button>
+              <button class="ex-element-palette__tile" data-add="subheading"><span class="ex-element-palette__tile-icon">H2</span>Sub</button>
+              <button class="ex-element-palette__tile" data-add="body"><span class="ex-element-palette__tile-icon">¶</span>Body</button>
+              <button class="ex-element-palette__tile" data-add="dropcap"><span class="ex-element-palette__tile-icon">D</span>Drop-cap</button>
+              <button class="ex-element-palette__tile" data-add="pullquote"><span class="ex-element-palette__tile-icon">"</span>Quote</button>
+            </div>
+            <div class="ex-element-palette__section">Lists</div>
+            <div class="ex-element-palette__grid">
+              <button class="ex-element-palette__tile" data-add="bullets"><span class="ex-element-palette__tile-icon">≡</span>Bullets</button>
+              <button class="ex-element-palette__tile" data-add="numbered"><span class="ex-element-palette__tile-icon">1.</span>Numbered</button>
+            </div>
+            <div class="ex-element-palette__section">Layout</div>
+            <div class="ex-element-palette__grid">
+              <button class="ex-element-palette__tile" data-add="columns"><span class="ex-element-palette__tile-icon">‖</span>Columns</button>
+              <button class="ex-element-palette__tile" data-add="callout"><span class="ex-element-palette__tile-icon">!</span>Callout</button>
+            </div>
+            <div class="ex-element-palette__section">Ornaments</div>
+            <div class="ex-element-palette__grid">
+              <button class="ex-element-palette__tile" data-add="divider"><span class="ex-element-palette__tile-icon">—</span>Rule</button>
+              <button class="ex-element-palette__tile" data-add="ornament"><span class="ex-element-palette__tile-icon">✦</span>Diamond</button>
+              <button class="ex-element-palette__tile" data-add="sunburst"><span class="ex-element-palette__tile-icon">※</span>Sunburst</button>
+              <button class="ex-element-palette__tile" data-add="fleur"><span class="ex-element-palette__tile-icon">⚜</span>Fleur</button>
+              <button class="ex-element-palette__tile" data-add="sourcetag"><span class="ex-element-palette__tile-icon">⊞</span>Source</button>
+            </div>
+            <div class="ex-element-palette__section">Media</div>
+            <div class="ex-element-palette__grid">
+              <button class="ex-element-palette__tile" data-add="image"><span class="ex-element-palette__tile-icon">🖼</span>Image</button>
+            </div>
+            <div class="ex-element-palette__section" id="presetsSectionLabel" style="display:flex;justify-content:space-between;align-items:center;">
+              <span>My Presets</span>
+              <button class="ex-element-palette__btn" id="saveSelAsPreset" title="Save current slide as preset" style="padding:1px 6px;font-size:9px;width:auto;">+ save</button>
+            </div>
+            <div class="ex-presets-list" id="presetsList"></div>
+          </aside>
+          <div class="ex-slide-canvas" id="slideCanvas">
+            <div class="ex-snap-grid"></div>
+            <div class="ex-snap-line ex-snap-line--v" id="snapLineV"></div>
+            <div class="ex-snap-line ex-snap-line--h" id="snapLineH"></div>
+            <div class="ex-marquee" id="marquee"></div>
+            <div class="ex-slide-canvas__hint">Select a slide or add one to begin</div>
+          </div>
+          <div id="inspectorRail">
+            <div class="ex-inspector-tabs">
+              <button class="ex-inspector-tab is-active" data-inspector="layers">Layers</button>
+              <button class="ex-inspector-tab" data-inspector="bg">BG</button>
+              <button class="ex-inspector-tab" data-inspector="clips">Clips</button>
+              <button class="ex-inspector-tab" data-inspector="style">Style</button>
+            </div>
+            <div class="ex-inspector-pane" id="inspPaneLayers">
+            <div class="ex-layer-panel">
+              <div class="ex-layer-panel__title">
+                <span>Layers</span>
+                <span style="font-family:var(--ex-font-mono);font-size:9px;opacity:0.5;" id="layerCount">0</span>
+              </div>
+              <div id="layerList"></div>
+            </div>
+            </div>
+            <div class="ex-inspector-pane ex-inspector-pane--hidden" id="inspPaneBg">
+            <div class="ex-bg-inspector" id="bgInspector">
+              <div class="ex-bg-inspector__title">Slide Background</div>
+              <div class="ex-bg-inspector__row">
+                <input type="color" id="bgColorInput" value="#faf6ec" title="Background colour"/>
+                <button class="ex-btn" id="bgClearBtn" style="padding:4px 10px;font-size:10px;">Reset</button>
+              </div>
+              <div class="ex-bg-inspector__row">
+                <span style="font-family:var(--ex-font-mono);font-size:9px;color:var(--ex-text-muted);">Presets:</span>
+                <button class="ex-bg-inspector__swatch" data-bg="" title="Default" style="background:linear-gradient(135deg,var(--ex-surface) 50%,var(--ex-bg) 50%);"></button>
+                <button class="ex-bg-inspector__swatch" data-bg="#faf6ec" title="Cream" style="background:#faf6ec;"></button>
+                <button class="ex-bg-inspector__swatch" data-bg="#1a1a18" title="Ink" style="background:#1a1a18;"></button>
+                <button class="ex-bg-inspector__swatch" data-bg="linear-gradient(135deg,#8b2c0e,#8b6914)" title="Sunset" style="background:linear-gradient(135deg,#8b2c0e,#8b6914);"></button>
+                <button class="ex-bg-inspector__swatch" data-bg="linear-gradient(180deg,#faf6ec 0%,#ebe3d3 100%)" title="Paper" style="background:linear-gradient(180deg,#faf6ec 0%,#ebe3d3 100%);"></button>
+              </div>
+              <div class="ex-bg-inspector__row">
+                <button class="ex-btn" id="bgImgBtn" style="padding:4px 10px;font-size:10px;">↑ Image…</button>
+                <button class="ex-btn" id="bgImgClearBtn" style="padding:4px 10px;font-size:10px;">Clear img</button>
+              </div>
+              <div class="ex-bg-section">
+                <div class="ex-bg-section__title">Patterns</div>
+                <div class="ex-bg-pattern-grid">
+                  <button class="ex-bg-pattern" data-pattern="stripes" title="Stripes"></button>
+                  <button class="ex-bg-pattern" data-pattern="dots" title="Dots"></button>
+                  <button class="ex-bg-pattern" data-pattern="grid" title="Grid"></button>
+                  <button class="ex-bg-pattern" data-pattern="paper" title="Paper grain"></button>
+                  <button class="ex-bg-pattern" data-pattern="hatch" title="Hatch"></button>
+                  <button class="ex-bg-pattern" data-pattern="sunburst" title="Sunburst"></button>
+                  <button class="ex-bg-pattern" data-pattern="checker" title="Checker"></button>
+                  <button class="ex-bg-pattern" data-pattern="wave" title="Wave"></button>
+                  <button class="ex-bg-pattern" data-pattern="herring" title="Herringbone"></button>
+                  <button class="ex-bg-pattern" data-pattern="lines" title="Lines"></button>
+                </div>
+              </div>
+              <div class="ex-bg-section">
+                <div class="ex-bg-section__title">Gradient builder</div>
+                <div class="ex-bg-gradient-controls">
+                  <input type="color" id="grad1" value="#8b2c0e"/>
+                  <input type="color" id="grad2" value="#8b6914"/>
+                  <select id="gradType"><option value="linear">Linear</option><option value="radial">Radial</option></select>
+                  <input type="range" id="gradAngle" min="0" max="360" value="135"/>
+                  <span class="ex-bg-gradient-controls__angle" id="gradAngleVal">135°</span>
+                  <button class="ex-btn" id="gradApply" style="padding:3px 8px;font-size:10px;">Apply</button>
+                </div>
+              </div>
+              <div class="ex-bg-section">
+                <div class="ex-bg-section__title">Motifs (faint overlay)</div>
+                <div class="ex-bg-motif-grid">
+                  <button class="ex-bg-motif" data-motif="sunburst" title="Sunburst"><svg viewBox="0 0 200 200" fill="currentColor"><defs><g id="ms"><polygon points="100,100 99,0 101,0"/></g></defs><use href="#ms"/><use href="#ms" transform="rotate(30 100 100)"/><use href="#ms" transform="rotate(60 100 100)"/><use href="#ms" transform="rotate(90 100 100)"/><use href="#ms" transform="rotate(120 100 100)"/><use href="#ms" transform="rotate(150 100 100)"/><use href="#ms" transform="rotate(180 100 100)"/><use href="#ms" transform="rotate(210 100 100)"/><use href="#ms" transform="rotate(240 100 100)"/><use href="#ms" transform="rotate(270 100 100)"/><use href="#ms" transform="rotate(300 100 100)"/><use href="#ms" transform="rotate(330 100 100)"/></svg></button>
+                  <button class="ex-bg-motif" data-motif="fleur" title="Fleur"><svg viewBox="0 0 28 28" fill="currentColor"><path d="M14 2 C14 8, 18 10, 20 12 C18 14, 14 14, 14 20 C14 14, 10 14, 8 12 C10 10, 14 8, 14 2 Z"/><path d="M14 18 L14 26" stroke="currentColor" stroke-width="1.2"/><ellipse cx="14" cy="22" rx="5" ry="1"/></svg></button>
+                  <button class="ex-bg-motif" data-motif="scroll" title="Scrollwork"><svg viewBox="0 0 120 16" fill="currentColor"><path d="M60 2 L66 8 L60 14 L54 8 Z"/><path d="M44 8 C 48 4, 52 4, 54 8 C 52 12, 48 12, 44 8 Z"/><path d="M76 8 C 72 4, 68 4, 66 8 C 68 12, 72 12, 76 8 Z"/></svg></button>
+                  <button class="ex-bg-motif" data-motif="none" title="None">∅</button>
+                </div>
+              </div>
+            </div>
+            </div><!-- /inspPaneBg -->
+            <div class="ex-inspector-pane ex-inspector-pane--hidden" id="inspPaneClips">
+            <div class="ex-clippings" id="clippingsPanel">
+              <div class="ex-clippings__title">
+                <span>Clippings · drag into slide</span>
+                <span class="ex-clippings__title__count" id="clippingsCount">0</span>
+              </div>
+              <div class="ex-clippings__list" id="clippingsList">
+                <div class="ex-clippings__empty">Send items from Analyse / Library / Facilitate to land them here.</div>
+              </div>
+            </div>
+            </div><!-- /inspPaneClips -->
+            <div class="ex-inspector-pane ex-inspector-pane--hidden" id="inspPaneStyle">
+            <div class="ex-text-controls" id="textControls">
+              <div class="ex-text-controls__title">Text Style</div>
+              <div class="ex-text-controls__row">
+                <span class="ex-text-controls__label">Font</span>
+                <select id="tcFont">
+                  <option value="">Default</option>
+                  <option value="playfair">Playfair (serif)</option>
+                  <option value="crimson">Cormorant (editorial)</option>
+                  <option value="dmsans">DM Sans</option>
+                  <option value="dmmono">DM Mono</option>
+                </select>
+              </div>
+              <div class="ex-text-controls__row">
+                <span class="ex-text-controls__label">Colour</span>
+                <input type="color" id="tcColor" value="#1a1a18"/>
+                <button class="ex-btn" id="tcColorReset" style="padding:2px 6px;font-size:9px;">×</button>
+              </div>
+              <div class="ex-text-controls__row">
+                <span class="ex-text-controls__label">Line-h</span>
+                <input type="range" id="tcLineHeight" min="100" max="200" value="155"/>
+                <span style="font-family:var(--ex-font-mono);font-size:10px;min-width:28px;" id="tcLineHeightVal">1.55</span>
+              </div>
+              <div class="ex-text-controls__row">
+                <span class="ex-text-controls__label">Letter-sp</span>
+                <input type="range" id="tcLetterSpacing" min="-30" max="80" value="0"/>
+                <span style="font-family:var(--ex-font-mono);font-size:10px;min-width:28px;" id="tcLetterSpacingVal">0</span>
+              </div>
+            </div>
+            <div class="ex-text-controls" id="imageControls">
+              <div class="ex-text-controls__title">Image Style</div>
+              <div class="ex-text-controls__row">
+                <span class="ex-text-controls__label">Filter</span>
+                <select id="icFilter">
+                  <option value="">None</option>
+                  <option value="sepia">Sepia</option>
+                  <option value="grayscale">Grayscale</option>
+                  <option value="blur">Blur</option>
+                </select>
+              </div>
+              <div class="ex-text-controls__row">
+                <span class="ex-text-controls__label">Border</span>
+                <select id="icBorder">
+                  <option value="">None</option>
+                  <option value="1">Thin</option>
+                  <option value="2">Solid fire</option>
+                  <option value="3">Double</option>
+                </select>
+              </div>
+              <div class="ex-text-controls__row">
+                <span class="ex-text-controls__label">Round</span>
+                <select id="icRound">
+                  <option value="">Square</option>
+                  <option value="sm">Small</option>
+                  <option value="md">Medium</option>
+                  <option value="lg">Large</option>
+                </select>
+              </div>
+              <div class="ex-text-controls__row">
+                <span class="ex-text-controls__label">Shadow</span>
+                <button class="ex-btn" id="icShadow" style="padding:2px 8px;font-size:10px;">Toggle</button>
+              </div>
+            </div>
+            </div><!-- /inspPaneStyle -->
+          </div><!-- /inspectorRail -->
+        </div>
+        <div class="ex-slide-deck" id="slideDeck"></div>
+        <div class="ex-speaker-notes" id="speakerNotes">
+          <div class="ex-speaker-notes__header" id="speakerNotesHeader">
+            <span><span class="ex-speaker-notes__caret">▸</span> Speaker Notes</span>
+            <span style="font-family:var(--ex-font-mono);font-size:9px;opacity:0.5;" id="speakerNotesHint">click to expand</span>
+          </div>
+          <textarea class="ex-speaker-notes__textarea" id="speakerNotesArea" placeholder="Notes for this slide - visible only here and on the print handout."></textarea>
+        </div>
+        <div class="ex-comments" id="slideComments">
+          <div class="ex-comments__title">
+            <span>Comments · this slide</span>
+            <span style="font-family:var(--ex-font-mono);font-size:9px;opacity:0.5;" id="commentsCount">0</span>
+          </div>
+          <div id="commentsList"></div>
+          <div class="ex-comment-input-row">
+            <input type="text" id="commentInput" placeholder="Add a comment / annotation..." maxlength="280"/>
+            <button class="ex-btn" id="commentAddBtn" style="padding:4px 10px;font-size:11px;">Add</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mf-pane mf-studio" id="paneDoc" aria-labelledby="docTitle">
+      <div class="mf-masthead">
+        <div class="mf-masthead__corners" aria-hidden="true"><span></span></div>
+        <div class="mf-kicker">The studio</div>
+        <h1 class="mf-title" id="docTitle">Doc</h1>
+        <p class="mf-lede">A continuous page. The same elements as a slide, set to
+          flow instead of to fit.</p>
+      </div>
+<div class="ex-build-panel is-active" id="buildDoc">
+        <div class="ex-doc-title-row">
+          <input class="ex-doc-title-input" id="docTitleInput" type="text" placeholder="Document title…"/>
+        </div>
+        <div class="ex-slides-toolbar">
+          <div class="ex-tb-group">
+            <button class="ex-btn" id="docAddPara">+ Para</button>
+            <button class="ex-btn" id="docAddHeading">+ Heading</button>
+            <button class="ex-btn" id="docAddDivider">+ Rule</button>
+          </div>
+          <span class="ex-tb-sep"></span>
+          <button class="ex-btn" id="mdImportBtn" style="font-size:11px;">↑ Markdown</button>
+          <span style="flex:1;"></span>
+          <div class="ex-tb-group">
+            <button class="ex-btn" id="docCopyBtn">Copy</button>
+            <button class="ex-btn ex-btn--primary" id="docPrintBtn">⎙ Print</button>
+            <button class="ex-btn" id="docClearBtn">Clear</button>
+          </div>
+        </div>
+        <div class="ex-slide-editor-grid">
+          <aside class="ex-element-palette">
+            <div class="ex-element-palette__title">Add to Doc</div>
+            <div class="ex-element-palette__section">Text</div>
+            <div class="ex-element-palette__grid">
+              <button class="ex-element-palette__tile" data-doc-add="heading"><span class="ex-element-palette__tile-icon">H1</span>Heading</button>
+              <button class="ex-element-palette__tile" data-doc-add="subheading"><span class="ex-element-palette__tile-icon">H2</span>Sub</button>
+              <button class="ex-element-palette__tile" data-doc-add="body"><span class="ex-element-palette__tile-icon">¶</span>Body</button>
+              <button class="ex-element-palette__tile" data-doc-add="dropcap"><span class="ex-element-palette__tile-icon">D</span>Drop-cap</button>
+              <button class="ex-element-palette__tile" data-doc-add="pullquote"><span class="ex-element-palette__tile-icon">"</span>Quote</button>
+            </div>
+            <div class="ex-element-palette__section">Lists</div>
+            <div class="ex-element-palette__grid">
+              <button class="ex-element-palette__tile" data-doc-add="bullets"><span class="ex-element-palette__tile-icon">≡</span>Bullets</button>
+              <button class="ex-element-palette__tile" data-doc-add="numbered"><span class="ex-element-palette__tile-icon">1.</span>Numbered</button>
+            </div>
+            <div class="ex-element-palette__section">Layout</div>
+            <div class="ex-element-palette__grid">
+              <button class="ex-element-palette__tile" data-doc-add="columns"><span class="ex-element-palette__tile-icon">‖</span>Columns</button>
+              <button class="ex-element-palette__tile" data-doc-add="callout"><span class="ex-element-palette__tile-icon">!</span>Callout</button>
+            </div>
+            <div class="ex-element-palette__section">Ornaments</div>
+            <div class="ex-element-palette__grid">
+              <button class="ex-element-palette__tile" data-doc-add="divider"><span class="ex-element-palette__tile-icon">—</span>Rule</button>
+              <button class="ex-element-palette__tile" data-doc-add="ornament"><span class="ex-element-palette__tile-icon">✦</span>Diamond</button>
+              <button class="ex-element-palette__tile" data-doc-add="sourcetag"><span class="ex-element-palette__tile-icon">⊞</span>Source</button>
+            </div>
+            <div class="ex-element-palette__section">Media</div>
+            <div class="ex-element-palette__grid">
+              <button class="ex-element-palette__tile" data-doc-add="image"><span class="ex-element-palette__tile-icon">🖼</span>Image</button>
+            </div>
+          </aside>
+          <article class="ex-doc-page" id="docPage">
+            <div class="ex-slide-canvas__hint">Empty doc - add elements from the palette →</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="mf-pane" id="paneCompose" aria-labelledby="composeTitle">
       <div class="mf-masthead">
         <div class="mf-masthead__corners" aria-hidden="true"><span></span></div>
@@ -544,6 +1054,124 @@ body::before {
   <button id="toastAction" type="button" hidden>Undo</button>
 </div>
 
+<!-- The studio's overlays, moved with it from Coach: presenter mode, markdown
+     import, the brand kit, find/replace and the selection format bar. Wrapped in
+     .mf-studio so they carry the studio's own palette, not Notes'. -->
+<div class="mf-studio">
+</div>
+
+<!-- Presenter mode overlay (v1.3.2) -->
+<div class="ex-presenter" id="presenter">
+  <div class="ex-presenter__slide" id="presenterSlide"></div>
+  <div class="ex-presenter__notes" id="presenterNotes">
+    <div class="ex-presenter__notes__title">Speaker Notes</div>
+    <div id="presenterNotesContent"></div>
+  </div>
+  <div class="ex-presenter__controls">
+    <button class="ex-presenter__btn" id="presPrevBtn">← Prev</button>
+    <span class="ex-presenter__counter" id="presCounter">1 / 1</span>
+    <button class="ex-presenter__btn" id="presNextBtn">Next →</button>
+    <button class="ex-presenter__btn" id="presNotesBtn">Notes</button>
+    <button class="ex-presenter__btn" id="presExitBtn">Esc Exit</button>
+  </div>
+</div>
+
+<!-- Markdown import modal (v1.5.2) -->
+<div class="ex-md-import" id="mdImportModal">
+  <div class="ex-md-import__title">Import Markdown into Doc</div>
+  <textarea id="mdImportText" placeholder="# Paste markdown here...&#10;&#10;## Subheading&#10;&#10;A paragraph.&#10;&#10;- Bullet one&#10;- Bullet two&#10;&#10;1. Numbered&#10;2. List&#10;&#10;> A quote.&#10;&#10;---"></textarea>
+  <div class="ex-md-import__hint">
+    Supports: # headings (H1/H2/H3) · paragraphs · - bullets · 1. numbered · &gt; quotes · --- rules · **bold** · *italic*
+  </div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;">
+    <button class="ex-btn" id="mdImportCancelBtn">Cancel</button>
+    <button class="ex-btn ex-btn--primary" id="mdImportApplyBtn">Append to Doc</button>
+    <button class="ex-btn ex-btn--fire" id="mdImportReplaceBtn">Replace Doc</button>
+  </div>
+</div>
+
+<!-- Brand kit editor modal (v1.3.7) -->
+<div class="ex-brandkit-modal" id="brandKitModal">
+  <div class="ex-brandkit-modal__title">Brand Kit Editor</div>
+  <div class="ex-brandkit-row">
+    <label>Family</label>
+    <select id="bkFamily" style="flex:1;padding:6px;background:var(--ex-bg);border:1px solid var(--ex-border);color:var(--ex-text);font-size:12px;">
+      <option value="cream">Cream (paper)</option>
+      <option value="press">Press (dark)</option>
+    </select>
+  </div>
+  <div class="ex-brandkit-row">
+    <label>Name</label>
+    <input type="text" id="bkName" placeholder="My Brand" maxlength="20"/>
+  </div>
+  <div class="ex-brandkit-row">
+    <label>Gold</label>
+    <input type="color" id="bkGold" value="#8b6914"/>
+    <input type="text" id="bkGoldHex" value="#8b6914" style="width:80px;padding:6px;font-family:var(--ex-font-mono);font-size:11px;"/>
+  </div>
+  <div class="ex-brandkit-row">
+    <label>Fire</label>
+    <input type="color" id="bkFire" value="#8b2c0e"/>
+    <input type="text" id="bkFireHex" value="#8b2c0e" style="width:80px;padding:6px;font-family:var(--ex-font-mono);font-size:11px;"/>
+  </div>
+  <div class="ex-brandkit-preview" id="bkPreview">
+    <div class="ex-brandkit-preview__title">Excelsior <span>Coach</span></div>
+    <div style="font-family:var(--ex-font-mono);font-size:9px;letter-spacing:0.2em;margin-top:4px;">PREVIEW</div>
+  </div>
+  <div class="ex-brandkit-row" style="margin-top:16px;">
+    <button class="ex-btn ex-btn--primary" id="bkSaveBtn">Save Custom Variant</button>
+    <button class="ex-btn" id="bkCloseBtn">Close</button>
+  </div>
+  <div class="ex-brandkit-list" id="bkList">
+    <div class="ex-brandkit-list__title">Saved Custom Variants</div>
+    <div id="bkSavedList"></div>
+  </div>
+</div>
+
+<!-- Find & Replace bar (v1.2.6) -->
+<div class="ex-find-bar" id="findBar">
+  <div class="ex-find-bar__row">
+    <input class="ex-find-bar__input" id="findInput" type="text" placeholder="Find..."/>
+    <span class="ex-find-bar__count" id="findCount">0 / 0</span>
+    <button class="ex-btn" id="findNextBtn" style="padding:4px 8px;font-size:10px;">↓</button>
+  </div>
+  <div class="ex-find-bar__row">
+    <input class="ex-find-bar__input" id="replaceInput" type="text" placeholder="Replace with..."/>
+    <button class="ex-btn" id="replaceOneBtn" style="padding:4px 8px;font-size:10px;">Replace</button>
+    <button class="ex-btn ex-btn--primary" id="replaceAllBtn" style="padding:4px 8px;font-size:10px;">All</button>
+  </div>
+  <div style="display:flex;justify-content:space-between;font-family:var(--ex-font-mono);font-size:9px;color:var(--ex-text-muted);">
+    <span>searches all slides + elements</span>
+    <button class="ex-btn" id="findCloseBtn" style="padding:0 6px;font-size:10px;">esc</button>
+  </div>
+</div>
+
+<!-- Inline text format bar (v1.1.6) -->
+<div class="ex-format-bar" id="formatBar">
+  <button class="ex-format-bar__btn" data-fmt="bold" title="Bold (Ctrl+B)">B</button>
+  <button class="ex-format-bar__btn" data-fmt="italic" title="Italic (Ctrl+I)">I</button>
+  <button class="ex-format-bar__btn" data-fmt="underline" title="Underline (Ctrl+U)">U</button>
+  <button class="ex-format-bar__btn" data-fmt="removeFormat" title="Clear formatting">×</button>
+</div>
+</div>
+
+<!-- The desk · one note at full size. Its corner brackets are the masthead's,
+     because opening a note should feel like the same building, not a modal. -->
+<div class="mf-desk" id="desk" hidden>
+  <div class="mf-desk__sheet" role="dialog" aria-modal="true" aria-labelledby="deskTitle">
+    <div class="mf-desk__corners" aria-hidden="true"><span></span></div>
+    <div class="mf-desk__head">
+      <div>
+        <div class="mf-desk__kicker" id="deskTitle">Note</div>
+        <div class="mf-desk__meta" id="deskMeta"></div>
+      </div>
+      <button class="mf-btn" type="button" data-desk-close>Close &middot; Esc</button>
+    </div>
+    <textarea class="mf-desk__text" id="deskText" spellcheck="true"
+      placeholder="The note, with room to think&hellip;"></textarea>
+  </div>
+</div>
+
 <script>
 (() => {
   "use strict";
@@ -565,8 +1193,14 @@ body::before {
 
   const PANES = [
     { id: "capture", label: "Capture", icon: "✎" },
+    { id: "slides",  label: "Slides",  icon: "▭" },
+    { id: "doc",     label: "Doc",     icon: "▤" },
     { id: "compose", label: "Compose", icon: "▥", soon: "soon" }
   ];
+  /* Slides and Doc are the studio, and the studio is 92 KB that most sessions
+     never open. It is not in this file and not in the boot path - the first
+     switch to either pane fetches it. See __tgcLoadStudio in the head. */
+  const STUDIO_PANES = ["slides", "doc"];
 
   const root = document.documentElement;
   const $ = id => document.getElementById(id);
@@ -576,6 +1210,7 @@ body::before {
   const statWords = $("statWords"), statSaved = $("statSaved");
   const importFile = $("importFile");
   const toastEl = $("toast"), toastText = $("toastText"), toastAction = $("toastAction");
+  const desk = $("desk"), deskText = $("deskText"), deskTitle = $("deskTitle"), deskMeta = $("deskMeta");
 
   let state = loadState();
   let query = "";
@@ -688,7 +1323,32 @@ body::before {
       el.classList.toggle("is-active", el.dataset.pane === id));
     document.querySelectorAll(".mf-pane").forEach(el =>
       el.classList.toggle("is-active", el.id === "pane" + id.charAt(0).toUpperCase() + id.slice(1)));
+    if (STUDIO_PANES.includes(id)) openStudio(id);
     scheduleSave();
+  }
+
+  /* ═══════════ THE STUDIO · fetched on first use ═══════════
+     The studio keeps its own state under its own key and never reaches into
+     Notes' notes. It is handed storage and a toast rather than allowed to find
+     them, so the canon holds inside one app too: explicit, not ambient. */
+  let studioReady = false;
+  function openStudio(mode) {
+    if (studioReady) { try { window.NotesStudio.setMode(mode); } catch (e) {} return; }
+    if (!window.__tgcLoadStudio) return;
+    window.__tgcLoadStudio().then(ok => {
+      if (!ok || !window.NotesStudio) {
+        const host = $("studioFallback");
+        if (host) host.textContent = "The studio did not load. Reload the app to try again.";
+        return;
+      }
+      studioReady = true;
+      window.NotesStudio.init({
+        mode,
+        persistGet: (k, d) => { try { const v = localStorage.getItem("tgc.notes.studio." + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+        persistSet: (k, v) => { try { localStorage.setItem("tgc.notes.studio." + k, JSON.stringify(v)); } catch (e) {} },
+        toast: showToast
+      });
+    });
   }
 
   /* ═══════════ RENDER ═══════════ */
@@ -731,6 +1391,7 @@ body::before {
           <span class="mf-note__meta">${words(n.text)}w · ${ago(n.updatedAt)}</span>` +
           (n.source ? `<span class="mf-note__from">via ${esc(n.source)}</span>` : "") + `
           <button class="mf-note__act ${n.pinned ? "is-on" : ""}" type="button" data-act="pin">${n.pinned ? "pinned" : "pin"}</button>
+          <button class="mf-note__act" type="button" data-act="open">open</button>
           <button class="mf-note__act" type="button" data-act="copy">copy</button>
           <button class="mf-note__act" type="button" data-act="bench">bench</button>
           <button class="mf-note__act" type="button" data-act="dup">dup</button>
@@ -748,6 +1409,40 @@ body::before {
         t.closest(".mf-note").scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
     }
+  }
+
+  /* ═══════════ THE DESK · one note, at full size ═══════════
+     A card in the list is a glance. Some notes are the thing you are actually
+     writing, and 420px of textarea is a letterbox. The desk is the same note
+     with the room it needs - no second copy of the text and no separate save
+     path: it writes straight back to the same note object, so closing it is
+     not a commit and there is nothing to lose. */
+  let deskId = null;
+  /* the bridge relays Esc to the shell from window capture, before anything here
+     can see it · this is how we keep the key while the desk is open */
+  window.__tgcEscGuard = () => deskId !== null;
+
+  function openNote(note) {
+    deskId = note.id;
+    deskTitle.textContent = note.source ? "via " + note.source : "Note";
+    deskMeta.textContent = words(note.text) + "w \u00b7 " + ago(note.updatedAt);
+    deskText.value = note.text;
+    desk.hidden = false;
+    document.body.dataset.desk = "open";
+    deskText.focus();
+    deskText.setSelectionRange(deskText.value.length, deskText.value.length);
+  }
+
+  function closeDesk() {
+    if (deskId === null) return;
+    const id = deskId;
+    deskId = null;
+    desk.hidden = true;
+    delete document.body.dataset.desk;
+    /* the list went stale while the desk was open \u00b7 repaint and land on it */
+    render();
+    const card = notesEl.querySelector(`[data-id="${CSS.escape(id)}"]`);
+    if (card) card.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
   function autoSize(el) {
@@ -951,7 +1646,8 @@ body::before {
       note.pinned = !note.pinned; note.updatedAt = Date.now();
       render({ focusId: note.id }); scheduleSave();
       showToast(note.pinned ? "Note pinned" : "Note unpinned");
-    } else if (act === "copy") copyNote(note);
+    } else if (act === "open") openNote(note);
+    else if (act === "copy") copyNote(note);
     else if (act === "bench") sendToBench(note);
     else if (act === "dup") duplicate(note);
     else if (act === "del") removeNote(note);
@@ -962,6 +1658,12 @@ body::before {
      to those here would fire twice - once in the nave, once in a frame the
      user can no longer see. `/` focuses the search instead. */
   document.addEventListener("keydown", e => {
+    /* Esc closes the desk first. Without stopping it here the shell also hears it
+       through apps/bridge.js and ascends to the nave - throwing the user out of
+       the house to close a panel. */
+    if (e.key === "Escape" && deskId !== null) {
+      e.preventDefault(); e.stopPropagation(); closeDesk(); return;
+    }
     const typing = /^(INPUT|TEXTAREA)$/.test(document.activeElement?.tagName || "") ||
                    document.activeElement?.isContentEditable;
     if (e.key === "/" && !typing && !e.ctrlKey && !e.metaKey && !e.altKey) {
@@ -972,6 +1674,19 @@ body::before {
       const code = /^Digit([12])$/.exec(e.code || "");
       if (code) { e.preventDefault(); switchPane(PANES[Number(code[1]) - 1].id); }
     }
+  });
+
+  deskText.addEventListener("input", () => {
+    const note = state.notes.find(n => n.id === deskId);
+    if (!note) return;
+    note.text = deskText.value;
+    note.updatedAt = Date.now();
+    deskMeta.textContent = words(note.text) + "w \u00b7 now";
+    stats(); scheduleSave();
+  });
+  desk.addEventListener("click", e => {
+    /* the backdrop closes it; the sheet itself does not */
+    if (e.target === desk || e.target.closest("[data-desk-close]")) closeDesk();
   });
 
   window.addEventListener("beforeunload", saveState);

@@ -71,13 +71,34 @@ for f in sorted((ROOT / 'apps').glob('*.html')):
     # the on-demand loader finds its work already done. Declaring a URL whose file is
     # missing is a build failure, not a silently engine-less app — that hole shipped
     # once already when the Lens engine moved out of the boot path.
+    #
+    # A .css URL must inline as <style>, not <script> — CSS text run as JS is either a
+    # syntax error or silently does nothing, which is exactly the failure mode this
+    # whole scanner exists to make loud instead of silent. Every on-demand part uses the
+    # _URL suffix (never _CSS or anything else); the file's own extension, not its
+    # constant name, decides how it is wrapped, so the convention only has to be
+    # followed once and mismatches like that fail the build instead of shipping quiet.
+    # CSS is declarative and safe in <head> regardless of body state — it also matches
+    # where the served build's loader appends its <link>, so the cascade order is the
+    # same in both builds. JS is not safe there: this scanner's first real user
+    # (apps/notes/studio.js) runs top-level statements like
+    # document.getElementById('undoBtn').addEventListener(...) at module-parse time,
+    # unconditionally — correct for the served build, where the script is injected long
+    # after DOMContentLoaded, but wrong here, where everything in <head> executes before
+    # <body> exists at all. So .js parts inline at the end of <body> instead, where the
+    # DOM they reach for is actually there; .css parts stay in <head>.
     for m in re.finditer(r"""window\.__TGC_[A-Z_]+_URL\s*=\s*['"]([^'"]+)['"]""", app):
-        part = ROOT / 'apps' / m.group(1)
+        rel = m.group(1)
+        part = ROOT / 'apps' / rel
         if not part.exists():
             raise SystemExit('portable build: missing on-demand part ' + str(part))
-        app = app.replace('</head>',
-            '<scr' + 'ipt>' + part.read_text(encoding='utf-8').replace('</script', '<\\/script')
-            + '</scr' + 'ipt>\n</head>', 1)
+        text = part.read_text(encoding='utf-8')
+        if rel.endswith('.css'):
+            app = app.replace('</head>', '<style>' + text + '</style>\n</head>', 1)
+        else:
+            wrapped = '<scr' + 'ipt>' + text.replace('</script', '<\\/script') + '</scr' + 'ipt>'
+            assert app.count('</body>') == 1, f'{f.name}: expected exactly one </body>'
+            app = app.replace('</body>', wrapped + '\n</body>', 1)
     b64[app_id] = base64.b64encode(app.encode('utf-8')).decode()
 
 bootstrap = """<script data-src="v2-bootstrap">

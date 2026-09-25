@@ -111,11 +111,22 @@ Ping's own reference: [`PING.md`](PING.md).
       score, the presets, the rewrites and the digest need no new dimension.
       *191 → 238 rules · 83 → 111 fixtures, all passing · 0 false positives on a
       clean 15-sentence corpus · 0.21 ms per analysis pass · boot unchanged.* ✓
-- [ ] **F4 · Spelling honesty** — the bloom filter under-flags by design (false
-      positives wave real misspellings through) and caps at 8 flags per pass.
-      Neither is wrong, but neither is visible. Surface the cap when it bites, and
-      document the ceiling where a user can see it.
-      *Done when: a long draft says "8 shown of N" rather than silently stopping.*
+- [x] **F4 · Spelling honesty** — both limits now state themselves inside the app.
+      The cap counts every unknown word and flags eight; when it bites, the rail
+      carries *"Dictionary check · 8 of 15 unknown words shown · next is 'incuding'"*
+      instead of stopping quietly and letting a long draft read as clean below the
+      eighth typo. Past the cap the candidate search is skipped, so the honest total
+      is free. The bloom filter's under-flagging ceiling is written into the
+      diagnostics drawer, beside the other engine numbers — it had only ever been in
+      `PING.md`, which nobody affected by it opens.
+      This needed a new engine seam: **notes**, a second channel beside `push()` for
+      reporting a limit rather than a finding. A limit is not an issue — it has no
+      fix, and counting it as one would inflate the digest's `grammarHits` and lie to
+      Insight. Notes render as a quiet line, never a card, and sit outside
+      `analysis.issues`, so a note may name a word the user typed without it ever
+      reaching a digest.
+      *QC 49 → 52: the cap reports its own number, a note is never counted as an
+      issue, and a note never reaches a digest.* ✓
 
 ## Phase H · Weight
 
@@ -172,8 +183,20 @@ mechanism is already right — no work needed there.
       sections, `SHIFT NOTES` (239 KB) and `OT PLANNER UI` (231 KB) the largest.
       When the external work lands, the H1 playbook applies — split at the
       existing banners, then look for the deferral seams.
-- [ ] **H4 · Codex's other on-demand surfaces** — `weave-atlas` (129 KB) and
-      `reader-editor` (24 KB) behind their own openers.
+- [x] **H4 · Codex's other surfaces — investigated, and deliberately not built.**
+      The premise was wrong, the same way F3's was. `weave-atlas` (129 KB) is not a
+      per-view module: it reaches ids across **all five** views (atlas, globe, paths,
+      bridge, catalog) plus twelve outside any view, and `view-atlas` is the default
+      active view. It is Codex's main controller wearing a module's filename.
+      Deferring it would leave the app empty on open — it is not an on-demand surface
+      and never was.
+      That leaves `reader-editor` (24 KB), which genuinely is scoped to `view-catalog`
+      and could hang off `setView` like Three.js does. **It is not worth it.** 24 KB is
+      3% of Codex's remaining 749 KB, and buying it costs a loader plus a new failure
+      mode on a surface that currently cannot fail. The 153 KB headline was 129 KB of
+      my own bad reading.
+      *Codex's real remaining weight is its markup and controller, not a deferrable
+      library. Anything further there is a rewrite, not a load-order fix.*
 
 ## Phase G · MirrorFlow Insight
 
@@ -207,7 +230,7 @@ fiction, which is the thing Phase B2 and F1 both existed to remove.
       from the Pages HTTP cache (the "pop looked like night" report)
 - [x] Deploy ritual documented: bump `version.json` per deploy; bump `VER` in
       `sw.js` when asset shape changes (see ARCHITECTURE.md)
-- [x] QC sweep automated — 49 checks across entry, pulse, all four skins, the
+- [x] QC sweep automated — 58 checks across entry, pulse, all four skins, the
       handshake, motifs, altar, exchange, rites, satchel, mobile and the
       portable build; it also guards the canon (fails on any external request)
 - [x] The checks live in the repo — `tools/qc.mjs` and `tools/lens.mjs`, with
@@ -229,6 +252,99 @@ fiction, which is the thing Phase B2 and F1 both existed to remove.
       rites **8/8 · all rites held**. The automated sweep runs against a clean
       checkout of the merged commit and covers everything except delivery
       (DNS, TLS, Pages) — that part needs a real browser on the real domain
+
+## What the measurement says now
+
+After H1 and H2, and with Sync owned elsewhere:
+
+| App | Mount | Boot payload | Note |
+|---|---:|---:|---|
+| sync | 696 ms | 1 269 KB | owned outside this repo · H3 |
+| coach | 223 ms | 703 KB | **untouched · the next honest question** |
+| codex | 219 ms | 749 KB | mostly markup + controller now; no library left to defer |
+| ping | 143 ms | 353 KB | H1 |
+| notes | — | — | rebuilt by PR #13 |
+
+Coach has never been measured for *why* it weighs 703 KB, only that it does. That
+is the next place a real finding could be, and the H1/H2 playbook (find the thing
+that loads for everyone and is used by few) is the way to look. Not scheduled —
+it needs a look before it needs a plan.
+
+## Phase I · The workbench takes the authoring tools
+
+Slides and Doc live in Excelsior Coach's Build mode. They do not belong there:
+Coach analyses, facilitates and assesses; authoring an artefact is bench work.
+Notes is the workbench. Moving them is a product correction, not a refactor.
+
+- [x] **I0 · Measured the real footprint before promising anything.** The obvious
+      read was ~250 KB, because Coach's sections are banner-labelled and one banner
+      lies. `SLIDE BUILDER ENHANCEMENTS (v0.7.4)` is 134 KB and contains **15
+      library/reading functions** (`MODULE_CONTENT`, `MODULE_LEDES`, bookmarks,
+      highlights, read-progress) against **4 slide functions**. It is Coach's
+      Library module wearing a slide-builder name, and it stays.
+      **The true Slides + Doc core is 94 KB**: `BUILD MODE - Slides` (73), `DOC MODE`
+      (6), `ELEMENT PRESETS` (15).
+- [x] **I0b · Mapped what it actually needs from Coach.** Clean, with one exception:
+      | Constant | Uses | Verdict |
+      |---|---|---|
+      | `FONTS_CSS` | 4 | portable, comes along |
+      | `THEME_VARIANTS` | 2 | portable, comes along |
+      | `TEXT_TYPES`, `SLIDE_TEMPLATES` | — | already inside the studio |
+      | `MFEngine`, `CURRICULUM`, `MODULE_LIBRARY` | 0 | **no coupling at all** |
+      | `ASSESS_CRITERIA` | 6 | **the one real question — see I1** |
+- [x] **I1 · The assessment deck stayed put.** The recommendation held: the six
+      `ASSESS_CRITERIA` uses (`getCohort`, `saveCohort`, `renderCohort` — the cohort
+      scorecard) were never studio code, they were Coach's own Assess feature that
+      had drifted inside the "Slides" section banner by accident. They stayed in
+      `apps/coach.html`, in Assess, where the data they read actually lives.
+- [x] **I2 · Moved as a deferred module.** `apps/notes/studio.js` (113 KB) +
+      `studio.css` (23 KB), loaded the first time a session switches to the Slides
+      or Doc pane — nothing in Notes' own boot path. `NotesStudio.init()` is the one
+      seam the host calls; nothing inside runs a side effect before that.
+      **Two infrastructure bugs surfaced building this, both fixed at the root:**
+      - `new URL('../fonts/fonts.css', location.href)` throws under a `blob:`
+        origin (opaque, no path hierarchy). It sat at module scope, uncaught, in
+        both `coach.html` and the new `studio.js` — an uncaught throw there aborted
+        the *entire module* before anything later in it ran. **Coach's whole
+        portable build has been silently dead since before this phase**; nobody
+        had opened it under `file://` to notice. Now wrapped, degrading to no
+        custom font in a print popup instead of killing the app.
+      - `build-portable.py` inlined on-demand JS into `<head>`, which executes
+        *before* `<body>` exists. The served build's dynamic-injection loader
+        never hits this, because it runs long after `DOMContentLoaded` — but
+        `studio.js`'s own top-level `document.getElementById('undoBtn')
+        .addEventListener(...)` ran against a DOM that was not there yet, and
+        `NotesStudio` silently never got assigned. On-demand `.js` parts now
+        inline at the end of `<body>`; `.css` parts stay in `<head>` (declarative,
+        no DOM dependency, and it matches where the served loader's own `<link>`
+        lands). Verified against all three on-demand modules in the house (Lens
+        engine, Three.js, the studio) — none touch the DOM at parse time, so
+        nothing else needed to move.
+      A third, narrower bug was mine alone: the line-range extraction swept up
+      Coach's **Reading Mode** (an unrelated Library feature, physically adjacent
+      to the presenter overlay in the source) and the Assess **Single/Cohort tab
+      wiring**, stranding both in `studio.js` where their target elements do not
+      exist. Found by an exhaustive cross-reference sweep — every id, `data-`
+      attribute and bare function call `studio.js` still touches, checked against
+      what actually exists in each file — and both restored to Coach, correctly
+      wired, inside the module's own closure (not after it — the same mistake,
+      caught the second time before it shipped).
+      *Verified live, not assumed: Notes boots without the studio; opening Slides
+      loads it and Add Slide grows the deck; Coach's reading mode opens/closes on
+      Escape; the Assess cohort tab switches panels — all four in both the served
+      and the portable build, zero console errors.*
+- [x] **I3 · Coach stripped back.** The two build tabs, both panels, the 94 KB
+      studio script, and 126 verified CSS rules (22 KB) — removed as the exact
+      text already confirmed present in `studio.css`, not by a fresh pattern
+      match, after a fuzzy first attempt nearly deleted `.ex-finding` (Analyse
+      mode's own findings list) by matching an unrelated `ex-find*` prefix.
+      *Measured, median of 5, cold context per run:*
+      | | before | after |
+      |---|---:|---:|
+      | mount | 191 ms | 165 ms |
+      | DCL | 171 ms | 138 ms |
+      | payload | 936 KB | 782 KB |
+      `coach.html` itself: 604 KB → 456 KB on disk.
 
 ## Horizon (not scheduled, kept on purpose)
 

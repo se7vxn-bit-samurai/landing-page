@@ -145,6 +145,35 @@ waved through as "known". The engine **under-flags** rather than over-flags,
 which is the safe direction for a tool people trust — but it means spelling
 coverage is a floor, not a guarantee.
 
+Both limits are now stated **inside the app**, not only here (Phase F4):
+
+- The cap counts everything and flags eight. When it bites, the rail carries a
+  line — *"Dictionary check · 8 of 15 unknown words shown · next is "incuding""* —
+  instead of stopping quietly and letting a long draft read as clean below the
+  eighth typo. Past the cap the candidate search is skipped, so an honest total
+  costs nothing.
+- The bloom filter's ceiling is written in the diagnostics drawer, where the
+  other engine numbers live. A limit documented only in a repo file is a limit
+  nobody affected by it will ever read.
+
+### Notes · reporting a limit without inventing a finding
+
+A rule sometimes needs to say *"I stopped at 8 of 23"*. That is not an issue: it
+has no fix, no span to apply, and counting it as one would inflate the digest's
+`grammarHits` and lie to Insight. So structural rules get a second channel
+beside `push()`:
+
+```js
+run({ text, protectedSpans, push, note }) { … note({ ruleId, kind:'cap', shown, total, message }) }
+```
+
+Notes surface as `analysis.notes` and render as a quiet line above the cards —
+never as a card, because a card implies an Apply or an Ignore and there is
+neither. **Notes are deliberately outside `analysis.issues`**, which is what
+`tgcBuildSendDigest()` reads, so a note may safely name a word the user typed
+without that word ever reaching a digest. A QC check asserts that boundary
+rather than trusting it.
+
 **Loading:** the ledger is *not* part of `ping.html`. It is fetched once, the
 first time real prose reaches the spelling rule, then cached by the service
 worker. The other 237 rules run regardless; spelling simply stays quiet until it
@@ -260,6 +289,5 @@ Full contract and consumer design: `docs/INSIGHT.md`.
 
 ## Where Ping is going
 
-- **F4 · spelling honesty** — surface the 8-flag cap when it bites.
 - **G · the rail gains memory** — across-time cards beside the in-the-moment ones,
   fed by the digests F2 now produces.
